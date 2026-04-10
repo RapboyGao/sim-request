@@ -1,0 +1,21 @@
+{
+  "name": "sim-request",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "preview": "nuxt preview",
+    "typecheck": "pnpm exec nuxi typecheck"
+  },
+  "dependencies": {
+    "nuxt": "^4.2.0",
+    "vuetify": "^3.7.0"
+  },
+  "devDependencies": {
+    "@nuxt/eslint-config": "^1.8.0",
+    "@types/node": "^22.13.0",
+    "typescript": "^5.8.0",
+    "vite-plugin-vuetify": "^2.1.0"
+  }
+}
