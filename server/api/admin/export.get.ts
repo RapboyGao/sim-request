@@ -1,4 +1,4 @@
-import { readAllBookings } from '~/server/utils/booking-store'
+import { normalizeBookingMap, readAllBookings } from '~/server/utils/booking-store'
 import { getAdminSessionCookieName, isAdminSessionValid } from '~/server/utils/admin-auth'
 
 function toCsvValue(value: unknown) {
@@ -65,7 +65,7 @@ export default defineEventHandler(async (event) => {
     setHeader(event, 'content-type', 'application/json; charset=utf-8')
     if (variant === 'debug') {
       setHeader(event, 'content-disposition', `attachment; filename="bookings-debug-${timestamp}.json"`)
-      return all
+      return normalizeBookingMap(all)
     }
     setHeader(event, 'content-disposition', `attachment; filename="bookings-supabase-${timestamp}.json"`)
     return rows.map((row) => ({

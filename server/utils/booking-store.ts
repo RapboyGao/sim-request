@@ -63,10 +63,27 @@ function getPriorityFromRow(row: { priority_level?: unknown }) {
   return normalizePriorityLevel(row.priority_level)
 }
 
+function sanitizeBookingEntry(entry: Partial<BookingEntry> & { id?: string; date?: string; slot?: string }) {
+  return {
+    id: String(entry.id || crypto.randomUUID()),
+    date: String(entry.date || ''),
+    slot: String(entry.slot || ''),
+    name: normalizeBookingName(String(entry.name || '')),
+    priorityLevel: normalizePriorityLevel(entry.priorityLevel),
+    createdAt: String(entry.createdAt || new Date().toISOString()),
+    status: entry.status === 'canceled' ? 'canceled' : 'active',
+  } satisfies BookingEntry
+}
+
 async function readLocalStorage(filePath: string): Promise<BookingMap> {
   try {
     const raw = await fs.readFile(filePath, 'utf8')
-    return JSON.parse(raw) as BookingMap
+    const parsed = JSON.parse(raw) as Record<string, Array<Partial<BookingEntry> & { id?: string; date?: string; slot?: string }>>
+    const normalized: BookingMap = {}
+    for (const [key, entries] of Object.entries(parsed)) {
+      normalized[key] = (entries || []).map(entry => sanitizeBookingEntry(entry))
+    }
+    return normalized
   } catch {
     return {}
   }
@@ -105,15 +122,15 @@ async function readSupabaseBookings(event: any): Promise<BookingMap | null> {
   }>) {
     const key = storageKey(row.date, row.slot)
     grouped[key] = grouped[key] || []
-    grouped[key].push({
-      id: row.id,
-      date: row.date,
-      slot: row.slot,
-      name: row.name,
-      priorityLevel: getPriorityFromRow(row),
-      createdAt: row.created_at,
-      status: row.status,
-    })
+      grouped[key].push({
+        id: row.id,
+        date: row.date,
+        slot: row.slot,
+        name: row.name,
+        priorityLevel: getPriorityFromRow(row),
+        createdAt: row.created_at,
+        status: row.status,
+      })
   }
 
   for (const key of Object.keys(grouped)) {
@@ -195,6 +212,14 @@ export async function readAllBookings(event: any) {
 
   const config = useRuntimeConfig()
   return readLocalStorage(config.localJsonStorageFile)
+}
+
+export function normalizeBookingMap(data: BookingMap): BookingMap {
+  const normalized: BookingMap = {}
+  for (const [key, entries] of Object.entries(data)) {
+    normalized[key] = (entries || []).map(entry => sanitizeBookingEntry(entry))
+  }
+  return normalized
 }
 
 export async function writeAllBookings(event: any, data: BookingMap) {

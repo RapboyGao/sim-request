@@ -79,6 +79,8 @@
     <v-footer class="app-footer" height="40">
       <div class="app-footer__content">by Albert Gao</div>
     </v-footer>
+
+    <RouteLoadingOverlay :active="routeLoading" />
   </v-app>
 </template>
 
@@ -88,6 +90,7 @@ const { t, locales } = useI18n()
 const localePath = useLocalePath()
 const switchLocalePath = useSwitchLocalePath()
 const drawer = ref(false)
+const { active: routeLoading } = useRouteLoading()
 
 function cycleThemeMode() {
   const order = ['system', 'light', 'dark'] as const

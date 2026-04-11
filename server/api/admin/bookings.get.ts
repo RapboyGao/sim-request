@@ -15,9 +15,13 @@ export default defineEventHandler(async (event) => {
 
     const [, date, slot] = match as [string, string, string]
     return items.map((item) => ({
-      ...item,
+      id: item.id,
       date,
       slot,
+      name: item.name,
+      priorityLevel: item.priorityLevel,
+      createdAt: item.createdAt,
+      status: item.status,
     }))
   }).sort((left, right) => {
     const dateCompare = left.date.localeCompare(right.date)
