@@ -118,7 +118,7 @@ function formatDateLabel(value: string) {
 }
 
 .hero-card {
-  background: linear-gradient(135deg, var(--bg-accent-start), rgba(249, 115, 22, 0.08));
+  background: linear-gradient(135deg, var(--bg-accent-start), var(--bg-accent-soft-2));
   border: 1px solid var(--soft-border);
 }
 

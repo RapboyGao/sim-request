@@ -278,7 +278,7 @@ await checkAuth()
 }
 
 .admin-hero {
-  background: linear-gradient(135deg, var(--bg-accent-start), rgba(249, 115, 22, 0.08));
+  background: linear-gradient(135deg, var(--bg-accent-start), var(--bg-accent-soft-2));
 }
 
 .eyebrow {

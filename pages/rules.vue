@@ -118,7 +118,7 @@ const processSteps = [
 
 <style scoped>
 .rules-card {
-  background: linear-gradient(135deg, var(--bg-accent-start), rgba(249, 115, 22, 0.06));
+  background: linear-gradient(135deg, var(--bg-accent-start), var(--bg-accent-soft-2));
   box-shadow: 0 10px 30px var(--shadow);
 }
 
