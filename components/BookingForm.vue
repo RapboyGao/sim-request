@@ -21,6 +21,37 @@
     <div class="text-caption text-medium-emphasis mt-n2 mb-4">
       {{ t('home.calendarHint') }}
     </div>
+    <v-alert
+      v-if="duplicateSlots.length > 0"
+      class="mb-4"
+      type="warning"
+      variant="tonal"
+      density="comfortable"
+    >
+      <div class="d-flex flex-wrap align-center gap-2">
+        <span>{{ duplicateMessage }}</span>
+        <v-chip
+          v-for="slot in duplicateSlots"
+          :key="slot"
+          size="small"
+          variant="tonal"
+          color="warning"
+          label
+        >
+          {{ slot }}
+        </v-chip>
+        <v-spacer />
+        <v-btn
+          size="small"
+          color="warning"
+          variant="tonal"
+          prepend-icon="mdi-close-circle-outline"
+          @click="removeDuplicateSlots"
+        >
+          {{ t('home.removeDuplicateSlots') }}
+        </v-btn>
+      </div>
+    </v-alert>
     <v-btn type="submit" color="primary" block class="mt-2" prepend-icon="mdi-send">{{ t('home.submit') }}</v-btn>
   </v-form>
 
@@ -49,11 +80,19 @@ const message = reactive<{ text: string; type: 'success' | 'error' | 'info' }>({
   text: '',
   type: 'info',
 })
+const duplicateSlots = ref<string[]>([])
 
 const displayDate = computed(() => formatDateLabel(form.date))
+const duplicateMessage = computed(() => {
+  if (duplicateSlots.value.length === 1) {
+    return t('home.duplicateSlotSingle')
+  }
+  return t('home.duplicateSlotMultiple')
+})
 
 async function submitBooking() {
   message.text = ''
+  duplicateSlots.value = []
   try {
     await $fetch('/api/bookings', {
       method: 'POST',
@@ -72,6 +111,10 @@ async function submitBooking() {
   } catch (error: any) {
     message.type = 'error'
     message.text = error?.data?.statusMessage || t('home.error')
+    const slots = error?.data?.data?.duplicateSlots
+    if (Array.isArray(slots)) {
+      duplicateSlots.value = slots.filter((slot): slot is string => typeof slot === 'string')
+    }
   }
 }
 
@@ -103,5 +146,10 @@ function formatDateLabel(value: string) {
   const date = new Date(`${value}T00:00:00`)
   if (Number.isNaN(date.getTime())) return value
   return new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium' }).format(date)
+}
+
+function removeDuplicateSlots() {
+  form.slots = form.slots.filter((slot) => !duplicateSlots.value.includes(slot))
+  duplicateSlots.value = []
 }
 </script>

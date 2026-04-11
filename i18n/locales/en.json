@@ -23,6 +23,9 @@
     "student": "Student",
     "priorityHint": "Students can jump the queue, and same priority is sorted by submission time.",
     "calendarHint": "Before going to the simulator center, check the \"Booking calendar\" to confirm your booking was successful.",
+    "duplicateSlotSingle": "Duplicate booking detected for the slot:",
+    "duplicateSlotMultiple": "Duplicate bookings detected for the slots:",
+    "removeDuplicateSlots": "Remove duplicate slots",
     "submit": "Submit booking",
     "success": "Booking submitted successfully",
     "error": "Submission failed"

@@ -23,6 +23,9 @@
     "student": "Étudiant",
     "priorityHint": "Les étudiants peuvent passer devant et, à priorité égale, l’ordre suit l’heure d’envoi.",
     "calendarHint": "Avant d'aller au centre des simulateurs, vérifiez le \"Calendrier\" pour confirmer que votre réservation a bien été enregistrée.",
+    "duplicateSlotSingle": "Créneau de réservation en double détecté :",
+    "duplicateSlotMultiple": "Créneaux de réservation en double détectés :",
+    "removeDuplicateSlots": "Supprimer les créneaux en double",
     "submit": "Envoyer",
     "success": "Réservation envoyée avec succès",
     "error": "Échec de l'envoi"

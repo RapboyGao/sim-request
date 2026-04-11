@@ -23,6 +23,9 @@
     "student": "학생 여부",
     "priorityHint": "학생은 먼저 끼어들 수 있고 같은 조건에서는 제출 시간 순서로 정렬됩니다.",
     "calendarHint": "시뮬레이터 중선으로 가기 전에 \"예약 달력\"에서 예약 성공 여부를 확인하세요.",
+    "duplicateSlotSingle": "중복 예약이 감지된 시간대:",
+    "duplicateSlotMultiple": "중복 예약이 감지된 시간대:",
+    "removeDuplicateSlots": "중복 시간대 제거",
     "submit": "예약 제출",
     "success": "예약이 제출되었습니다",
     "error": "제출 실패"

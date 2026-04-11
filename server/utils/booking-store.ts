@@ -29,6 +29,15 @@ function sortEntries(entries: BookingEntry[]) {
   })
 }
 
+function normalizeBookingName(name: string) {
+  return name.trim()
+}
+
+function hasDuplicateBooking(entries: BookingEntry[], name: string) {
+  const normalizedName = normalizeBookingName(name)
+  return entries.some((entry) => normalizeBookingName(entry.name) === normalizedName)
+}
+
 async function readLocalStorage(filePath: string): Promise<BookingMap> {
   try {
     const raw = await fs.readFile(filePath, 'utf8')
@@ -191,17 +200,31 @@ export async function listDayBookings(event: any, date: string) {
 export async function createBooking(event: any, input: { date: string; slot: string; name: string; isStudent: boolean }) {
   const now = new Date().toISOString()
   const key = storageKey(input.date, input.slot)
+  const normalizedName = normalizeBookingName(input.name)
   const baseEntry: BookingEntry = {
     id: crypto.randomUUID(),
     date: input.date,
     slot: input.slot,
-    name: input.name.trim(),
+    name: normalizedName,
     isStudent: input.isStudent,
     createdAt: now,
     status: 'active',
   }
 
   const store = await readAllBookings(event)
+  const current = store[key] || []
+  if (hasDuplicateBooking(current, normalizedName)) {
+    throw createError({
+      statusCode: 409,
+      statusMessage: '该时段已存在同名预约',
+      data: {
+        duplicateSlots: [input.slot],
+        date: input.date,
+        name: normalizedName,
+      },
+    })
+  }
+
   const nextEntries = [...(store[key] || []), baseEntry]
   store[key] = sortEntries(nextEntries)
   await writeAllBookings(event, store)

@@ -1,4 +1,4 @@
-import { createBooking } from '~/server/utils/booking-store'
+import { createBooking, readAllBookings } from '~/server/utils/booking-store'
 import { isValidDate, buildSlots } from '~/utils/slots'
 
 export default defineEventHandler(async (event) => {
@@ -28,6 +28,30 @@ export default defineEventHandler(async (event) => {
 
   if (selectedSlots.length === 0) {
     throw createError({ statusCode: 400, statusMessage: '请选择至少一个有效时段' })
+  }
+
+  const store = await readAllBookings(event)
+  const duplicateSlot = selectedSlots.find((slot) => {
+    const key = `bookings:${date}:${slot}`
+    const current = store[key] || []
+    return current.some((entry) => entry.name.trim() === name)
+  })
+
+  if (duplicateSlot) {
+    const duplicateSlots = selectedSlots.filter((slot) => {
+      const key = `bookings:${date}:${slot}`
+      const current = store[key] || []
+      return current.some((entry) => entry.name.trim() === name)
+    })
+    throw createError({
+      statusCode: 409,
+      statusMessage: '该时段已存在同名预约',
+      data: {
+        duplicateSlots,
+        date,
+        name,
+      },
+    })
   }
 
   const bookings = []

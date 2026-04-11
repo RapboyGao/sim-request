@@ -23,6 +23,9 @@
     "student": "学生かどうか",
     "priorityHint": "学生は先に割り込むことができ、同じ条件では送信順で並びます。",
     "calendarHint": "シミュレータ中線へ向かう前に、「予約カレンダー」で予約が成功していることを確認してください。",
+    "duplicateSlotSingle": "重複予約が検出された時間枠：",
+    "duplicateSlotMultiple": "重複予約が検出された時間枠：",
+    "removeDuplicateSlots": "重複枠を削除",
     "submit": "予約を送信",
     "success": "予約を送信しました",
     "error": "送信に失敗しました"

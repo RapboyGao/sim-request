@@ -23,6 +23,9 @@
     "student": "是否为同学",
     "priorityHint": "同学有权插队，同一优先级按提交时间排序。",
     "calendarHint": "前往模拟机中心前请查看“预约日历”确认预约成功。",
+    "duplicateSlotSingle": "检测到重复提交的时段：",
+    "duplicateSlotMultiple": "检测到重复提交的时段：",
+    "removeDuplicateSlots": "移除重复时段",
     "submit": "提交预约",
     "success": "预约提交成功",
     "error": "提交失败"
