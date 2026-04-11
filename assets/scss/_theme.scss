@@ -1,5 +1,39 @@
-:root {
+:root,
+:root[data-theme='system'] {
   color-scheme: light;
+  --bg: #f6f4ef;
+  --bg-accent-start: rgba(15, 118, 110, 0.12);
+  --bg-accent-end: rgba(249, 115, 22, 0.12);
+  --bg-accent-soft: rgba(15, 118, 110, 0.08);
+  --bg-accent-soft-2: rgba(249, 115, 22, 0.08);
+  --bg-gradient-end: #fbfaf7;
+  --surface: rgba(255, 255, 255, 0.82);
+  --surface-elevated: rgba(255, 255, 255, 0.72);
+  --surface-strong: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: rgba(15, 23, 42, 0.08);
+  --soft-border: rgba(15, 23, 42, 0.06);
+  --primary: #0f766e;
+  --primary-strong: #115e59;
+  --accent: #f97316;
+  --shadow: rgba(15, 23, 42, 0.08);
+
+  --v-theme-background: 246, 244, 239;
+  --v-theme-surface: 255, 255, 255;
+  --v-theme-surface-variant: 241, 237, 228;
+  --v-theme-on-surface: 31, 41, 55;
+  --v-theme-on-surface-variant: 107, 114, 128;
+  --v-theme-primary: 15, 118, 110;
+  --v-theme-secondary: 249, 115, 22;
+  --v-theme-error: 220, 38, 38;
+}
+
+[data-theme='system'] {
+  color-scheme: light;
+}
+
+[data-theme='system'] {
   --bg: #f6f4ef;
   --bg-accent-start: rgba(15, 118, 110, 0.12);
   --bg-accent-end: rgba(249, 115, 22, 0.12);
@@ -56,4 +90,36 @@
   --v-theme-primary: 45, 212, 191;
   --v-theme-secondary: 251, 146, 60;
   --v-theme-error: 248, 113, 113;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme='system'] {
+    color-scheme: dark;
+    --bg: #0f172a;
+    --bg-accent-start: rgba(45, 212, 191, 0.12);
+    --bg-accent-end: rgba(251, 146, 60, 0.12);
+    --bg-accent-soft: rgba(45, 212, 191, 0.09);
+    --bg-accent-soft-2: rgba(251, 146, 60, 0.09);
+    --bg-gradient-end: #111827;
+    --surface: rgba(15, 23, 42, 0.88);
+    --surface-elevated: rgba(17, 24, 39, 0.88);
+    --surface-strong: #111827;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --border: rgba(148, 163, 184, 0.22);
+    --soft-border: rgba(148, 163, 184, 0.14);
+    --primary: #2dd4bf;
+    --primary-strong: #5eead4;
+    --accent: #fb923c;
+    --shadow: rgba(0, 0, 0, 0.32);
+
+    --v-theme-background: 15, 23, 42;
+    --v-theme-surface: 17, 24, 39;
+    --v-theme-surface-variant: 31, 41, 55;
+    --v-theme-on-surface: 229, 231, 235;
+    --v-theme-on-surface-variant: 156, 163, 175;
+    --v-theme-primary: 45, 212, 191;
+    --v-theme-secondary: 251, 146, 60;
+    --v-theme-error: 248, 113, 113;
+  }
 }

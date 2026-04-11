@@ -37,3 +37,11 @@ export function useThemeMode() {
     themeModeLabel,
   }
 }
+
+export function resolveThemeName(mode: ThemeMode, prefersDark = false) {
+  if (mode === 'dark')
+    return 'bookingDark'
+  if (mode === 'light')
+    return 'bookingLight'
+  return prefersDark ? 'bookingDark' : 'bookingLight'
+}

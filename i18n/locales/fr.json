@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "Réservation de visite du simulateur",
+    "title": "Observation Réservation",
     "navBooking": "Réserver",
     "navRules": "Règles",
     "navCalendar": "Calendrier",
@@ -12,7 +12,7 @@
     "themeDark": "Sombre"
   },
   "home": {
-    "eyebrow": "Réservation de visite du simulateur",
+    "eyebrow": "Observation Réservation",
     "title": "Réservez par date et par créneaux de 2 heures",
     "summary": "Chaque créneau confirme jusqu'à 2 personnes. Les réservations supplémentaires vont sur liste d'attente. Les étudiants peuvent passer devant et sont prioritaires.",
     "date": "Date de réservation",
@@ -28,7 +28,7 @@
     "error": "Échec de l'envoi"
   },
   "rules": {
-    "eyebrow": "Règles de réservation",
+    "eyebrow": "Observation Réservation",
     "title": "Règles de réservation",
     "summary": "Nous ne montrons que l’essentiel.",
     "slotRuleTitle": "Règles des créneaux",
@@ -105,6 +105,8 @@
     "delete": "删除",
     "deleteTitle": "确认删除预约",
     "active": "Actif",
-    "canceled": "Annulé"
+    "canceled": "Annulé",
+    "exportJsonSupabase": "Exporter JSON (Supabase)",
+    "exportJsonDebug": "Exporter JSON (débogage)"
   }
 }

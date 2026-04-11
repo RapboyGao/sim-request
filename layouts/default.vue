@@ -68,6 +68,10 @@
     <v-main>
       <NuxtPage />
     </v-main>
+
+    <v-footer class="app-footer" height="40">
+      <div class="app-footer__content">by Albert Gao</div>
+    </v-footer>
   </v-app>
 </template>
 
@@ -113,5 +117,18 @@ function localeLabel(code: string) {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.app-footer {
+  background: transparent;
+  color: var(--muted);
+  justify-content: center;
+  padding: 0 16px 12px;
+}
+
+.app-footer__content {
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  opacity: 0.82;
 }
 </style>

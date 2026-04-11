@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "시뮬레이터 관람 예약",
+    "title": "Observation 예약",
     "navBooking": "예약",
     "navRules": "규칙",
     "navCalendar": "달력",
@@ -12,7 +12,7 @@
     "themeDark": "다크"
   },
   "home": {
-    "eyebrow": "시뮬레이터 관람 예약",
+    "eyebrow": "Observation 예약",
     "title": "날짜와 2시간 단위로 관람을 예약하세요",
     "summary": "각 시간대는 최대 2명까지 확정됩니다. 초과 인원은 대기자로 등록됩니다. 학생은 우선권이 있으며 먼저 끼어들 수 있습니다.",
     "date": "예약 날짜",
@@ -28,7 +28,7 @@
     "error": "제출 실패"
   },
   "rules": {
-    "eyebrow": "예약 규칙",
+    "eyebrow": "Observation 예약",
     "title": "예약 규칙",
     "summary": "필수 정보만 짧게 표시합니다.",
     "slotRuleTitle": "시간대 규칙",
@@ -105,6 +105,8 @@
     "delete": "删除",
     "deleteTitle": "确认删除预约",
     "active": "취소 안 됨",
-    "canceled": "취소됨"
+    "canceled": "취소됨",
+    "exportJsonSupabase": "JSON 내보내기 (Supabase)",
+    "exportJsonDebug": "JSON 내보내기 (디버그)"
   }
 }

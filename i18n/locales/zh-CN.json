@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "模拟机观摩预约",
+    "title": "Observation 预约",
     "navBooking": "预约提交",
     "navRules": "预约规则",
     "navCalendar": "预约日历",
@@ -12,7 +12,7 @@
     "themeDark": "深色"
   },
   "home": {
-    "eyebrow": "模拟机观摩预约",
+    "eyebrow": "Observation 预约",
     "title": "按日期和 2 小时时段预约观摩名额",
     "summary": "每个时段最多 2 人确认，超出自动进入候补。填写姓名并标记是否为同学，同学有权插队，优先确认。",
     "date": "预约日期",
@@ -28,7 +28,7 @@
     "error": "提交失败"
   },
   "rules": {
-    "eyebrow": "预约规则",
+    "eyebrow": "Observation 预约",
     "title": "预约规则说明",
     "summary": "只保留用户真正需要知道的内容。",
     "slotRuleTitle": "时段规则",
@@ -106,6 +106,8 @@
     "delete": "删除",
     "deleteTitle": "确认删除预约",
     "active": "未取消",
-    "canceled": "已取消"
+    "canceled": "已取消",
+    "exportJsonSupabase": "导出 JSON（Supabase）",
+    "exportJsonDebug": "导出 JSON（调试）"
   }
 }

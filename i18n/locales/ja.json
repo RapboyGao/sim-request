@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "シミュレータ見学予約",
+    "title": "Observation 予約",
     "navBooking": "予約",
     "navRules": "ルール",
     "navCalendar": "カレンダー",
@@ -12,7 +12,7 @@
     "themeDark": "ダーク"
   },
   "home": {
-    "eyebrow": "シミュレータ見学予約",
+    "eyebrow": "Observation 予約",
     "title": "日付と2時間枠で見学枠を予約する",
     "summary": "各枠の確定は2人まで。超過分はキャンセル待ちになります。学生は優先され、先に割り込むことができます。",
     "date": "予約日",
@@ -28,7 +28,7 @@
     "error": "送信に失敗しました"
   },
   "rules": {
-    "eyebrow": "予約ルール",
+    "eyebrow": "Observation 予約",
     "title": "予約ルール",
     "summary": "必要な情報だけを短く表示します。",
     "slotRuleTitle": "時間枠",
@@ -105,6 +105,8 @@
     "delete": "删除",
     "deleteTitle": "确认删除预约",
     "active": "未キャンセル",
-    "canceled": "キャンセル済み"
+    "canceled": "キャンセル済み",
+    "exportJsonSupabase": "JSONを出力（Supabase）",
+    "exportJsonDebug": "JSONを出力（デバッグ）"
   }
 }

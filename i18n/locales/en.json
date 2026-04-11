@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "Simulator Viewing Booking",
+    "title": "Observation Booking",
     "navBooking": "Book",
     "navRules": "Rules",
     "navCalendar": "Calendar",
@@ -12,7 +12,7 @@
     "themeDark": "Dark"
   },
   "home": {
-    "eyebrow": "Simulator viewing booking",
+    "eyebrow": "Observation Booking",
     "title": "Book a viewing slot by date and 2-hour time blocks",
     "summary": "Each slot confirms up to 2 people. Extra bookings go to the waitlist. Students can jump the queue and get higher priority.",
     "date": "Booking date",
@@ -28,7 +28,7 @@
     "error": "Submission failed"
   },
   "rules": {
-    "eyebrow": "Booking rules",
+    "eyebrow": "Observation Booking",
     "title": "Booking rules",
     "summary": "Only the essentials are shown.",
     "slotRuleTitle": "Slot rules",
@@ -105,6 +105,8 @@
     "delete": "删除",
     "deleteTitle": "确认删除预约",
     "active": "Active",
-    "canceled": "Canceled"
+    "canceled": "Canceled",
+    "exportJsonSupabase": "Export JSON (Supabase)",
+    "exportJsonDebug": "Export JSON (Debug)"
   }
 }

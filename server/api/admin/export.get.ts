@@ -5,13 +5,35 @@ function toCsvValue(value: unknown) {
   return `"${String(value ?? '').replaceAll('"', '""')}"`
 }
 
+function formatExportTimestamp(date = new Date()) {
+  const formatter = new Intl.DateTimeFormat('sv-SE', {
+    timeZone: 'Asia/Shanghai',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  })
+
+  const parts = formatter.formatToParts(date)
+  const lookup = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find(part => part.type === type)?.value || ''
+
+  return `${lookup('year')}${lookup('month')}${lookup('day')}-${lookup('hour')}${lookup('minute')}${lookup('second')}`
+}
+
 export default defineEventHandler(async (event) => {
   const cookie = getCookie(event, getAdminSessionCookieName())
   if (!isAdminSessionValid(cookie)) {
     throw createError({ statusCode: 401, statusMessage: '未登录' })
   }
 
-  const format = String(getQuery(event).format || 'csv')
+  const query = getQuery(event)
+  const format = String(query.format || 'csv')
+  const variant = String(query.variant || 'supabase')
+  const timestamp = formatExportTimestamp()
   const all = await readAllBookings(event)
   const rows = Object.entries(all).flatMap(([key, items]) => {
     const match = key.match(/^bookings:(\d{4}-\d{2}-\d{2}):(.+)$/)
@@ -41,8 +63,20 @@ export default defineEventHandler(async (event) => {
 
   if (format === 'json') {
     setHeader(event, 'content-type', 'application/json; charset=utf-8')
-    setHeader(event, 'content-disposition', 'attachment; filename="bookings-all.json"')
-    return rows
+    if (variant === 'debug') {
+      setHeader(event, 'content-disposition', `attachment; filename="bookings-debug-${timestamp}.json"`)
+      return all
+    }
+    setHeader(event, 'content-disposition', `attachment; filename="bookings-supabase-${timestamp}.json"`)
+    return rows.map((row) => ({
+      id: `${row.date}:${row.slot}:${row.createdAt}:${row.name}`,
+      date: row.date,
+      slot: row.slot,
+      name: row.name,
+      is_student: row.isStudent === '是',
+      created_at: row.createdAt,
+      status: row.status === '已取消' ? 'canceled' : 'active',
+    }))
   }
 
   const csv = [
@@ -58,6 +92,6 @@ export default defineEventHandler(async (event) => {
   ].join('\n')
 
   setHeader(event, 'content-type', 'text/csv; charset=utf-8')
-  setHeader(event, 'content-disposition', 'attachment; filename="bookings-all.csv"')
+  setHeader(event, 'content-disposition', `attachment; filename="bookings-all-${timestamp}.csv"`)
   return csv
 })

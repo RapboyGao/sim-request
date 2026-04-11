@@ -4,6 +4,7 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import type { ThemeMode } from '~/composables/useThemeMode'
+import { resolveThemeName } from '~/composables/useThemeMode'
 
 export default defineNuxtPlugin((nuxtApp) => {
   const modeCookie = useCookie<ThemeMode>('booking-theme-mode', {
@@ -11,12 +12,10 @@ export default defineNuxtPlugin((nuxtApp) => {
     sameSite: 'lax',
   })
   const themeMode = useState<ThemeMode>('booking-theme-mode', () => modeCookie.value || 'system')
-  const initialThemeName =
-    themeMode.value === 'dark'
-      ? 'bookingDark'
-      : themeMode.value === 'light'
-        ? 'bookingLight'
-        : 'bookingLight'
+  const prefersDark = import.meta.client
+    ? window.matchMedia('(prefers-color-scheme: dark)').matches
+    : false
+  const initialThemeName = resolveThemeName(themeMode.value, prefersDark)
 
   const vuetifyInstance = createVuetify({
     components,
@@ -67,18 +66,15 @@ export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.use(vuetifyInstance)
 
   const applyTheme = (mode: ThemeMode) => {
-    const resolved = mode === 'system'
-      ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'bookingDark' : 'bookingLight')
-      : mode === 'dark'
-        ? 'bookingDark'
-        : 'bookingLight'
+    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const resolved = resolveThemeName(mode, systemDark)
 
     vuetifyInstance.theme.global.name.value = resolved
 
     if (import.meta.client) {
-      const dark = resolved === 'bookingDark'
-      document.documentElement.dataset.theme = dark ? 'dark' : 'light'
-      document.documentElement.style.colorScheme = dark ? 'dark' : 'light'
+      document.documentElement.dataset.theme = mode
+      document.documentElement.style.colorScheme =
+        mode === 'system' ? (systemDark ? 'dark' : 'light') : (resolved === 'bookingDark' ? 'dark' : 'light')
     }
   }
 

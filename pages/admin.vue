@@ -58,7 +58,8 @@
                 </template>
                 <v-list min-width="220" density="comfortable">
                   <v-list-item :href="csvExportUrl" tag="a" :title="t('admin.exportCsv')" prepend-icon="mdi-download" />
-                  <v-list-item :href="jsonExportUrl" tag="a" :title="t('admin.exportJson')" prepend-icon="mdi-code-json" />
+                  <v-list-item :href="jsonSupabaseExportUrl" tag="a" :title="t('admin.exportJsonSupabase')" prepend-icon="mdi-code-json" />
+                  <v-list-item :href="jsonDebugExportUrl" tag="a" :title="t('admin.exportJsonDebug')" prepend-icon="mdi-code-json" />
                   <v-divider />
                   <v-list-item :title="t('admin.cleanupButton')" prepend-icon="mdi-delete" @click="cleanupDialog = true" />
                 </v-list>
@@ -68,7 +69,16 @@
 
           <v-card class="pa-5">
             <v-skeleton-loader v-if="pending" type="table-heading, table-row@6" />
-            <v-table v-else>
+            <v-table v-else class="admin-table">
+              <colgroup>
+                <col class="col-date" />
+                <col class="col-slot" />
+                <col class="col-name" />
+                <col class="col-student" />
+                <col class="col-status" />
+                <col class="col-created" />
+                <col class="col-action" />
+              </colgroup>
               <thead>
                 <tr>
                   <th>{{ t('admin.columns.date') }}</th>
@@ -165,7 +175,8 @@ const { data, pending, refresh } = await useFetch('/api/admin/bookings', {
 })
 
 const csvExportUrl = computed(() => '/api/admin/export?format=csv')
-const jsonExportUrl = computed(() => '/api/admin/export?format=json')
+const jsonSupabaseExportUrl = computed(() => '/api/admin/export?format=json&variant=supabase')
+const jsonDebugExportUrl = computed(() => '/api/admin/export?format=json&variant=debug')
 const deletePrompt = computed(() =>
   deleteTarget.value
     ? `${deleteTarget.value.date} ${deleteTarget.value.slot} · ${deleteTarget.value.name}`
@@ -275,6 +286,50 @@ await checkAuth()
 <style scoped>
 .admin-page {
   min-height: 100vh;
+}
+
+.admin-table {
+  width: 100%;
+}
+
+.admin-table :deep(table) {
+  table-layout: fixed;
+}
+
+.admin-table :deep(th),
+.admin-table :deep(td) {
+  vertical-align: middle;
+  word-break: break-word;
+}
+
+.admin-table :deep(.col-date) {
+  width: 96px;
+}
+
+.admin-table :deep(.col-slot) {
+  width: 96px;
+}
+
+.admin-table :deep(.col-name) {
+  min-width: 120px;
+  width: 20%;
+}
+
+.admin-table :deep(.col-student) {
+  width: 72px;
+}
+
+.admin-table :deep(.col-status) {
+  width: 96px;
+}
+
+.admin-table :deep(.col-created) {
+  min-width: 132px;
+  width: 22%;
+}
+
+.admin-table :deep(.col-action) {
+  width: 56px;
 }
 
 .admin-hero {
