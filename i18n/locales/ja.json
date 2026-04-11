@@ -48,6 +48,11 @@
     "noneConfirmed": "確定予約なし",
     "noneWaitlist": "待機予約なし",
     "empty": "表示できる予約記録がありません",
-    "bookingCount": "件の予約"
+    "bookingCount": "件の予約",
+    "canceled": "キャンセル済み",
+    "canceledList": "キャンセル済み一覧",
+    "noneCanceled": "キャンセル済み予約はありません",
+    "cancel": "キャンセル",
+    "restore": "復元"
   }
 }

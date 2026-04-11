@@ -48,6 +48,11 @@
     "noneConfirmed": "No confirmed bookings",
     "noneWaitlist": "No waitlist bookings",
     "empty": "No booking records to display",
-    "bookingCount": "bookings"
+    "bookingCount": "bookings",
+    "canceled": "Canceled",
+    "canceledList": "Canceled list",
+    "noneCanceled": "No canceled bookings",
+    "cancel": "Cancel",
+    "restore": "Restore"
   }
 }

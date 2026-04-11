@@ -1,29 +1,48 @@
-import { buildSlots } from '~/utils/slots'
 import { readAllBookings } from '~/server/utils/booking-store'
+import { getAdminSessionCookieName, isAdminSessionValid } from '~/server/utils/admin-auth'
 
 function toCsvValue(value: unknown) {
   return `"${String(value ?? '').replaceAll('"', '""')}"`
 }
 
 export default defineEventHandler(async (event) => {
+  const cookie = getCookie(event, getAdminSessionCookieName())
+  if (!isAdminSessionValid(cookie)) {
+    throw createError({ statusCode: 401, statusMessage: '未登录' })
+  }
+
   const format = String(getQuery(event).format || 'csv')
-  const date = getQuery(event).date as string | undefined
-  const selectedDate = date || new Date().toISOString().slice(0, 10)
   const all = await readAllBookings(event)
-  const slots = buildSlots()
-  const rows = slots.flatMap((slot) => (all[`bookings:${selectedDate}:${slot}`] || []).map((item) => ({
-    date: selectedDate,
-    slot,
-    name: item.name,
-    isStudent: item.isStudent ? '是' : '否',
-    status: item.status === 'confirmed' ? '已确认' : '候补',
-    rank: item.rank,
-    createdAt: item.createdAt,
-  })))
+  const rows = Object.entries(all).flatMap(([key, items]) => {
+    const match = key.match(/^bookings:(\d{4}-\d{2}-\d{2}):(.+)$/)
+    if (!match)
+      return []
+
+    const [, date, slot] = match as [string, string, string]
+    return items.map((item) => ({
+      date,
+      slot,
+      name: item.name,
+      isStudent: item.isStudent ? '是' : '否',
+      status: item.status === 'confirmed' ? '已确认' : item.status === 'waitlist' ? '候补' : '已取消',
+      rank: item.rank,
+      createdAt: item.createdAt,
+    }))
+  }).sort((left, right) => {
+    const dateCompare = left.date.localeCompare(right.date)
+    if (dateCompare !== 0)
+      return dateCompare
+
+    const slotCompare = left.slot.localeCompare(right.slot)
+    if (slotCompare !== 0)
+      return slotCompare
+
+    return left.createdAt.localeCompare(right.createdAt)
+  })
 
   if (format === 'json') {
     setHeader(event, 'content-type', 'application/json; charset=utf-8')
-    setHeader(event, 'content-disposition', `attachment; filename="bookings-${selectedDate}.json"`)
+    setHeader(event, 'content-disposition', 'attachment; filename="bookings-all.json"')
     return rows
   }
 
@@ -41,6 +60,6 @@ export default defineEventHandler(async (event) => {
   ].join('\n')
 
   setHeader(event, 'content-type', 'text/csv; charset=utf-8')
-  setHeader(event, 'content-disposition', `attachment; filename="bookings-${selectedDate}.csv"`)
+  setHeader(event, 'content-disposition', 'attachment; filename="bookings-all.csv"')
   return csv
 })

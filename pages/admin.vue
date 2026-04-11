@@ -10,86 +10,188 @@
                 <v-icon icon="mdi-shield-account-outline" class="mr-2" />
                 预约总览与导出
               </h1>
-              <p class="subcopy">查看某天所有时段的预约结果，并导出 CSV 或 JSON。</p>
+              <p class="subcopy">使用管理员账号登录后查看和导出数据。</p>
             </div>
-            <div class="d-flex gap-2 flex-wrap">
-              <v-btn :href="csvExportUrl" color="primary" tag="a" prepend-icon="mdi-download">导出 CSV</v-btn>
-              <v-btn :href="jsonExportUrl" variant="tonal" color="primary" tag="a" prepend-icon="mdi-code-json">导出 JSON</v-btn>
-            </div>
+            <v-btn v-if="authenticated" variant="tonal" color="primary" prepend-icon="mdi-logout" @click="logout">
+              退出登录
+            </v-btn>
           </div>
         </v-card>
 
-        <v-card class="pa-5 mb-6">
-          <v-row>
-            <v-col cols="12" md="4">
-              <v-text-field v-model="selectedDate" type="date" label="查看日期" prepend-inner-icon="mdi-calendar-month-outline" />
-            </v-col>
-            <v-col cols="12" md="8" class="d-flex align-end">
-              <v-btn color="primary" class="mr-3" @click="refresh" prepend-icon="mdi-magnify">查询</v-btn>
-              <v-chip color="primary" variant="tonal" class="mr-2" prepend-icon="mdi-check-circle-outline">已确认 {{ data?.totals.confirmed || 0 }}</v-chip>
-              <v-chip color="secondary" variant="tonal" prepend-icon="mdi-timer-sand">候补 {{ data?.totals.waitlist || 0 }}</v-chip>
-            </v-col>
-          </v-row>
+        <v-card v-if="!authenticated" class="pa-5 mb-6">
+          <v-form @submit.prevent="login">
+            <v-row>
+              <v-col cols="12" md="5">
+                <v-text-field v-model="loginForm.username" label="用户名" prepend-inner-icon="mdi-account-outline"
+                  autocomplete="username" />
+              </v-col>
+              <v-col cols="12" md="5">
+                <v-text-field v-model="loginForm.password" type="password" label="密码"
+                  prepend-inner-icon="mdi-key-outline" autocomplete="current-password" />
+              </v-col>
+              <v-col cols="12" md="2" class="d-flex align-end">
+                <v-btn block color="primary" type="submit" :loading="loginLoading" prepend-icon="mdi-login">登录</v-btn>
+              </v-col>
+            </v-row>
+          </v-form>
+          <v-alert v-if="authError" class="mt-4" type="error" variant="tonal" density="compact">
+            {{ authError }}
+          </v-alert>
         </v-card>
 
-        <v-card class="pa-5">
-          <v-skeleton-loader v-if="pending" type="table-heading, table-row@6" />
-          <v-table v-else>
-            <thead>
-              <tr>
-                <th>时段</th>
-                <th>姓名</th>
-                <th>同学</th>
-                <th>状态</th>
-                <th>序号</th>
-                <th>提交时间</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="entry in data?.entries || []" :key="entry.id">
-                <td>{{ entry.slot }}</td>
-                <td>{{ entry.name }}</td>
-                <td>{{ entry.isStudent ? '是' : '否' }}</td>
-                <td>
-                  <v-chip
-                    size="small"
-                    :color="entry.status === 'confirmed' ? 'primary' : 'secondary'"
-                    variant="tonal"
-                    :prepend-icon="entry.status === 'confirmed' ? 'mdi-check' : 'mdi-timer-sand'"
-                  >
-                    {{ entry.status === 'confirmed' ? '已确认' : '候补' }}
-                  </v-chip>
-                </td>
-                <td>{{ entry.rank }}</td>
-                <td>{{ formatTime(entry.createdAt) }}</td>
-              </tr>
-            </tbody>
-          </v-table>
-        </v-card>
+        <template v-else>
+          <v-card class="pa-6 mb-6 admin-hero">
+            <div class="d-flex flex-wrap align-center justify-space-between gap-4">
+              <div>
+                <p class="eyebrow">导出数据</p>
+              </div>
+              <v-row class="export-actions" dense>
+                <v-col cols="12" sm="4">
+                  <v-btn block :href="csvExportUrl" color="primary" tag="a" prepend-icon="mdi-download">
+                    导出 CSV
+                  </v-btn>
+                </v-col>
+                <v-col cols="12" sm="4">
+                  <v-btn block :href="jsonExportUrl" variant="tonal" color="primary" tag="a" prepend-icon="mdi-code-json">
+                    导出 JSON
+                  </v-btn>
+                </v-col>
+                <v-col cols="12" sm="4">
+                  <v-btn block color="error" variant="tonal" prepend-icon="mdi-delete" @click="cleanupDialog = true">
+                    清理旧记录
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </div>
+          </v-card>
+
+          <v-card class="pa-5">
+            <v-skeleton-loader v-if="pending" type="table-heading, table-row@6" />
+            <v-table v-else>
+              <thead>
+                <tr>
+                  <th>日期</th>
+                  <th>时段</th>
+                  <th>姓名</th>
+                  <th>同学</th>
+                  <th>状态</th>
+                  <th>序号</th>
+                  <th>提交时间</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="entry in data?.entries || []" :key="entry.id">
+                  <td>{{ entry.date }}</td>
+                  <td>{{ entry.slot }}</td>
+                  <td>{{ entry.name }}</td>
+                  <td>{{ entry.isStudent ? '是' : '否' }}</td>
+                  <td>
+                    <v-chip size="small" :color="entry.status === 'confirmed' ? 'primary' : 'secondary'" variant="tonal"
+                      :prepend-icon="entry.status === 'confirmed' ? 'mdi-check' : 'mdi-timer-sand'">
+                      {{ entry.status === 'confirmed' ? '已确认' : '候补' }}
+                    </v-chip>
+                  </td>
+                  <td>{{ entry.rank }}</td>
+                  <td>{{ formatTime(entry.createdAt) }}</td>
+                </tr>
+              </tbody>
+            </v-table>
+          </v-card>
+
+          <v-dialog v-model="cleanupDialog" max-width="520">
+            <v-card>
+              <v-card-title class="d-flex align-center">
+                <v-icon icon="mdi-alert-octagon-outline" class="mr-2" color="error" />
+                确认清理旧记录
+              </v-card-title>
+              <v-card-text>
+                这会删除“昨天及以前”的所有预约记录，且无法恢复。当前操作不会影响今天及以后的记录。
+              </v-card-text>
+              <v-card-actions class="justify-end">
+                <v-btn variant="text" @click="cleanupDialog = false">取消</v-btn>
+                <v-btn color="error" :loading="cleanupLoading" @click="cleanupOldBookings">确认删除</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </template>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script setup lang="ts">
-const selectedDate = ref(new Date().toISOString().slice(0, 10))
+const loginForm = reactive({
+  username: '',
+  password: '',
+})
+const authError = ref('')
+const loginLoading = ref(false)
+const authenticated = ref(false)
+const cleanupDialog = ref(false)
+const cleanupLoading = ref(false)
+
 const { data, pending, refresh } = await useFetch('/api/admin/bookings', {
-  query: computed(() => ({ date: selectedDate.value })),
+  immediate: false,
 })
 
-watch(selectedDate, async () => {
-  await refresh()
-})
+const csvExportUrl = computed(() => '/api/admin/export?format=csv')
+const jsonExportUrl = computed(() => '/api/admin/export?format=json')
 
-const csvExportUrl = computed(() => `/api/admin/export?format=csv&date=${selectedDate.value}`)
-const jsonExportUrl = computed(() => `/api/admin/export?format=json&date=${selectedDate.value}`)
+async function checkAuth() {
+  const result = await $fetch<{ authenticated: boolean }>('/api/auth/me')
+  authenticated.value = result.authenticated
+  if (authenticated.value) {
+    await refresh()
+  }
+}
+
+async function login() {
+  authError.value = ''
+  loginLoading.value = true
+  try {
+    await $fetch('/api/auth/login', {
+      method: 'POST',
+      body: {
+        username: loginForm.username,
+        password: loginForm.password,
+      },
+    })
+    authenticated.value = true
+    await refresh()
+  } catch (error: any) {
+    authError.value = error?.data?.statusMessage || '登录失败'
+  } finally {
+    loginLoading.value = false
+  }
+}
+
+async function logout() {
+  await $fetch('/api/auth/logout', { method: 'POST' })
+  authenticated.value = false
+}
+
+async function cleanupOldBookings() {
+  cleanupLoading.value = true
+  try {
+    await $fetch('/api/admin/cleanup-old', {
+      method: 'POST',
+      body: { confirm: true },
+    })
+    cleanupDialog.value = false
+    await refresh()
+  } finally {
+    cleanupLoading.value = false
+  }
+}
 
 function formatTime(value: string) {
   return new Intl.DateTimeFormat('zh-CN', {
     dateStyle: 'short',
-    timeStyle: 'short',
+    timeStyle: 'medium',
   }).format(new Date(value))
 }
+
+await checkAuth()
 </script>
 
 <style scoped>
@@ -113,5 +215,9 @@ function formatTime(value: string) {
 .subcopy {
   color: var(--muted);
   margin-bottom: 0;
+}
+
+.export-actions {
+  width: min(100%, 520px);
 }
 </style>

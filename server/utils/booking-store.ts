@@ -1,7 +1,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import { buildSlots } from '~/utils/slots'
-import type { BookingEntry } from '~/types/booking'
+import type { BookingEntry, BookingStatus } from '~/types/booking'
 
 type BookingMap = Record<string, BookingEntry[]>
 
@@ -25,11 +25,23 @@ function sortEntries(entries: BookingEntry[]) {
 }
 
 function computeRankedEntries(entries: BookingEntry[]): BookingEntry[] {
-  return sortEntries(entries).map((entry, index) => ({
+  const canceled = entries.filter((entry) => entry.status === 'canceled')
+  const active = sortEntries(entries.filter((entry) => entry.status !== 'canceled'))
+
+  const rankedActive = active.map<BookingEntry>((entry, index) => ({
     ...entry,
     rank: index + 1,
-    status: index < 2 ? 'confirmed' : 'waitlist',
+    status: (index < 2 ? 'confirmed' : 'waitlist') as BookingStatus,
   }))
+
+  return [
+    ...rankedActive,
+    ...canceled.map<BookingEntry>((entry) => ({
+      ...entry,
+      rank: 0,
+      status: 'canceled',
+    })),
+  ]
 }
 
 async function readLocalStorage(filePath: string): Promise<BookingMap> {
@@ -119,4 +131,83 @@ export async function createBooking(event: any, input: { date: string; slot: str
   store[key] = ranked
   await writeAllBookings(event, store)
   return ranked
+}
+
+export async function cancelBooking(event: any, input: { date: string; slot: string; id: string }) {
+  const key = storageKey(input.date, input.slot)
+  const store = await readAllBookings(event)
+  const current = store[key] || []
+  const target = current.find((entry) => entry.id === input.id)
+  if (!target) {
+    return current
+  }
+
+  const nextEntries = current.map((entry) =>
+    entry.id === input.id
+      ? {
+          ...entry,
+          status: 'canceled' as const,
+          rank: 0,
+        }
+      : entry,
+  )
+
+  const ranked = computeRankedEntries(nextEntries)
+  store[key] = ranked
+  await writeAllBookings(event, store)
+  return ranked
+}
+
+export async function restoreBooking(event: any, input: { date: string; slot: string; id: string }) {
+  const key = storageKey(input.date, input.slot)
+  const store = await readAllBookings(event)
+  const current = store[key] || []
+  const target = current.find((entry) => entry.id === input.id)
+  if (!target) {
+    return current
+  }
+
+  const nextEntries = current.map((entry) =>
+    entry.id === input.id
+      ? {
+          ...entry,
+          status: 'waitlist' as const,
+          rank: 0,
+        }
+      : entry,
+  )
+
+  const ranked = computeRankedEntries(nextEntries)
+  store[key] = ranked
+  await writeAllBookings(event, store)
+  return ranked
+}
+
+export async function deleteBookingsBefore(event: any, cutoffDate: string) {
+  const store = await readAllBookings(event)
+  const nextStore: BookingMap = {}
+
+  for (const [key, value] of Object.entries(store)) {
+    const match = key.match(/^bookings:(\d{4}-\d{2}-\d{2}):(.+)$/)
+    if (!match) {
+      nextStore[key] = value
+      continue
+    }
+
+    const [, date] = match as [string, string, string]
+    if (date > cutoffDate) {
+      nextStore[key] = value
+    }
+  }
+
+  await writeAllBookings(event, nextStore)
+  return {
+    removedKeys: Object.keys(store).filter((key) => {
+      const match = key.match(/^bookings:(\d{4}-\d{2}-\d{2}):(.+)$/)
+      if (!match) return false
+      const [, date] = match as [string, string, string]
+      return date <= cutoffDate
+    }),
+    remainingKeys: Object.keys(nextStore),
+  }
 }

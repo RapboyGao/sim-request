@@ -2,91 +2,109 @@
   <v-container class="py-8">
     <v-row justify="center">
       <v-col cols="12" lg="9" xl="8">
-        <v-card class="pa-5 mb-4">
-          <div class="d-flex align-center justify-space-between mb-3">
-            <div>
-              <p class="eyebrow">{{ t('calendar.eyebrow') }}</p>
-              <h1 class="text-h5 mb-1">{{ t('calendar.title') }}</h1>
-            </div>
-            <v-chip color="primary" variant="tonal" prepend-icon="mdi-clock-outline">
-              {{ cutoffLabel }}
-            </v-chip>
-          </div>
-        </v-card>
 
         <v-skeleton-loader v-if="pending" type="article, list-item-two-line, list-item-two-line" />
 
-        <v-card v-else class="pa-5">
-          <div class="d-flex flex-wrap gap-2 mb-4">
-            <v-chip color="primary" variant="tonal" prepend-icon="mdi-check-circle-outline">
-              {{ t('calendar.confirmed') }} {{ confirmedTotal }}
-            </v-chip>
-            <v-chip color="secondary" variant="tonal" prepend-icon="mdi-timer-sand">
-              {{ t('calendar.waitlist') }} {{ waitlistTotal }}
-            </v-chip>
-          </div>
-
+        <div v-else>
           <div v-if="groupedSchedules.length === 0" class="empty-state">
             <v-icon icon="mdi-calendar-remove-outline" size="28" class="mb-2" />
             <div>{{ t('calendar.empty') }}</div>
           </div>
 
-          <v-expansion-panels v-else>
-            <v-expansion-panel v-for="day in groupedSchedules" :key="day.date">
-              <v-expansion-panel-title>
-                <div class="d-flex align-center justify-space-between w-100">
-                  <span>{{ formatDateLabel(day.date) }}</span>
-                  <v-chip size="small" color="primary" variant="tonal">
-                    {{ day.total }} {{ t('calendar.bookingCount') }}
-                  </v-chip>
-                </div>
-              </v-expansion-panel-title>
-              <v-expansion-panel-text>
-                <v-expansion-panels variant="accordion">
-                  <v-expansion-panel v-for="item in day.slots" :key="item.slot">
-                    <v-expansion-panel-title>
-                      <div class="d-flex align-center justify-space-between w-100">
-                        <span>{{ item.slot }}</span>
-                        <v-chip size="small" color="primary" variant="tonal" prepend-icon="mdi-check">
-                          {{ item.confirmed.length }}/2
-                        </v-chip>
-                      </div>
-                    </v-expansion-panel-title>
-                    <v-expansion-panel-text>
-                      <div class="mb-3">
-                        <div class="section-title">
-                          <v-icon icon="mdi-check-decagram-outline" size="16" class="mr-1" />
-                          {{ t('calendar.confirmedList') }}
-                        </div>
-                        <div class="compact-list">
-                          <div v-for="entry in item.confirmed" :key="entry.id" class="compact-row">
-                            <span>{{ entry.name }}</span>
-                            <v-chip v-if="entry.isStudent" size="x-small" color="secondary" variant="tonal" prepend-icon="mdi-school-outline">同学</v-chip>
-                          </div>
-                          <div v-if="item.confirmed.length === 0" class="text-medium-emphasis">{{ t('calendar.noneConfirmed') }}</div>
-                        </div>
-                      </div>
+          <div v-else class="schedule-grid">
+            <v-card
+              v-for="item in flatSchedules"
+              :key="`${item.date}-${item.slot}`"
+              class="schedule-card pa-4"
+            >
+              <div class="schedule-title">
+                <span>{{ item.date }} {{ item.slot }}</span>
+                <v-chip size="small" color="primary" variant="tonal" prepend-icon="mdi-check">
+                  {{ item.confirmed.length }}/2
+                </v-chip>
+              </div>
+              <div class="schedule-subtitle">
+                <span>{{ t('calendar.confirmed') }} {{ item.confirmed.length }}</span>
+                <span>{{ t('calendar.waitlist') }} {{ item.waitlist.length }}</span>
+                <span>{{ t('calendar.canceled') }} {{ item.canceled.length }}</span>
+                <span>{{ item.total }} {{ t('calendar.bookingCount') }}</span>
+              </div>
 
-                      <div>
-                        <div class="section-title">
-                          <v-icon icon="mdi-clock-outline" size="16" class="mr-1" />
-                          {{ t('calendar.waitlistList') }}
+              <div class="schedule-detail">
+                <div class="mb-3">
+                  <div class="section-title">
+                    <v-icon icon="mdi-check-decagram-outline" size="16" class="mr-1" />
+                    {{ t('calendar.confirmedList') }}
+                  </div>
+                  <div class="compact-list">
+                    <div v-for="entry in item.confirmed" :key="entry.id" class="compact-row">
+                      <div class="entry-main">
+                        <div class="entry-name-line">
+                          <span>{{ entry.name }}</span>
+                          <v-icon v-if="entry.isStudent" icon="mdi-school-outline" size="14" color="success" />
                         </div>
-                        <div class="compact-list">
-                          <div v-for="entry in item.waitlist" :key="entry.id" class="compact-row">
-                            <span>{{ entry.name }}</span>
-                            <v-chip v-if="entry.isStudent" size="x-small" color="secondary" variant="tonal" prepend-icon="mdi-school-outline">同学</v-chip>
-                          </div>
-                          <div v-if="item.waitlist.length === 0" class="text-medium-emphasis">{{ t('calendar.noneWaitlist') }}</div>
-                        </div>
+                        <span class="entry-time">{{ formatTimeLabel(entry.createdAt) }}</span>
                       </div>
-                    </v-expansion-panel-text>
-                  </v-expansion-panel>
-                </v-expansion-panels>
-              </v-expansion-panel-text>
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-card>
+                      <div class="row-actions">
+                        <v-btn size="x-small" variant="text" color="secondary" prepend-icon="mdi-close" @click="cancelEntry(item.date, item.slot, entry.id)">
+                          {{ t('calendar.cancel') }}
+                        </v-btn>
+                      </div>
+                    </div>
+                    <div v-if="item.confirmed.length === 0" class="text-medium-emphasis">{{ t('calendar.noneConfirmed') }}</div>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <div class="section-title">
+                    <v-icon icon="mdi-clock-outline" size="16" class="mr-1" />
+                    {{ t('calendar.waitlistList') }}
+                  </div>
+                  <div class="compact-list">
+                    <div v-for="entry in item.waitlist" :key="entry.id" class="compact-row">
+                      <div class="entry-main">
+                        <div class="entry-name-line">
+                          <span>{{ entry.name }}</span>
+                          <v-icon v-if="entry.isStudent" icon="mdi-school-outline" size="14" color="success" />
+                        </div>
+                        <span class="entry-time">{{ formatTimeLabel(entry.createdAt) }}</span>
+                      </div>
+                      <div class="row-actions">
+                        <v-btn size="x-small" variant="text" color="secondary" prepend-icon="mdi-close" @click="cancelEntry(item.date, item.slot, entry.id)">
+                          {{ t('calendar.cancel') }}
+                        </v-btn>
+                      </div>
+                    </div>
+                    <div v-if="item.waitlist.length === 0" class="text-medium-emphasis">{{ t('calendar.noneWaitlist') }}</div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="section-title">
+                    <v-icon icon="mdi-cancel" size="16" class="mr-1" />
+                    {{ t('calendar.canceledList') }}
+                  </div>
+                  <div class="compact-list">
+                    <div v-for="entry in item.canceled" :key="entry.id" class="compact-row">
+                      <div class="entry-main">
+                        <div class="entry-name-line">
+                          <span>{{ entry.name }}</span>
+                        </div>
+                        <span class="entry-time">{{ formatTimeLabel(entry.createdAt) }}</span>
+                      </div>
+                      <div class="row-actions">
+                        <v-btn size="x-small" variant="text" color="primary" prepend-icon="mdi-restore" @click="restoreEntry(item.date, item.slot, entry.id)">
+                          {{ t('calendar.restore') }}
+                        </v-btn>
+                      </div>
+                    </div>
+                    <div v-if="item.canceled.length === 0" class="text-medium-emphasis">{{ t('calendar.noneCanceled') }}</div>
+                  </div>
+                </div>
+              </div>
+            </v-card>
+          </div>
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -94,15 +112,11 @@
 
 <script setup lang="ts">
 import type { BookingEntry, SlotSummary } from '~/types/booking'
-import { buildSlots } from '~/utils/slots'
 
 const { t } = useI18n()
-const slots = buildSlots()
 
 const cutoff = computed(() => new Date(Date.now() - 4 * 60 * 60 * 1000))
-const cutoffLabel = computed(() => formatDateTimeLabel(cutoff.value))
-
-const { data, pending } = await useFetch('/api/bookings')
+const { data, pending, refresh } = await useFetch('/api/bookings')
 
 type DaySummary = {
   date: string
@@ -110,21 +124,36 @@ type DaySummary = {
   total: number
 }
 
+type FlatSchedule = {
+  date: string
+  slot: string
+  confirmed: BookingEntry[]
+  waitlist: BookingEntry[]
+  canceled: BookingEntry[]
+  total: number
+}
+
+type RawSchedule = {
+  date: string
+  slot: string
+  entries: BookingEntry[]
+}
+
 const groupedSchedules = computed<DaySummary[]>(() => {
   const payload = data.value
   if (!payload) return []
 
   const entries = Object.entries(payload.bookings || {})
-    .flatMap(([key, value]) => {
+    .flatMap(([key, value]): RawSchedule[] => {
       const match = key.match(/^bookings:(\d{4}-\d{2}-\d{2}):(.+)$/)
       if (!match) return []
-      const [, date, slot] = match
+      const [, date, slot] = match as [string, string, string]
       const booked = (value as BookingEntry[]) || []
       const slotEnd = toSlotEnd(date, slot)
       if (booked.length === 0 || slotEnd < cutoff.value) return []
       return [{ date, slot, entries: booked }]
     })
-    .sort((a, b) => {
+    .sort((a: RawSchedule, b: RawSchedule) => {
       const byDate = a.date.localeCompare(b.date)
       return byDate !== 0 ? byDate : a.slot.localeCompare(b.slot)
     })
@@ -133,50 +162,74 @@ const groupedSchedules = computed<DaySummary[]>(() => {
   for (const item of entries) {
     const confirmed = item.entries.filter((entry) => entry.status === 'confirmed')
     const waitlist = item.entries.filter((entry) => entry.status === 'waitlist')
+    const canceled = item.entries.filter((entry) => entry.status === 'canceled')
     if (!grouped.has(item.date)) {
       grouped.set(item.date, { date: item.date, slots: [], total: 0 })
     }
     const day = grouped.get(item.date)!
-    day.slots.push({ slot: item.slot, confirmed, waitlist })
+    day.slots.push({ slot: item.slot, confirmed, waitlist, canceled })
     day.total += item.entries.length
   }
 
   return [...grouped.values()]
 })
 
-const confirmedTotal = computed(() => groupedSchedules.value.reduce((sum, day) => sum + day.slots.reduce((slotSum, item) => slotSum + item.confirmed.length, 0), 0))
-const waitlistTotal = computed(() => groupedSchedules.value.reduce((sum, day) => sum + day.slots.reduce((slotSum, item) => slotSum + item.waitlist.length, 0), 0))
+const flatSchedules = computed<FlatSchedule[]>(() => {
+  return groupedSchedules.value.flatMap((day) =>
+    day.slots.map((slot) => ({
+      date: day.date,
+      slot: slot.slot,
+      confirmed: slot.confirmed,
+      waitlist: slot.waitlist,
+      canceled: slot.canceled || [],
+      total: slot.confirmed.length + slot.waitlist.length,
+    })),
+  )
+})
+
+const confirmedTotal = computed(() => flatSchedules.value.reduce((sum, item) => sum + item.confirmed.length, 0))
+const waitlistTotal = computed(() => flatSchedules.value.reduce((sum, item) => sum + item.waitlist.length, 0))
 
 function toSlotEnd(date: string, slot: string) {
   const [start] = slot.split('-')
-  const [hours, minutes] = start.split(':').map(Number)
-  const [year, month, day] = date.split('-').map(Number)
-  const startDate = new Date(year, month - 1, day, hours, minutes || 0, 0, 0)
+  if (!start) return new Date(`${date}T00:00:00`)
+  const [hoursRaw, minutesRaw] = start.split(':')
+  const [yearRaw, monthRaw, dayRaw] = date.split('-')
+  const year = Number(yearRaw)
+  const month = Number(monthRaw)
+  const day = Number(dayRaw)
+  const hours = Number(hoursRaw)
+  const minutes = Number(minutesRaw ?? 0)
+  const startDate = new Date(year, month - 1, day, hours, minutes, 0, 0)
   return new Date(startDate.getTime() + 2 * 60 * 60 * 1000)
 }
 
-function formatDateLabel(value: string) {
-  const parts = value.split('-')
-  if (parts.length !== 3) return value
-  return `${parts[0]}年${parts[1]}月${parts[2]}日`
+function formatTimeLabel(value: string) {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
 }
 
-function formatDateTimeLabel(value: Date) {
-  const pad = (n: number) => String(n).padStart(2, '0')
-  return `${value.getFullYear()}-${pad(value.getMonth() + 1)}-${pad(value.getDate())} ${pad(value.getHours())}:${pad(value.getMinutes())}`
+async function cancelEntry(date: string, slot: string, id: string) {
+  await $fetch('/api/bookings/cancel', {
+    method: 'POST',
+    body: { date, slot, id },
+  })
+  await refresh()
 }
+
+async function restoreEntry(date: string, slot: string, id: string) {
+  await $fetch('/api/bookings/restore', {
+    method: 'POST',
+    body: { date, slot, id },
+  })
+  await refresh()
+}
+
 </script>
 
 <style scoped>
-.eyebrow {
-  color: var(--primary);
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  margin-bottom: 0.5rem;
-}
-
 .section-title {
   font-size: 0.9rem;
   font-weight: 700;
@@ -197,6 +250,64 @@ function formatDateTimeLabel(value: Date) {
   padding: 0.5rem 0.75rem;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.65);
+}
+
+.entry-main {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.entry-name-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.entry-time {
+  font-size: 0.78rem;
+  color: rgba(0, 0, 0, 0.56);
+}
+
+.row-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-self: center;
+}
+
+.schedule-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.schedule-card {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.schedule-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.schedule-subtitle {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.85rem;
+}
+
+.schedule-detail {
+  margin-top: 0.75rem;
 }
 
 .empty-state {

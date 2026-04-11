@@ -12,9 +12,9 @@
               <h1 class="text-h5 text-sm-h4 font-weight-bold mt-2 mb-2">
                 {{ t('rules.title') }}
               </h1>
-              <p class="text-body-2 text-sm-body-1 text-medium-emphasis mb-0">
+              <!-- <p class="text-body-2 text-sm-body-1 text-medium-emphasis mb-0">
                 {{ t('rules.summary') }}
-              </p>
+              </p> -->
             </div>
           </div>
 

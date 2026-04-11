@@ -43,11 +43,16 @@
     "title": "查看最近有预约的时段",
     "confirmed": "已确认",
     "waitlist": "候补",
+    "canceled": "已取消",
     "confirmedList": "确认名单",
     "waitlistList": "候补名单",
+    "canceledList": "已取消名单",
     "noneConfirmed": "暂无确认预约",
     "noneWaitlist": "暂无候补",
+    "noneCanceled": "暂无已取消预约",
     "empty": "当前没有可显示的预约记录",
-    "bookingCount": "条预约"
+    "bookingCount": "条预约",
+    "cancel": "取消",
+    "restore": "恢复"
   }
 }

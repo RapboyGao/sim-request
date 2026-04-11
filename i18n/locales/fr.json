@@ -48,6 +48,11 @@
     "noneConfirmed": "Aucune réservation confirmée",
     "noneWaitlist": "Aucune liste d'attente",
     "empty": "Aucune réservation à afficher",
-    "bookingCount": "réservations"
+    "bookingCount": "réservations",
+    "canceled": "Annulé",
+    "canceledList": "Liste annulée",
+    "noneCanceled": "Aucune réservation annulée",
+    "cancel": "Annuler",
+    "restore": "Restaurer"
   }
 }

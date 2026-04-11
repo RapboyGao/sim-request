@@ -48,6 +48,11 @@
     "noneConfirmed": "확정 예약 없음",
     "noneWaitlist": "대기 예약 없음",
     "empty": "표시할 예약 기록이 없습니다",
-    "bookingCount": "건 예약"
+    "bookingCount": "건 예약",
+    "canceled": "취소됨",
+    "canceledList": "취소 목록",
+    "noneCanceled": "취소된 예약이 없습니다",
+    "cancel": "취소",
+    "restore": "복원"
   }
 }
