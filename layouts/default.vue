@@ -5,23 +5,9 @@
       <v-app-bar-title class="font-weight-bold">{{ t('app.title') }}</v-app-bar-title>
       <v-spacer />
       <div class="d-none d-md-flex app-links">
-        <v-menu>
-          <template #activator="{ props }">
-            <v-btn icon variant="text" v-bind="props" :aria-label="t('app.navTheme')">
-              <v-icon :icon="themeModeIcon()" />
-            </v-btn>
-          </template>
-          <v-list density="compact">
-            <v-list-item
-              v-for="mode in themeModes"
-              :key="mode.value"
-              :active="themeMode === mode.value"
-              :prepend-icon="mode.icon"
-              :title="mode.label"
-              @click="setThemeMode(mode.value)"
-            />
-          </v-list>
-        </v-menu>
+        <v-btn icon variant="text" :aria-label="themeModeLabel()" @click="cycleThemeMode">
+          <v-icon :icon="themeModeIcon()" :color="themeModeColor()" />
+        </v-btn>
         <v-menu>
           <template #activator="{ props }">
             <v-btn icon variant="text" v-bind="props" :aria-label="t('app.navLanguage')">
@@ -55,29 +41,11 @@
     <v-navigation-drawer v-model="drawer" temporary location="start" class="d-md-none">
       <v-list nav density="comfortable">
         <v-list-item
-          :title="t('app.navTheme')"
+          :title="themeModeLabel()"
           :prepend-icon="themeModeIcon()"
-          @click.stop
+          :prepend-icon-color="themeModeColor()"
+          @click="cycleThemeMode"
         >
-          <template #append>
-            <v-menu location="end">
-              <template #activator="{ props }">
-                <v-btn icon variant="text" size="small" v-bind="props" :aria-label="t('app.navTheme')">
-                  <v-icon icon="mdi-menu-down" />
-                </v-btn>
-              </template>
-              <v-list density="compact">
-                <v-list-item
-                  v-for="mode in themeModes"
-                  :key="mode.value"
-                  :active="themeMode === mode.value"
-                  :prepend-icon="mode.icon"
-                  :title="mode.label"
-                  @click="setThemeMode(mode.value)"
-                />
-              </v-list>
-            </v-menu>
-          </template>
         </v-list-item>
         <v-list-item :to="localePath('/')" :title="t('app.navBooking')" prepend-icon="mdi-bookmark-plus-outline" />
         <v-list-item :to="localePath('/rules')" :title="t('app.navRules')"
@@ -86,8 +54,14 @@
           prepend-icon="mdi-calendar-month-outline" />
         <v-list-item :to="localePath('/admin')" :title="t('app.navAdmin')" prepend-icon="mdi-shield-account-outline" />
         <v-divider class="my-2" />
-        <v-list-item v-for="locale in locales" :key="locale.code" :to="switchLocalePath(locale.code)"
-          :title="locale.code" :prepend-icon="localeIcon(locale.code)" />
+        <v-list-subheader>{{ t('app.navLanguage') }}</v-list-subheader>
+        <v-list-item
+          v-for="locale in locales"
+          :key="locale.code"
+          :to="switchLocalePath(locale.code)"
+          :title="localeLabel(locale.code)"
+          :prepend-icon="localeIcon(locale.code)"
+        />
       </v-list>
     </v-navigation-drawer>
 
@@ -98,17 +72,18 @@
 </template>
 
 <script setup lang="ts">
-const { themeMode, setThemeMode, themeModeIcon } = useThemeMode()
+const { themeMode, setThemeMode, themeModeIcon, themeModeColor, themeModeLabel } = useThemeMode()
 const { t, locales } = useI18n()
 const localePath = useLocalePath()
 const switchLocalePath = useSwitchLocalePath()
 const drawer = ref(false)
 
-const themeModes = computed(() => [
-  { value: 'system', label: t('app.themeSystem'), icon: 'mdi-theme-light-dark' },
-  { value: 'light', label: t('app.themeLight'), icon: 'mdi-weather-sunny' },
-  { value: 'dark', label: t('app.themeDark'), icon: 'mdi-weather-night' },
-] as const)
+function cycleThemeMode() {
+  const order = ['system', 'light', 'dark'] as const
+  const currentIndex = order.indexOf(themeMode.value)
+  const next = order[(currentIndex + 1) % order.length]
+  setThemeMode(next)
+}
 
 function localeIcon(code: string) {
   const map: Record<string, string> = {
@@ -119,6 +94,17 @@ function localeIcon(code: string) {
     fr: 'mdi-alpha-f-box-outline',
   }
   return map[code] || 'mdi-web'
+}
+
+function localeLabel(code: string) {
+  const map: Record<string, string> = {
+    'zh-CN': '中文',
+    en: 'English',
+    ja: '日本語',
+    ko: '한국어',
+    fr: 'Français',
+  }
+  return map[code] || code
 }
 </script>
 

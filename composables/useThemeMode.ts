@@ -13,6 +13,12 @@ export function useThemeMode() {
     return 'mdi-theme-light-dark'
   }
 
+  function themeModeColor(mode = themeMode.value) {
+    if (mode === 'dark') return 'indigo-darken-1'
+    if (mode === 'light') return 'amber-darken-1'
+    return 'primary'
+  }
+
   function themeModeLabel(mode = themeMode.value) {
     const { t } = useI18n()
     const map: Record<ThemeMode, string> = {
@@ -27,6 +33,7 @@ export function useThemeMode() {
     themeMode,
     setThemeMode,
     themeModeIcon,
+    themeModeColor,
     themeModeLabel,
   }
 }
