@@ -5,7 +5,10 @@ export function getSupabaseServerClient() {
 
   const config = useRuntimeConfig()
   const supabaseUrl = config.public.supabaseUrl || process.env.SUPABASE_URL
-  const secretKey = config.supabaseSecretKey || process.env.SUPABASE_SECRET_KEY
+  const secretKey =
+    config.supabaseSecretKey
+    || process.env.SUPABASE_SECRET_KEY
+    || process.env.SUPABASE_KEY
 
   if (!supabaseUrl || !secretKey) return null
 

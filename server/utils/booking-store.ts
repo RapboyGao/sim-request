@@ -151,12 +151,28 @@ async function deleteSupabaseBookingsBefore(cutoffDate: string) {
 export async function readAllBookings(event: any) {
   const supabase = await readSupabaseBookings(event)
   if (supabase) return supabase
+
+  if (!import.meta.dev) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Supabase is not configured for production',
+    })
+  }
+
   const config = useRuntimeConfig()
   return readLocalStorage(config.localJsonStorageFile)
 }
 
 export async function writeAllBookings(event: any, data: BookingMap) {
   if (await writeSupabaseBookings(event, data)) return
+
+  if (!import.meta.dev) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Supabase is not configured for production',
+    })
+  }
+
   const config = useRuntimeConfig()
   await writeLocalStorage(config.localJsonStorageFile, data)
 }
