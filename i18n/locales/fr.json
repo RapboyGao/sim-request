@@ -9,7 +9,8 @@
     "navTheme": "Thème",
     "themeSystem": "Système",
     "themeLight": "Clair",
-    "themeDark": "Sombre"
+    "themeDark": "Sombre",
+    "navPeople": "Par personne"
   },
   "home": {
     "eyebrow": "Observation Réservation",
@@ -127,5 +128,25 @@
     "priorityStudent": "Camarade de classe",
     "priorityNormal": "Normal",
     "priorityClassmate": "Camarade de classe"
+  },
+  "people": {
+    "eyebrow": "Par personne",
+    "title": "Voir les réservations par personne",
+    "empty": "Aucune réservation à afficher",
+    "bookingCount": "réservations",
+    "actions": "Actions",
+    "statusActive": "Confirmée / Liste d’attente",
+    "statusCanceled": "Annulée",
+    "cancelBooking": "Annuler la réservation",
+    "restoreBooking": "Restaurer la réservation",
+    "confirmCancelTitle": "Confirmer l’annulation",
+    "confirmRestoreTitle": "Confirmer la restauration",
+    "confirmCancel": "Confirmer l’annulation",
+    "confirmRestore": "Confirmer la restauration",
+    "cancel": "Annuler",
+    "confirmCancelPrefix": "Confirmer l’annulation de cette réservation :",
+    "confirmRestorePrefix": "Confirmer la restauration de cette réservation :",
+    "statusConfirmed": "确认",
+    "statusWaitlist": "候补"
   }
 }

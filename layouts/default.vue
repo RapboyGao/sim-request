@@ -32,10 +32,11 @@
           </template>
           <v-list density="compact">
             <v-list-item :to="localePath('/')" :title="t('app.navBooking')" prepend-icon="mdi-bookmark-plus-outline" />
+            <v-list-item :to="localePath('/people')" :title="t('app.navPeople')" prepend-icon="mdi-account-group-outline" />
+            <v-list-item :to="localePath('/calendar')" :title="t('app.navCalendar')"
+            prepend-icon="mdi-calendar-month-outline" />
             <v-list-item :to="localePath('/rules')" :title="t('app.navRules')"
               prepend-icon="mdi-book-open-variant-outline" />
-            <v-list-item :to="localePath('/calendar')" :title="t('app.navCalendar')"
-              prepend-icon="mdi-calendar-month-outline" />
             <v-list-item :to="localePath('/admin')" :title="t('app.navAdmin')"
               prepend-icon="mdi-shield-account-outline" />
           </v-list>
@@ -53,10 +54,11 @@
         >
         </v-list-item>
         <v-list-item :to="localePath('/')" :title="t('app.navBooking')" prepend-icon="mdi-bookmark-plus-outline" />
+        <v-list-item :to="localePath('/people')" :title="t('app.navPeople')" prepend-icon="mdi-account-group-outline" />
+        <v-list-item :to="localePath('/calendar')" :title="t('app.navCalendar')"
+        prepend-icon="mdi-calendar-month-outline" />
         <v-list-item :to="localePath('/rules')" :title="t('app.navRules')"
           prepend-icon="mdi-book-open-variant-outline" />
-        <v-list-item :to="localePath('/calendar')" :title="t('app.navCalendar')"
-          prepend-icon="mdi-calendar-month-outline" />
         <v-list-item :to="localePath('/admin')" :title="t('app.navAdmin')" prepend-icon="mdi-shield-account-outline" />
         <v-divider class="my-2" />
         <v-list-subheader>{{ t('app.navLanguage') }}</v-list-subheader>

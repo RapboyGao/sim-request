@@ -258,7 +258,7 @@ export async function createBooking(event: any, input: { date: string; slot: str
   const nextEntries = [...(store[key] || []), baseEntry]
   store[key] = sortEntries(nextEntries)
   await writeAllBookings(event, store)
-  return store[key]
+  return baseEntry
 }
 
 export async function cancelBooking(event: any, input: { date: string; slot: string; id: string }) {

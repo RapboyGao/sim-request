@@ -9,7 +9,8 @@
     "navTheme": "테마",
     "themeSystem": "시스템 따르기",
     "themeLight": "라이트",
-    "themeDark": "다크"
+    "themeDark": "다크",
+    "navPeople": "인물별"
   },
   "home": {
     "eyebrow": "Observation 예약",
@@ -127,5 +128,25 @@
     "priorityStudent": "동급생",
     "priorityNormal": "일반",
     "priorityClassmate": "동급생"
+  },
+  "people": {
+    "eyebrow": "인물별",
+    "title": "인물별 예약 보기",
+    "empty": "표시할 예약 기록이 없습니다",
+    "bookingCount": "건의 예약",
+    "actions": "작업",
+    "statusActive": "확정 / 대기",
+    "statusCanceled": "취소됨",
+    "cancelBooking": "예약 취소",
+    "restoreBooking": "예약 복원",
+    "confirmCancelTitle": "취소 확인",
+    "confirmRestoreTitle": "복원 확인",
+    "confirmCancel": "취소 확인",
+    "confirmRestore": "복원 확인",
+    "cancel": "취소",
+    "confirmCancelPrefix": "이 예약 기록을 취소합니다:",
+    "confirmRestorePrefix": "이 예약 기록을 복원합니다:",
+    "statusConfirmed": "确认",
+    "statusWaitlist": "候补"
   }
 }

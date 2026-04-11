@@ -87,6 +87,7 @@
 import { buildSlots } from '~/utils/slots'
 
 const { t, locale } = useI18n()
+const localePath = useLocalePath()
 const slots = buildSlots()
 
 const today = new Date().toISOString().slice(0, 10)
@@ -129,7 +130,7 @@ async function submitBooking() {
   message.text = ''
   duplicateSlots.value = []
   try {
-    await $fetch('/api/bookings', {
+    const response = await $fetch<{ bookings?: Array<{ id: string }> }>('/api/bookings', {
       method: 'POST',
       body: {
         date: form.date,
@@ -140,9 +141,12 @@ async function submitBooking() {
     })
     message.type = 'success'
     message.text = t('home.success')
+    const bookingId = response.bookings?.[0]?.id || ''
     form.name = ''
     form.priorityLevel = 'normal'
     form.slots = defaultSlot ? [defaultSlot] : []
+    const targetPath = localePath('/people')
+    await navigateTo(bookingId ? `${targetPath}?focus=${encodeURIComponent(bookingId)}` : targetPath)
   } catch (error: any) {
     message.type = 'error'
     message.text = error?.data?.statusMessage || t('home.error')

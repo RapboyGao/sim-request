@@ -9,7 +9,8 @@
     "navTheme": "テーマ",
     "themeSystem": "システムに従う",
     "themeLight": "ライト",
-    "themeDark": "ダーク"
+    "themeDark": "ダーク",
+    "navPeople": "人物別"
   },
   "home": {
     "eyebrow": "Observation 予約",
@@ -127,5 +128,25 @@
     "priorityStudent": "同級生",
     "priorityNormal": "通常",
     "priorityClassmate": "同級生"
+  },
+  "people": {
+    "eyebrow": "人物別",
+    "title": "人物別で予約を見る",
+    "empty": "表示できる予約記録がありません",
+    "bookingCount": "件の予約",
+    "actions": "操作",
+    "statusActive": "確定 / 補欠",
+    "statusCanceled": "キャンセル済み",
+    "cancelBooking": "予約をキャンセル",
+    "restoreBooking": "予約を復元",
+    "confirmCancelTitle": "キャンセル確認",
+    "confirmRestoreTitle": "復元確認",
+    "confirmCancel": "キャンセルを確定",
+    "confirmRestore": "復元を確定",
+    "cancel": "キャンセル",
+    "confirmCancelPrefix": "この予約記録をキャンセルします：",
+    "confirmRestorePrefix": "この予約記録を復元します：",
+    "statusConfirmed": "确认",
+    "statusWaitlist": "候补"
   }
 }

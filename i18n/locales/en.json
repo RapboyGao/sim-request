@@ -9,7 +9,8 @@
     "navTheme": "Theme",
     "themeSystem": "System",
     "themeLight": "Light",
-    "themeDark": "Dark"
+    "themeDark": "Dark",
+    "navPeople": "By person"
   },
   "home": {
     "eyebrow": "Observation Booking",
@@ -127,5 +128,25 @@
     "priorityStudent": "Classmate",
     "priorityNormal": "Normal",
     "priorityClassmate": "Classmate"
+  },
+  "people": {
+    "eyebrow": "By person",
+    "title": "View bookings by person",
+    "empty": "No person bookings to display",
+    "bookingCount": "bookings",
+    "actions": "Actions",
+    "statusActive": "Confirmed / Waitlist",
+    "statusCanceled": "Canceled",
+    "cancelBooking": "Cancel booking",
+    "restoreBooking": "Restore booking",
+    "confirmCancelTitle": "Confirm cancellation",
+    "confirmRestoreTitle": "Confirm restore",
+    "confirmCancel": "Confirm cancellation",
+    "confirmRestore": "Confirm restore",
+    "cancel": "Cancel",
+    "confirmCancelPrefix": "Confirm cancel this booking record:",
+    "confirmRestorePrefix": "Confirm restore this booking record:",
+    "statusConfirmed": "确认",
+    "statusWaitlist": "候补"
   }
 }

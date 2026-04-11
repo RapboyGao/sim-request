@@ -9,7 +9,8 @@
     "navTheme": "主题",
     "themeSystem": "跟随系统",
     "themeLight": "浅色",
-    "themeDark": "深色"
+    "themeDark": "深色",
+    "navPeople": "按人查看"
   },
   "home": {
     "eyebrow": "Observation 预约",
@@ -128,5 +129,25 @@
     "priorityStudent": "同学",
     "priorityNormal": "普通",
     "priorityClassmate": "同学"
+  },
+  "people": {
+    "eyebrow": "按人查看",
+    "title": "按人查看预约",
+    "empty": "当前没有可显示的人员预约记录",
+    "bookingCount": "条预约",
+    "actions": "操作",
+    "statusActive": "确认 / 候补",
+    "statusCanceled": "已取消",
+    "cancelBooking": "取消预约",
+    "restoreBooking": "恢复预约",
+    "confirmCancelTitle": "确认取消预约",
+    "confirmRestoreTitle": "确认恢复预约",
+    "confirmCancel": "确认取消预约",
+    "confirmRestore": "确认恢复预约",
+    "cancel": "取消",
+    "confirmCancelPrefix": "确认取消该预约记录：",
+    "confirmRestorePrefix": "确认恢复该预约记录：",
+    "statusConfirmed": "确认",
+    "statusWaitlist": "候补"
   }
 }
