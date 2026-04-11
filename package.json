@@ -17,6 +17,8 @@
   "devDependencies": {
     "@nuxt/eslint-config": "^1.8.0",
     "@nuxtjs/i18n": "^10.2.4",
+    "@oxc-minify/binding-linux-x64-gnu": "0.117.0",
+    "@oxc-minify/binding-linux-x64-musl": "0.117.0",
     "@oxc-parser/binding-linux-x64-gnu": "0.117.0",
     "@oxc-parser/binding-linux-x64-musl": "0.117.0",
     "@oxc-transform/binding-linux-x64-gnu": "0.117.0",
