@@ -22,24 +22,32 @@
   },
   "rules": {
     "eyebrow": "预约规则",
-    "title": "简单、明确、适合手机阅读",
-    "summary": "只保留用户真正需要知道的内容，不把规则页做成长文档。",
+    "title": "预约规则说明",
+    "summary": "只保留用户真正需要知道的内容。",
     "slotRuleTitle": "时段规则",
     "slotRuleDesc": "每天按 2 小时切分，共 12 个时段；每个时段最多 2 人确认，超出进入候补。",
     "priorityRuleTitle": "优先级规则",
     "priorityRuleDesc": "同学优先于非同学；同一优先级按提交时间排序。",
     "bookingRuleTitle": "预约方式",
-    "bookingRuleDesc": "首页填写日期、姓名、是否为同学，并可一次选择多个时段提交。"
+    "bookingRuleDesc": "首页填写日期、姓名、是否为同学，并可一次选择多个时段提交。",
+    "processTitle": "预约流程",
+    "stepOneTitle": "选择日期和时段",
+    "stepOneDesc": "先选中你想预约的日期，再勾选一个或多个时段。",
+    "stepTwoTitle": "填写姓名并提交",
+    "stepTwoDesc": "输入真实姓名，并标记是否为同学后提交。",
+    "stepThreeTitle": "系统自动分配",
+    "stepThreeDesc": "同学优先，超过名额后自动进入候补。"
   },
   "calendar": {
     "eyebrow": "预约日历",
-    "title": "查看某天各时段状态",
-    "date": "选择日期",
+    "title": "查看最近有预约的时段",
     "confirmed": "已确认",
     "waitlist": "候补",
     "confirmedList": "确认名单",
     "waitlistList": "候补名单",
     "noneConfirmed": "暂无确认预约",
-    "noneWaitlist": "暂无候补"
+    "noneWaitlist": "暂无候补",
+    "empty": "当前没有可显示的预约记录",
+    "bookingCount": "条预约"
   }
 }

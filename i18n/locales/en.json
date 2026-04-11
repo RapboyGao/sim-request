@@ -22,24 +22,32 @@
   },
   "rules": {
     "eyebrow": "Booking rules",
-    "title": "Simple, clear, and mobile-friendly",
-    "summary": "Only the essentials are shown so the rules page stays short.",
+    "title": "Booking rules",
+    "summary": "Only the essentials are shown.",
     "slotRuleTitle": "Slot rules",
     "slotRuleDesc": "The day is split into 12 two-hour slots. Each slot confirms up to 2 people; extras join the waitlist.",
     "priorityRuleTitle": "Priority rules",
     "priorityRuleDesc": "Students are prioritized over non-students; same priority is sorted by submission time.",
     "bookingRuleTitle": "How to book",
-    "bookingRuleDesc": "Enter a date, name, student status, and select one or more slots from the home page."
+    "bookingRuleDesc": "Enter a date, name, student status, and select one or more slots from the home page.",
+    "processTitle": "Booking flow",
+    "stepOneTitle": "Choose a date and slots",
+    "stepOneDesc": "Pick the date you want, then select one or more time slots.",
+    "stepTwoTitle": "Fill in your name and submit",
+    "stepTwoDesc": "Enter your real name and mark whether you are a student.",
+    "stepThreeTitle": "The system assigns results",
+    "stepThreeDesc": "Students get priority, and overflow bookings go to the waitlist."
   },
   "calendar": {
     "eyebrow": "Booking calendar",
-    "title": "View a day’s slot status",
-    "date": "Select date",
+    "title": "View recent booked slots",
     "confirmed": "Confirmed",
     "waitlist": "Waitlist",
     "confirmedList": "Confirmed list",
     "waitlistList": "Waitlist list",
     "noneConfirmed": "No confirmed bookings",
-    "noneWaitlist": "No waitlist bookings"
+    "noneWaitlist": "No waitlist bookings",
+    "empty": "No booking records to display",
+    "bookingCount": "bookings"
   }
 }

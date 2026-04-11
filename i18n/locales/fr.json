@@ -22,24 +22,32 @@
   },
   "rules": {
     "eyebrow": "Règles de réservation",
-    "title": "Simple, clair et adapté au mobile",
-    "summary": "Nous ne montrons que l’essentiel pour garder la page courte.",
+    "title": "Règles de réservation",
+    "summary": "Nous ne montrons que l’essentiel.",
     "slotRuleTitle": "Règles des créneaux",
     "slotRuleDesc": "La journée est découpée en 12 créneaux de 2 heures. Chaque créneau confirme jusqu'à 2 personnes; le reste est placé en attente.",
     "priorityRuleTitle": "Priorité",
     "priorityRuleDesc": "Les étudiants sont prioritaires; à priorité égale, l’ordre suit l’heure d’envoi.",
     "bookingRuleTitle": "Comment réserver",
-    "bookingRuleDesc": "Saisissez une date, un nom, le statut étudiant et sélectionnez un ou plusieurs créneaux depuis la page d’accueil."
+    "bookingRuleDesc": "Saisissez une date, un nom, le statut étudiant et sélectionnez un ou plusieurs créneaux depuis la page d’accueil.",
+    "processTitle": "Étapes de réservation",
+    "stepOneTitle": "Choisir une date et des créneaux",
+    "stepOneDesc": "Sélectionnez la date souhaitée puis un ou plusieurs créneaux.",
+    "stepTwoTitle": "Saisir le nom et envoyer",
+    "stepTwoDesc": "Entrez votre nom réel et indiquez si vous êtes étudiant.",
+    "stepThreeTitle": "Le système attribue automatiquement",
+    "stepThreeDesc": "Les étudiants sont prioritaires et les dépassements vont en attente."
   },
   "calendar": {
     "eyebrow": "Calendrier",
-    "title": "Voir l’état des créneaux d’une journée",
-    "date": "Choisir une date",
+    "title": "Voir les créneaux récemment réservés",
     "confirmed": "Confirmé",
     "waitlist": "Attente",
     "confirmedList": "Liste confirmée",
     "waitlistList": "Liste d'attente",
     "noneConfirmed": "Aucune réservation confirmée",
-    "noneWaitlist": "Aucune liste d'attente"
+    "noneWaitlist": "Aucune liste d'attente",
+    "empty": "Aucune réservation à afficher",
+    "bookingCount": "réservations"
   }
 }

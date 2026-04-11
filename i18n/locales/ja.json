@@ -22,24 +22,32 @@
   },
   "rules": {
     "eyebrow": "予約ルール",
-    "title": "シンプルでスマホ向け",
+    "title": "予約ルール",
     "summary": "必要な情報だけを短く表示します。",
     "slotRuleTitle": "時間枠",
     "slotRuleDesc": "1日は12個の2時間枠に分かれています。各枠の確定は2人までで、超過分は待機になります。",
     "priorityRuleTitle": "優先順位",
     "priorityRuleDesc": "学生を優先し、同じ条件では送信順で並びます。",
     "bookingRuleTitle": "予約方法",
-    "bookingRuleDesc": "ホームで日付、氏名、学生かどうかを入力し、複数の枠を選択して送信します。"
+    "bookingRuleDesc": "ホームで日付、氏名、学生かどうかを入力し、複数の枠を選択して送信します。",
+    "processTitle": "予約の流れ",
+    "stepOneTitle": "日付と枠を選ぶ",
+    "stepOneDesc": "予約したい日付を選び、1つ以上の時間枠を選択します。",
+    "stepTwoTitle": "氏名を入力して送信",
+    "stepTwoDesc": "本名を入力し、学生かどうかを選んで送信します。",
+    "stepThreeTitle": "システムが自動判定",
+    "stepThreeDesc": "学生を優先し、定員超過分は待機に回します。"
   },
   "calendar": {
     "eyebrow": "予約カレンダー",
-    "title": "指定日の各時間枠を見る",
-    "date": "日付を選択",
+    "title": "最近の予約枠を見る",
     "confirmed": "確定",
     "waitlist": "待機",
     "confirmedList": "確定一覧",
     "waitlistList": "待機一覧",
     "noneConfirmed": "確定予約なし",
-    "noneWaitlist": "待機予約なし"
+    "noneWaitlist": "待機予約なし",
+    "empty": "表示できる予約記録がありません",
+    "bookingCount": "件の予約"
   }
 }

@@ -2,45 +2,22 @@
   <v-container class="py-8 booking-page">
     <v-row justify="center">
       <v-col cols="12" lg="10" xl="8">
-        <v-card class="hero-card mb-6 pa-6">
-          <div class="hero-copy">
-            <p class="eyebrow">{{ t('home.eyebrow') }}</p>
-            <h1>{{ t('home.title') }}</h1>
-            <p class="subcopy">{{ t('home.summary') }}</p>
-          </div>
-        </v-card>
-
         <v-card class="pa-5 sticky-card">
           <v-form @submit.prevent="submitBooking">
             <v-menu v-model="dateMenu" :close-on-content-click="false" transition="scale-transition">
               <template #activator="{ props }">
-                  <v-text-field
-                  :model-value="displayDate"
-                  :label="t('home.date')"
-                  readonly
-                  required
-                  append-inner-icon="mdi-calendar"
-                  v-bind="props"
-                />
+                <v-text-field :model-value="displayDate" :label="t('home.date')" readonly required
+                  prepend-inner-icon="mdi-calendar-month-outline" v-bind="props" />
               </template>
-              <v-date-picker
-                :model-value="form.date"
-                color="primary"
-                @update:model-value="onDateSelected"
-              />
+              <v-date-picker :model-value="form.date" color="primary" @update:model-value="onDateSelected" />
             </v-menu>
-              <v-select
-                  v-model="form.slots"
-                  :items="slots"
-                  :label="t('home.slots')"
-                  multiple
-                  chips
-                  closable-chips
-                  required
-                />
-            <v-text-field v-model="form.name" :label="t('home.name')" :placeholder="t('home.namePlaceholder')" required />
+            <v-select v-model="form.slots" :items="slots" :label="t('home.slots')" multiple chips closable-chips
+              prepend-inner-icon="mdi-clock-outline" required />
+            <v-text-field v-model="form.name" :label="t('home.name')" :placeholder="t('home.namePlaceholder')"
+              prepend-inner-icon="mdi-account-outline" required />
             <v-switch v-model="form.isStudent" :label="t('home.student')" inset />
-            <v-btn type="submit" color="primary" block class="mt-2">{{ t('home.submit') }}</v-btn>
+            <v-btn type="submit" color="primary" block class="mt-2" prepend-icon="mdi-send">{{ t('home.submit')
+            }}</v-btn>
           </v-form>
 
           <v-alert v-if="message.text" class="mt-4" :type="message.type" variant="tonal">

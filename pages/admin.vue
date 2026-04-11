@@ -6,12 +6,15 @@
           <div class="d-flex flex-wrap align-center justify-space-between gap-4">
             <div>
               <p class="eyebrow">管理员面板</p>
-              <h1>预约总览与导出</h1>
+              <h1 class="d-flex align-center">
+                <v-icon icon="mdi-shield-account-outline" class="mr-2" />
+                预约总览与导出
+              </h1>
               <p class="subcopy">查看某天所有时段的预约结果，并导出 CSV 或 JSON。</p>
             </div>
             <div class="d-flex gap-2 flex-wrap">
-              <v-btn :href="csvExportUrl" color="primary" tag="a">导出 CSV</v-btn>
-              <v-btn :href="jsonExportUrl" variant="tonal" color="primary" tag="a">导出 JSON</v-btn>
+              <v-btn :href="csvExportUrl" color="primary" tag="a" prepend-icon="mdi-download">导出 CSV</v-btn>
+              <v-btn :href="jsonExportUrl" variant="tonal" color="primary" tag="a" prepend-icon="mdi-code-json">导出 JSON</v-btn>
             </div>
           </div>
         </v-card>
@@ -19,12 +22,12 @@
         <v-card class="pa-5 mb-6">
           <v-row>
             <v-col cols="12" md="4">
-              <v-text-field v-model="selectedDate" type="date" label="查看日期" />
+              <v-text-field v-model="selectedDate" type="date" label="查看日期" prepend-inner-icon="mdi-calendar-month-outline" />
             </v-col>
             <v-col cols="12" md="8" class="d-flex align-end">
-              <v-btn color="primary" class="mr-3" @click="refresh">查询</v-btn>
-              <v-chip color="primary" variant="tonal" class="mr-2">已确认 {{ data?.totals.confirmed || 0 }}</v-chip>
-              <v-chip color="secondary" variant="tonal">候补 {{ data?.totals.waitlist || 0 }}</v-chip>
+              <v-btn color="primary" class="mr-3" @click="refresh" prepend-icon="mdi-magnify">查询</v-btn>
+              <v-chip color="primary" variant="tonal" class="mr-2" prepend-icon="mdi-check-circle-outline">已确认 {{ data?.totals.confirmed || 0 }}</v-chip>
+              <v-chip color="secondary" variant="tonal" prepend-icon="mdi-timer-sand">候补 {{ data?.totals.waitlist || 0 }}</v-chip>
             </v-col>
           </v-row>
         </v-card>
@@ -48,7 +51,12 @@
                 <td>{{ entry.name }}</td>
                 <td>{{ entry.isStudent ? '是' : '否' }}</td>
                 <td>
-                  <v-chip size="small" :color="entry.status === 'confirmed' ? 'primary' : 'secondary'" variant="tonal">
+                  <v-chip
+                    size="small"
+                    :color="entry.status === 'confirmed' ? 'primary' : 'secondary'"
+                    variant="tonal"
+                    :prepend-icon="entry.status === 'confirmed' ? 'mdi-check' : 'mdi-timer-sand'"
+                  >
                     {{ entry.status === 'confirmed' ? '已确认' : '候补' }}
                   </v-chip>
                 </td>
