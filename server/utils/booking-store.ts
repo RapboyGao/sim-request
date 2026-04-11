@@ -59,12 +59,8 @@ function hasDuplicateBooking(entries: BookingEntry[], name: string) {
   return entries.some((entry) => normalizeBookingName(entry.name) === normalizedName)
 }
 
-function getPriorityFromRow(row: {
-  priority_level?: unknown
-  is_student?: unknown
-}) {
-  const priority = normalizePriorityLevel(row.priority_level, row.is_student ? 'classmate' : 'normal')
-  return priority
+function getPriorityFromRow(row: { priority_level?: unknown }) {
+  return normalizePriorityLevel(row.priority_level)
 }
 
 async function readLocalStorage(filePath: string): Promise<BookingMap> {
@@ -88,7 +84,7 @@ async function readSupabaseBookings(event: any): Promise<BookingMap | null> {
   const { client, table } = supabase
   const { data, error } = await client
     .from(table)
-    .select('date,slot,id,name,priority_level,created_at,status,is_student')
+    .select('date,slot,id,name,priority_level,created_at,status')
     .order('date', { ascending: true })
     .order('slot', { ascending: true })
     .order('created_at', { ascending: true })
@@ -103,7 +99,6 @@ async function readSupabaseBookings(event: any): Promise<BookingMap | null> {
     slot: string
     id: string
     name: string
-    is_student?: boolean
     priority_level?: BookingPriority
     created_at: string
     status: BookingEntry['status']

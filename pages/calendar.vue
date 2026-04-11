@@ -55,6 +55,11 @@
 import type { FlatSchedule } from '~/composables/useCalendarSchedules'
 
 const { t } = useI18n()
+
+useHead({
+  title: t('app.navCalendar'),
+})
+
 const cutoff = computed(() => new Date(Date.now() - 4 * 60 * 60 * 1000))
 const { data, pending, refresh } = await useFetch('/api/bookings')
 const { flatSchedules } = useCalendarSchedules(computed(() => data.value?.bookings || null), cutoff)

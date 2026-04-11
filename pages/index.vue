@@ -10,6 +10,14 @@
   </v-container>
 </template>
 
+<script setup lang="ts">
+const { t } = useI18n()
+
+useHead({
+  title: t('app.navBooking'),
+})
+</script>
+
 <style scoped>
 .booking-page {
   min-height: 100vh;

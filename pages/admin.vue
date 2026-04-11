@@ -259,6 +259,11 @@
 
 <script setup lang="ts">
 const { t, locale } = useI18n()
+
+useHead({
+  title: t('app.navAdmin'),
+})
+
 const loginForm = reactive({
   username: '',
   password: '',
