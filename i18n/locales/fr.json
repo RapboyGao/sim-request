@@ -5,7 +5,11 @@
     "navRules": "Règles",
     "navCalendar": "Calendrier",
     "navAdmin": "Admin",
-    "navLanguage": "Langue"
+    "navLanguage": "Langue",
+    "navTheme": "Thème",
+    "themeSystem": "Système",
+    "themeLight": "Clair",
+    "themeDark": "Sombre"
   },
   "home": {
     "eyebrow": "Réservation de visite du simulateur",

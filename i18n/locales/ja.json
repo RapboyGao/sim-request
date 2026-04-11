@@ -5,7 +5,11 @@
     "navRules": "ルール",
     "navCalendar": "カレンダー",
     "navAdmin": "管理",
-    "navLanguage": "言語"
+    "navLanguage": "言語",
+    "navTheme": "テーマ",
+    "themeSystem": "システムに従う",
+    "themeLight": "ライト",
+    "themeDark": "ダーク"
   },
   "home": {
     "eyebrow": "シミュレータ見学予約",

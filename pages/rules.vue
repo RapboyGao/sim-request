@@ -118,8 +118,8 @@ const processSteps = [
 
 <style scoped>
 .rules-card {
-  background: linear-gradient(135deg, rgba(15, 118, 110, 0.12), rgba(249, 115, 22, 0.06));
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  background: linear-gradient(135deg, var(--bg-accent-start), rgba(249, 115, 22, 0.06));
+  box-shadow: 0 10px 30px var(--shadow);
 }
 
 .page-head {
@@ -143,8 +143,8 @@ const processSteps = [
 .rule-item {
   height: 100%;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
 }
 
 .rule-item-head {

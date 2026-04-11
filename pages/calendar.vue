@@ -256,7 +256,7 @@ async function restoreEntry(date: string, slot: string, id: string) {
   gap: 0.75rem;
   padding: 0.5rem 0.75rem;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.65);
+  background: var(--surface-elevated);
 }
 
 .entry-main {
@@ -272,7 +272,7 @@ async function restoreEntry(date: string, slot: string, id: string) {
 
 .entry-time {
   font-size: 0.78rem;
-  color: rgba(0, 0, 0, 0.56);
+  color: var(--muted);
 }
 
 .row-actions {
@@ -290,9 +290,9 @@ async function restoreEntry(date: string, slot: string, id: string) {
 }
 
 .schedule-card {
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--border);
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.72);
+  background: var(--surface-elevated);
 }
 
 .schedule-title {
@@ -309,7 +309,7 @@ async function restoreEntry(date: string, slot: string, id: string) {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--muted);
   font-size: 0.85rem;
 }
 
@@ -321,7 +321,7 @@ async function restoreEntry(date: string, slot: string, id: string) {
   min-height: 180px;
   display: grid;
   place-items: center;
-  color: rgba(0, 0, 0, 0.55);
+  color: var(--muted);
   text-align: center;
 }
 </style>

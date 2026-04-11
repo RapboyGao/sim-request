@@ -5,7 +5,11 @@
     "navRules": "Rules",
     "navCalendar": "Calendar",
     "navAdmin": "Admin",
-    "navLanguage": "Language"
+    "navLanguage": "Language",
+    "navTheme": "Theme",
+    "themeSystem": "System",
+    "themeLight": "Light",
+    "themeDark": "Dark"
   },
   "home": {
     "eyebrow": "Simulator viewing booking",

@@ -5,7 +5,11 @@
     "navRules": "규칙",
     "navCalendar": "달력",
     "navAdmin": "관리",
-    "navLanguage": "언어"
+    "navLanguage": "언어",
+    "navTheme": "테마",
+    "themeSystem": "시스템 따르기",
+    "themeLight": "라이트",
+    "themeDark": "다크"
   },
   "home": {
     "eyebrow": "시뮬레이터 관람 예약",

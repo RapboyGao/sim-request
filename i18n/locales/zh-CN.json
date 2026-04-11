@@ -5,7 +5,11 @@
     "navRules": "预约规则",
     "navCalendar": "预约日历",
     "navAdmin": "管理页",
-    "navLanguage": "语言"
+    "navLanguage": "语言",
+    "navTheme": "主题",
+    "themeSystem": "跟随系统",
+    "themeLight": "浅色",
+    "themeDark": "深色"
   },
   "home": {
     "eyebrow": "模拟机观摩预约",

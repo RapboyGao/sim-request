@@ -118,8 +118,8 @@ function formatDateLabel(value: string) {
 }
 
 .hero-card {
-  background: linear-gradient(135deg, rgba(15, 118, 110, 0.14), rgba(249, 115, 22, 0.08));
-  border: 1px solid rgba(15, 23, 42, 0.06);
+  background: linear-gradient(135deg, var(--bg-accent-start), rgba(249, 115, 22, 0.08));
+  border: 1px solid var(--soft-border);
 }
 
 .hero-copy h1 {
