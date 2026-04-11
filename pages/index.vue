@@ -22,6 +22,9 @@
             <div class="text-caption text-medium-emphasis mt-n2 mb-4">
               {{ t('home.priorityHint') }}
             </div>
+            <div class="text-caption text-medium-emphasis mt-n2 mb-4">
+              {{ t('home.calendarHint') }}
+            </div>
             <v-btn type="submit" color="primary" block class="mt-2" prepend-icon="mdi-send">{{ t('home.submit')
             }}</v-btn>
           </v-form>

@@ -11,6 +11,12 @@ export default defineNuxtPlugin((nuxtApp) => {
     sameSite: 'lax',
   })
   const themeMode = useState<ThemeMode>('booking-theme-mode', () => modeCookie.value || 'system')
+  const initialThemeName =
+    themeMode.value === 'dark'
+      ? 'bookingDark'
+      : themeMode.value === 'light'
+        ? 'bookingLight'
+        : 'bookingLight'
 
   const vuetifyInstance = createVuetify({
     components,
@@ -23,7 +29,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       VSwitch: { color: 'teal' },
     },
     theme: {
-      defaultTheme: 'bookingLight',
+      defaultTheme: initialThemeName,
       themes: {
         bookingLight: {
           dark: false,

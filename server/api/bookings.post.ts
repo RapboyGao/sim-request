@@ -30,9 +30,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: '请选择至少一个有效时段' })
   }
 
-  const bookings = await Promise.all(
-    selectedSlots.map((slot) => createBooking(event, { date, slot, name, isStudent })),
-  )
+  const bookings = []
+  for (const slot of selectedSlots) {
+    bookings.push(await createBooking(event, { date, slot, name, isStudent }))
+  }
 
   return {
     ok: true,

@@ -22,6 +22,7 @@
     "namePlaceholder": "请输入姓名",
     "student": "是否为同学",
     "priorityHint": "同学有权插队，同一优先级按提交时间排序。",
+    "calendarHint": "前往模拟机中心前请查看“预约日历”确认预约成功。",
     "submit": "提交预约",
     "success": "预约提交成功",
     "error": "提交失败"
@@ -59,7 +60,16 @@
     "empty": "当前没有可显示的预约记录",
     "bookingCount": "条预约",
     "cancel": "取消",
-    "restore": "恢复"
+    "restore": "恢复",
+    "cancelBooking": "取消预约",
+    "cancelAllBookings": "全部取消预约",
+    "confirmCancel": "确认取消预约",
+    "confirmRestore": "确认恢复预约",
+    "confirmRestoreTitle": "确认恢复预约",
+    "restoreBooking": "恢复预约",
+    "restoreAllBookings": "全部恢复预约",
+    "restoreHint": "恢复预约",
+    "confirmCancelTitle": "确认取消预约"
   },
   "admin": {
     "eyebrow": "管理员面板",

@@ -22,6 +22,7 @@
     "namePlaceholder": "Enter your name",
     "student": "Student",
     "priorityHint": "Students can jump the queue, and same priority is sorted by submission time.",
+    "calendarHint": "Before going to the simulator center, check the \"Booking calendar\" to confirm your booking was successful.",
     "submit": "Submit booking",
     "success": "Booking submitted successfully",
     "error": "Submission failed"
@@ -59,7 +60,15 @@
     "canceledList": "Canceled list",
     "noneCanceled": "No canceled bookings",
     "cancel": "Cancel",
-    "restore": "Restore"
+    "restore": "Restore",
+    "cancelBooking": "Cancel booking",
+    "cancelAllBookings": "Cancel all bookings",
+    "confirmCancel": "Confirm cancellation",
+    "confirmRestore": "Confirm restore",
+    "confirmRestoreTitle": "Confirm restore",
+    "restoreBooking": "Restore booking",
+    "restoreAllBookings": "Restore all bookings",
+    "confirmCancelTitle": "Confirm cancellation"
   },
   "admin": {
     "eyebrow": "Admin panel",

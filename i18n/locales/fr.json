@@ -22,6 +22,7 @@
     "namePlaceholder": "Entrez votre nom",
     "student": "Étudiant",
     "priorityHint": "Les étudiants peuvent passer devant et, à priorité égale, l’ordre suit l’heure d’envoi.",
+    "calendarHint": "Avant d'aller au centre des simulateurs, vérifiez le \"Calendrier\" pour confirmer que votre réservation a bien été enregistrée.",
     "submit": "Envoyer",
     "success": "Réservation envoyée avec succès",
     "error": "Échec de l'envoi"
@@ -59,7 +60,15 @@
     "canceledList": "Liste annulée",
     "noneCanceled": "Aucune réservation annulée",
     "cancel": "Annuler",
-    "restore": "Restaurer"
+    "restore": "Restaurer",
+    "cancelBooking": "Annuler la réservation",
+    "cancelAllBookings": "Tout annuler",
+    "confirmCancel": "Confirmer l'annulation",
+    "confirmRestore": "Confirmer la restauration",
+    "confirmRestoreTitle": "Confirmer la restauration",
+    "restoreBooking": "Restaurer la réservation",
+    "restoreAllBookings": "Restaurer toutes les réservations",
+    "confirmCancelTitle": "Confirmer l'annulation"
   },
   "admin": {
     "eyebrow": "Panneau d'administration",

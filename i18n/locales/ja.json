@@ -22,6 +22,7 @@
     "namePlaceholder": "氏名を入力",
     "student": "学生かどうか",
     "priorityHint": "学生は先に割り込むことができ、同じ条件では送信順で並びます。",
+    "calendarHint": "シミュレータ中線へ向かう前に、「予約カレンダー」で予約が成功していることを確認してください。",
     "submit": "予約を送信",
     "success": "予約を送信しました",
     "error": "送信に失敗しました"
@@ -59,7 +60,15 @@
     "canceledList": "キャンセル済み一覧",
     "noneCanceled": "キャンセル済み予約はありません",
     "cancel": "キャンセル",
-    "restore": "復元"
+    "restore": "復元",
+    "cancelBooking": "予約をキャンセル",
+    "cancelAllBookings": "すべての予約をキャンセル",
+    "confirmCancel": "キャンセル確認",
+    "confirmRestore": "復元を確認",
+    "confirmRestoreTitle": "復元を確認",
+    "restoreBooking": "予約を復元",
+    "restoreAllBookings": "すべての予約を復元",
+    "confirmCancelTitle": "キャンセル確認"
   },
   "admin": {
     "eyebrow": "管理画面",
