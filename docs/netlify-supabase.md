@@ -4,7 +4,7 @@
 
 - Build command: `pnpm build`
 - Publish directory: `.output/public`
-- Node version: `22.11.0`
+- Node version: `20`
 
 ## Environment variables
 

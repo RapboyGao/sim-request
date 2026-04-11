@@ -30,6 +30,7 @@ pnpm build
    - `SUPABASE_SECRET_KEY`
    - 可选：`SUPABASE_BOOKINGS_TABLE`，默认 `bookings`
 5. 本地仍使用 `.data/bookings.json`，线上优先使用 Supabase。
+6. Netlify Node 版本建议使用 `20`。
 
 ## 导出接口
 
