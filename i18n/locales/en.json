@@ -100,6 +100,8 @@
     "bulkDelete": "Batch delete",
     "bulkDeleteTitle": "Confirm batch delete",
     "bulkDeleteBody": "This will delete the {count} selected bookings and cannot be undone.",
+    "emptySearch": "No bookings match the current search",
+    "searchLabel": "Search by name",
     "cleanupTitle": "Confirm cleanup of old records",
     "cleanupBody": "This removes all bookings from yesterday and earlier and cannot be undone. It will not affect today or later.",
     "cancel": "Cancel",

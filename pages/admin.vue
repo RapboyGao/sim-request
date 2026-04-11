@@ -68,6 +68,17 @@
           </v-card>
 
           <v-card class="pa-5">
+            <v-text-field
+              v-model="searchTerm"
+              :label="t('admin.searchLabel')"
+              prepend-inner-icon="mdi-magnify"
+              clearable
+              density="comfortable"
+              hide-details
+              class="mb-4"
+              :loading="searchLoading"
+            />
+            <v-progress-linear v-if="searchLoading" color="primary" indeterminate class="mb-4" rounded />
             <v-skeleton-loader v-if="pending" type="table-heading, table-row@6" />
             <template v-else>
               <div class="admin-bulkbar mb-4">
@@ -113,7 +124,11 @@
                   {{ t('admin.bulkDelete') }}
                 </v-btn>
               </div>
-              <v-table class="admin-table">
+              <div v-if="filteredEntries.length === 0" class="empty-state empty-state--compact">
+                <v-icon icon="mdi-magnify" size="28" class="mb-2" />
+                <div>{{ searchActive ? t('admin.emptySearch') : t('admin.empty') }}</div>
+              </div>
+              <v-table v-else class="admin-table">
               <colgroup>
                 <col class="col-select" />
                 <col class="col-date" />
@@ -146,7 +161,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="entry in sortedEntries" :key="entry.id">
+                <tr v-for="entry in filteredEntries" :key="entry.id">
                   <td class="text-center">
                     <v-checkbox v-model="selectedIds" :value="entry.id" hide-details density="compact" />
                   </td>
@@ -280,6 +295,10 @@ const bulkDeleteLoading = ref(false)
 const deleteTarget = ref<{ date: string; slot: string; id: string; name: string } | null>(null)
 const priorityLoading = ref(false)
 const selectedIds = ref<string[]>([])
+const searchTerm = ref('')
+const debouncedSearchTerm = ref('')
+const searchLoading = ref(false)
+let searchTimer: ReturnType<typeof setTimeout> | undefined
 type PriorityLevel = 'specified' | 'classmate' | 'normal'
 
 const priorityOptions = computed<Array<{ title: string; value: PriorityLevel }>>(() => [
@@ -326,10 +345,17 @@ const sortedEntries = computed(() => {
   })
 })
 
+const searchActive = computed(() => debouncedSearchTerm.value.trim().length > 0)
+const filteredEntries = computed(() => {
+  const term = debouncedSearchTerm.value.trim().toLowerCase()
+  if (!term) return sortedEntries.value
+  return sortedEntries.value.filter((entry) => entry.name.toLowerCase().includes(term))
+})
+
 const selectAll = computed({
-  get: () => sortedEntries.value.length > 0 && selectedIds.value.length === sortedEntries.value.length,
+  get: () => filteredEntries.value.length > 0 && selectedIds.value.length === filteredEntries.value.length,
   set: (checked: boolean) => {
-    selectedIds.value = checked ? sortedEntries.value.map((entry) => entry.id) : []
+    selectedIds.value = checked ? filteredEntries.value.map((entry) => entry.id) : []
   },
 })
 
@@ -340,6 +366,20 @@ async function checkAuth() {
     await refresh()
   }
 }
+
+watch(searchTerm, (value) => {
+  if (searchTimer) clearTimeout(searchTimer)
+  searchLoading.value = true
+  searchTimer = setTimeout(() => {
+    debouncedSearchTerm.value = String(value || '').trim()
+    selectedIds.value = []
+    searchLoading.value = false
+  }, 280)
+}, { immediate: true })
+
+onBeforeUnmount(() => {
+  if (searchTimer) clearTimeout(searchTimer)
+})
 
 async function login() {
   authError.value = ''

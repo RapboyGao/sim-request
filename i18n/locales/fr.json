@@ -100,6 +100,8 @@
     "bulkDelete": "Suppression groupée",
     "bulkDeleteTitle": "Confirmer la suppression groupée",
     "bulkDeleteBody": "Cela supprimera les {count} réservations sélectionnées et ne peut pas être annulé.",
+    "emptySearch": "Aucune réservation ne correspond à la recherche actuelle",
+    "searchLabel": "Rechercher par nom",
     "cleanupTitle": "Confirmer le nettoyage des anciens enregistrements",
     "cleanupBody": "Cela supprime toutes les réservations d'hier et avant, et ne peut pas être annulé. Aujourd'hui et les dates futures ne sont pas affectées.",
     "cancel": "Annuler",

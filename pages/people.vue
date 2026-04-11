@@ -2,17 +2,31 @@
   <v-container class="py-8">
     <v-row justify="center">
       <v-col cols="12" lg="10" xl="9">
+        <v-card class="pa-4 mb-4">
+          <v-text-field
+            v-model="searchTerm"
+            :label="t('people.searchLabel')"
+            prepend-inner-icon="mdi-magnify"
+            clearable
+            density="comfortable"
+            hide-details
+            :loading="searchLoading"
+          />
+        </v-card>
+
         <v-skeleton-loader v-if="pending" type="article, list-item-two-line, list-item-two-line" />
 
         <div v-else>
-          <div v-if="personSchedules.length === 0" class="empty-state">
+          <v-progress-linear v-if="searchLoading" color="primary" indeterminate class="mb-4" rounded />
+
+          <div v-if="filteredPersonSchedules.length === 0" class="empty-state">
             <v-icon icon="mdi-account-group-outline" size="28" class="mb-2" />
-            <div>{{ t('people.empty') }}</div>
+            <div>{{ searchActive ? t('people.emptySearch') : t('people.empty') }}</div>
           </div>
 
           <div v-else class="person-grid">
             <v-card
-              v-for="person in personSchedules"
+              v-for="person in filteredPersonSchedules"
               :key="person.name"
               :id="personCardId(person.rows)"
               class="person-card pa-4"
@@ -128,6 +142,10 @@ const route = useRoute()
 const cutoff = computed(() => new Date(Date.now() - 4 * 60 * 60 * 1000))
 const { data, pending, refresh } = await useFetch('/api/bookings')
 const { personSchedules } = usePersonSchedules(computed(() => data.value?.bookings || null), cutoff)
+const searchTerm = ref('')
+const debouncedSearchTerm = ref('')
+const searchLoading = ref(false)
+let searchTimer: ReturnType<typeof setTimeout> | undefined
 const focusId = computed(() => typeof route.query.focus === 'string' ? route.query.focus : '')
 const focusedCardId = computed(() => {
   if (!focusId.value) return ''
@@ -144,6 +162,13 @@ const actionDialog = reactive({
   message: '',
   mode: 'cancel' as ActionMode,
   row: null as PersonBookingRow | null,
+})
+
+const searchActive = computed(() => debouncedSearchTerm.value.trim().length > 0)
+const filteredPersonSchedules = computed(() => {
+  const term = debouncedSearchTerm.value.trim().toLowerCase()
+  if (!term) return personSchedules.value
+  return personSchedules.value.filter((person) => person.name.toLowerCase().includes(term))
 })
 
 function statusMeta(status: PersonBookingRow['status']) {
@@ -199,8 +224,18 @@ watch([focusedCardId, pending], async ([id, isPending]) => {
   }, 2600)
 }, { immediate: true })
 
+watch(searchTerm, (value) => {
+  if (searchTimer) clearTimeout(searchTimer)
+  searchLoading.value = true
+  searchTimer = setTimeout(() => {
+    debouncedSearchTerm.value = String(value || '').trim()
+    searchLoading.value = false
+  }, 280)
+}, { immediate: true })
+
 onBeforeUnmount(() => {
   if (pulseTimer) clearTimeout(pulseTimer)
+  if (searchTimer) clearTimeout(searchTimer)
 })
 
 function personCardId(rows: PersonBookingRow[]) {
