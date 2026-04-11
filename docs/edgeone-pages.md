@@ -5,6 +5,7 @@
 - `edgeone.json`
 - `.edgeone/cloud-functions/ssr-node/config.json`
 - Pages KV 绑定名：`BOOKING_KV`
+- `@oxc-parser/binding-linux-x64-gnu` 已加入依赖，避免 EdgeOne 构建时缺少原生绑定
 
 ## 控制台
 

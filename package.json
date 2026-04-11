@@ -2,6 +2,7 @@
   "name": "sim-request",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@10.11.0",
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build",
@@ -16,6 +17,7 @@
   "devDependencies": {
     "@nuxt/eslint-config": "^1.8.0",
     "@nuxtjs/i18n": "^10.2.4",
+    "@oxc-parser/binding-linux-x64-gnu": "0.124.0",
     "@types/node": "^22.13.0",
     "typescript": "^5.8.0",
     "vite-plugin-vuetify": "^2.1.0"
