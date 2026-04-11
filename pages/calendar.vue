@@ -20,14 +20,14 @@
               <div class="schedule-title">
                 <span>{{ item.date }} {{ item.slot }}</span>
                 <v-chip size="small" color="primary" variant="tonal" prepend-icon="mdi-check">
-                  {{ item.confirmed.length }}/2
+                  {{ splitActiveEntries(item.active).confirmed.length }}/2
                 </v-chip>
               </div>
               <div class="schedule-subtitle">
-                <span>{{ t('calendar.confirmed') }} {{ item.confirmed.length }}</span>
-                <span>{{ t('calendar.waitlist') }} {{ item.waitlist.length }}</span>
+                <span>{{ t('calendar.confirmed') }} {{ splitActiveEntries(item.active).confirmed.length }}</span>
+                <span>{{ t('calendar.waitlist') }} {{ splitActiveEntries(item.active).waitlist.length }}</span>
                 <span>{{ t('calendar.canceled') }} {{ item.canceled.length }}</span>
-                <span>{{ item.total }} {{ t('calendar.bookingCount') }}</span>
+                <span>{{ item.active.length + item.canceled.length }} {{ t('calendar.bookingCount') }}</span>
               </div>
 
               <div class="schedule-detail">
@@ -37,7 +37,7 @@
                     {{ t('calendar.confirmedList') }}
                   </div>
                   <div class="compact-list">
-                    <div v-for="entry in item.confirmed" :key="entry.id" class="compact-row">
+                    <div v-for="entry in splitActiveEntries(item.active).confirmed" :key="entry.id" class="compact-row">
                       <div class="entry-main">
                         <div class="entry-name-line">
                           <span>{{ entry.name }}</span>
@@ -51,7 +51,7 @@
                         </v-btn>
                       </div>
                     </div>
-                    <div v-if="item.confirmed.length === 0" class="text-medium-emphasis">{{ t('calendar.noneConfirmed') }}</div>
+                    <div v-if="splitActiveEntries(item.active).confirmed.length === 0" class="text-medium-emphasis">{{ t('calendar.noneConfirmed') }}</div>
                   </div>
                 </div>
 
@@ -61,7 +61,7 @@
                     {{ t('calendar.waitlistList') }}
                   </div>
                   <div class="compact-list">
-                    <div v-for="entry in item.waitlist" :key="entry.id" class="compact-row">
+                    <div v-for="entry in splitActiveEntries(item.active).waitlist" :key="entry.id" class="compact-row">
                       <div class="entry-main">
                         <div class="entry-name-line">
                           <span>{{ entry.name }}</span>
@@ -75,7 +75,7 @@
                         </v-btn>
                       </div>
                     </div>
-                    <div v-if="item.waitlist.length === 0" class="text-medium-emphasis">{{ t('calendar.noneWaitlist') }}</div>
+                    <div v-if="splitActiveEntries(item.active).waitlist.length === 0" class="text-medium-emphasis">{{ t('calendar.noneWaitlist') }}</div>
                   </div>
                 </div>
 
@@ -127,10 +127,8 @@ type DaySummary = {
 type FlatSchedule = {
   date: string
   slot: string
-  confirmed: BookingEntry[]
-  waitlist: BookingEntry[]
+  active: BookingEntry[]
   canceled: BookingEntry[]
-  total: number
 }
 
 type RawSchedule = {
@@ -160,14 +158,13 @@ const groupedSchedules = computed<DaySummary[]>(() => {
 
   const grouped = new Map<string, DaySummary>()
   for (const item of entries) {
-    const confirmed = item.entries.filter((entry) => entry.status === 'confirmed')
-    const waitlist = item.entries.filter((entry) => entry.status === 'waitlist')
+    const active = item.entries.filter((entry) => entry.status !== 'canceled')
     const canceled = item.entries.filter((entry) => entry.status === 'canceled')
     if (!grouped.has(item.date)) {
       grouped.set(item.date, { date: item.date, slots: [], total: 0 })
     }
     const day = grouped.get(item.date)!
-    day.slots.push({ slot: item.slot, confirmed, waitlist, canceled })
+    day.slots.push({ slot: item.slot, active, canceled })
     day.total += item.entries.length
   }
 
@@ -179,16 +176,11 @@ const flatSchedules = computed<FlatSchedule[]>(() => {
     day.slots.map((slot) => ({
       date: day.date,
       slot: slot.slot,
-      confirmed: slot.confirmed,
-      waitlist: slot.waitlist,
+      active: slot.active,
       canceled: slot.canceled || [],
-      total: slot.confirmed.length + slot.waitlist.length,
     })),
   )
 })
-
-const confirmedTotal = computed(() => flatSchedules.value.reduce((sum, item) => sum + item.confirmed.length, 0))
-const waitlistTotal = computed(() => flatSchedules.value.reduce((sum, item) => sum + item.waitlist.length, 0))
 
 function toSlotEnd(date: string, slot: string) {
   const [start] = slot.split('-')
@@ -209,6 +201,21 @@ function formatTimeLabel(value: string) {
   if (Number.isNaN(date.getTime())) return value
   const pad = (n: number) => String(n).padStart(2, '0')
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
+}
+
+function sortActiveEntries(entries: BookingEntry[]) {
+  return [...entries].sort((left, right) => {
+    if (left.isStudent !== right.isStudent) return left.isStudent ? -1 : 1
+    return left.createdAt.localeCompare(right.createdAt)
+  })
+}
+
+function splitActiveEntries(entries: BookingEntry[]) {
+  const sorted = sortActiveEntries(entries)
+  return {
+    confirmed: sorted.slice(0, 2),
+    waitlist: sorted.slice(2),
+  }
 }
 
 async function cancelEntry(date: string, slot: string, id: string) {

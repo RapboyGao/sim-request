@@ -24,8 +24,7 @@ export default defineEventHandler(async (event) => {
       slot,
       name: item.name,
       isStudent: item.isStudent ? '是' : '否',
-      status: item.status === 'confirmed' ? '已确认' : item.status === 'waitlist' ? '候补' : '已取消',
-      rank: item.rank,
+      status: item.status === 'canceled' ? '已取消' : '未取消',
       createdAt: item.createdAt,
     }))
   }).sort((left, right) => {
@@ -47,14 +46,13 @@ export default defineEventHandler(async (event) => {
   }
 
   const csv = [
-    ['日期', '时段', '姓名', '是否为同学', '状态', '序号', '提交时间'].map(toCsvValue).join(','),
+    ['日期', '时段', '姓名', '是否为同学', '状态', '提交时间'].map(toCsvValue).join(','),
     ...rows.map((row) => [
       row.date,
       row.slot,
       row.name,
       row.isStudent,
       row.status,
-      row.rank,
       row.createdAt,
     ].map(toCsvValue).join(',')),
   ].join('\n')

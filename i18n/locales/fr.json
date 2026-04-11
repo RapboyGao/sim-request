@@ -87,9 +87,11 @@
       "status": "Statut",
       "rank": "Rang",
       "createdAt": "Envoyé le",
-      "action": "操作"
+      "action": "Action"
     },
     "delete": "删除",
-    "deleteTitle": "确认删除预约"
+    "deleteTitle": "确认删除预约",
+    "active": "Actif",
+    "canceled": "Annulé"
   }
 }

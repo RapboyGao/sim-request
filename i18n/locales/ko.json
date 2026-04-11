@@ -87,9 +87,11 @@
       "status": "상태",
       "rank": "순서",
       "createdAt": "제출 시각",
-      "action": "操作"
+      "action": "작업"
     },
     "delete": "删除",
-    "deleteTitle": "确认删除预约"
+    "deleteTitle": "确认删除预约",
+    "active": "취소 안 됨",
+    "canceled": "취소됨"
   }
 }

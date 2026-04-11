@@ -1,7 +1,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import { buildSlots } from '~/utils/slots'
-import type { BookingEntry, BookingStatus } from '~/types/booking'
+import type { BookingEntry } from '~/types/booking'
 
 type BookingMap = Record<string, BookingEntry[]>
 
@@ -22,26 +22,6 @@ function sortEntries(entries: BookingEntry[]) {
     if (a.isStudent !== b.isStudent) return a.isStudent ? -1 : 1
     return a.createdAt.localeCompare(b.createdAt)
   })
-}
-
-function computeRankedEntries(entries: BookingEntry[]): BookingEntry[] {
-  const canceled = entries.filter((entry) => entry.status === 'canceled')
-  const active = sortEntries(entries.filter((entry) => entry.status !== 'canceled'))
-
-  const rankedActive = active.map<BookingEntry>((entry, index) => ({
-    ...entry,
-    rank: index + 1,
-    status: (index < 2 ? 'confirmed' : 'waitlist') as BookingStatus,
-  }))
-
-  return [
-    ...rankedActive,
-    ...canceled.map<BookingEntry>((entry) => ({
-      ...entry,
-      rank: 0,
-      status: 'canceled',
-    })),
-  ]
 }
 
 async function readLocalStorage(filePath: string): Promise<BookingMap> {
@@ -107,7 +87,7 @@ export async function listDayBookings(event: any, date: string) {
   const results: BookingMap = {}
 
   for (const slot of slots) {
-    results[slot] = computeRankedEntries(all[storageKey(date, slot)] || [])
+    results[slot] = sortEntries(all[storageKey(date, slot)] || [])
   }
   return results
 }
@@ -122,15 +102,14 @@ export async function createBooking(event: any, input: { date: string; slot: str
     name: input.name.trim(),
     isStudent: input.isStudent,
     createdAt: now,
-    status: 'waitlist',
-    rank: 0,
+    status: 'active',
   }
 
   const store = await readAllBookings(event)
-  const ranked = computeRankedEntries([...(store[key] || []), baseEntry])
-  store[key] = ranked
+  const nextEntries = [...(store[key] || []), baseEntry]
+  store[key] = sortEntries(nextEntries)
   await writeAllBookings(event, store)
-  return ranked
+  return store[key]
 }
 
 export async function cancelBooking(event: any, input: { date: string; slot: string; id: string }) {
@@ -147,15 +126,13 @@ export async function cancelBooking(event: any, input: { date: string; slot: str
       ? {
           ...entry,
           status: 'canceled' as const,
-          rank: 0,
         }
       : entry,
   )
 
-  const ranked = computeRankedEntries(nextEntries)
-  store[key] = ranked
+  store[key] = sortEntries(nextEntries)
   await writeAllBookings(event, store)
-  return ranked
+  return store[key]
 }
 
 export async function restoreBooking(event: any, input: { date: string; slot: string; id: string }) {
@@ -171,16 +148,14 @@ export async function restoreBooking(event: any, input: { date: string; slot: st
     entry.id === input.id
       ? {
           ...entry,
-          status: 'waitlist' as const,
-          rank: 0,
+          status: 'active' as const,
         }
       : entry,
   )
 
-  const ranked = computeRankedEntries(nextEntries)
-  store[key] = ranked
+  store[key] = sortEntries(nextEntries)
   await writeAllBookings(event, store)
-  return ranked
+  return store[key]
 }
 
 export async function deleteBooking(event: any, input: { date: string; slot: string; id: string }) {
@@ -193,7 +168,7 @@ export async function deleteBooking(event: any, input: { date: string; slot: str
     return current
   }
 
-  const ranked = computeRankedEntries(nextEntries)
+  const ranked = sortEntries(nextEntries)
   if (ranked.length === 0) {
     delete store[key]
   } else {

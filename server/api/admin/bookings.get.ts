@@ -34,8 +34,7 @@ export default defineEventHandler(async (event) => {
   return {
     entries,
     totals: {
-      confirmed: entries.filter((item) => item.status === 'confirmed').length,
-      waitlist: entries.filter((item) => item.status === 'waitlist').length,
+      active: entries.filter((item) => item.status !== 'canceled').length,
       canceled: entries.filter((item) => item.status === 'canceled').length,
     },
   }

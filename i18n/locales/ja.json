@@ -90,6 +90,8 @@
       "action": "操作"
     },
     "delete": "删除",
-    "deleteTitle": "确认删除预约"
+    "deleteTitle": "确认删除预约",
+    "active": "未キャンセル",
+    "canceled": "キャンセル済み"
   }
 }

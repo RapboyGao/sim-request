@@ -1,4 +1,4 @@
-export type BookingStatus = 'confirmed' | 'waitlist' | 'canceled'
+export type BookingStatus = 'active' | 'canceled'
 
 export interface BookingEntry {
   id: string
@@ -8,13 +8,11 @@ export interface BookingEntry {
   isStudent: boolean
   createdAt: string
   status: BookingStatus
-  rank: number
 }
 
 export interface SlotSummary {
   slot: string
-  confirmed: BookingEntry[]
-  waitlist: BookingEntry[]
+  active: BookingEntry[]
   canceled: BookingEntry[]
 }
 

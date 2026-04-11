@@ -81,15 +81,15 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="entry in data?.entries || []" :key="entry.id">
+                <tr v-for="entry in sortedEntries" :key="entry.id">
                   <td>{{ entry.date }}</td>
                   <td>{{ entry.slot }}</td>
                   <td>{{ entry.name }}</td>
                   <td>{{ entry.isStudent ? t('admin.yes') : t('admin.no') }}</td>
                   <td>
-                    <v-chip size="small" :color="entry.status === 'confirmed' ? 'primary' : 'secondary'" variant="tonal"
-                      :prepend-icon="entry.status === 'confirmed' ? 'mdi-check' : 'mdi-timer-sand'">
-                      {{ entry.status === 'confirmed' ? t('admin.confirmed') : t('admin.waitlist') }}
+                    <v-chip size="small" :color="entry.status === 'canceled' ? 'secondary' : 'primary'" variant="tonal"
+                      :prepend-icon="entry.status === 'canceled' ? 'mdi-cancel' : 'mdi-check'">
+                      {{ entry.status === 'canceled' ? t('admin.canceled') : t('admin.active') }}
                     </v-chip>
                   </td>
                   <td>{{ formatTime(entry.createdAt) }}</td>
@@ -171,6 +171,24 @@ const deletePrompt = computed(() =>
     ? `${deleteTarget.value.date} ${deleteTarget.value.slot} · ${deleteTarget.value.name}`
     : '',
 )
+const sortedEntries = computed(() => {
+  const entries = data.value?.entries || []
+  return [...entries].sort((left, right) => {
+    const dateCompare = left.date.localeCompare(right.date)
+    if (dateCompare !== 0) return dateCompare
+
+    const slotCompare = left.slot.localeCompare(right.slot)
+    if (slotCompare !== 0) return slotCompare
+
+    if (left.status !== right.status) {
+      if (left.status === 'canceled') return 1
+      if (right.status === 'canceled') return -1
+    }
+
+    if (left.isStudent !== right.isStudent) return left.isStudent ? -1 : 1
+    return left.createdAt.localeCompare(right.createdAt)
+  })
+})
 
 async function checkAuth() {
   const result = await $fetch<{ authenticated: boolean }>('/api/auth/me')
