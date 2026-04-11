@@ -23,7 +23,7 @@ pnpm build
 
 1. 将仓库导入 Netlify。
 2. 构建命令使用 `pnpm build`。
-3. 发布目录使用 `.output/public`。
+3. 发布目录使用 `dist`。
 4. 准备 Supabase 数据库表，并配置环境变量：
    - `SUPABASE_URL`
    - `SUPABASE_PUBLISHABLE_KEY`

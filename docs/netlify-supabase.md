@@ -3,7 +3,7 @@
 ## Netlify
 
 - Build command: `pnpm build`
-- Publish directory: `.output/public`
+- Publish directory: `dist`
 - Node version: `20`
 
 ## Environment variables

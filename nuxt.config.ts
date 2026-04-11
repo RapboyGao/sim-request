@@ -12,6 +12,9 @@ export default defineNuxtConfig({
     transpile: ['vuetify'],
   },
   vite: {
+    build: {
+      sourcemap: false,
+    },
     vue: {
       template: {
         transformAssetUrls,
