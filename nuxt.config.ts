@@ -20,11 +20,11 @@ export default defineNuxtConfig({
     plugins: [vuetify()],
   },
   runtimeConfig: {
-    supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
     localJsonStorageFile: process.env.BOOKING_STORAGE_FILE || '.data/bookings.json',
+    supabaseSecretKey: process.env.SUPABASE_SECRET_KEY || '',
     public: {
       supabaseUrl: process.env.SUPABASE_URL || '',
-      supabaseAnonKey: process.env.SUPABASE_ANON_KEY || '',
+      supabasePublishableKey: process.env.SUPABASE_PUBLISHABLE_KEY || '',
     },
   },
   i18n: {

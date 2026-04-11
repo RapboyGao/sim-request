@@ -5,15 +5,14 @@ export function getSupabaseServerClient() {
 
   const config = useRuntimeConfig()
   const supabaseUrl = config.public.supabaseUrl || process.env.SUPABASE_URL
-  const serviceRoleKey = config.supabaseServiceRoleKey || process.env.SUPABASE_SERVICE_ROLE_KEY
+  const secretKey = config.supabaseSecretKey || process.env.SUPABASE_SECRET_KEY
 
-  if (!supabaseUrl || !serviceRoleKey) return null
+  if (!supabaseUrl || !secretKey) return null
 
-  return createClient(supabaseUrl, serviceRoleKey, {
+  return createClient(supabaseUrl, secretKey, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
     },
   })
 }
-

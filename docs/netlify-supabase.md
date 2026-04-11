@@ -9,8 +9,8 @@
 ## Environment variables
 
 - `SUPABASE_URL`
-- `SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_PUBLISHABLE_KEY`
+- `SUPABASE_SECRET_KEY`
 - Optional: `SUPABASE_BOOKINGS_TABLE=bookings`
 
 ## Supabase table
