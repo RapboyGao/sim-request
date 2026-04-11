@@ -19,7 +19,9 @@ pnpm build
 
 本地调试默认写入 `.data/bookings.json`，不会使用 KV。
 
-## Netlify + Supabase 生产配置
+## 生产部署
+
+### Netlify + Supabase
 
 1. 将仓库导入 Netlify。
 2. 构建命令使用 `pnpm build`。
@@ -31,6 +33,19 @@ pnpm build
    - 可选：`SUPABASE_BOOKINGS_TABLE`，默认 `bookings`
 5. 本地仍使用 `.data/bookings.json`，线上优先使用 Supabase。
 6. Netlify Node 版本建议使用 `20`。
+
+### EdgeOne Pages + Supabase
+
+1. 将仓库导入 EdgeOne Pages。
+2. 构建命令使用 `pnpm build`。
+3. 输出目录使用 `dist`。
+4. 配置同一组 Supabase 环境变量：
+   - `SUPABASE_URL`
+   - `SUPABASE_PUBLISHABLE_KEY`
+   - `SUPABASE_SECRET_KEY`
+   - 可选：`SUPABASE_BOOKINGS_TABLE`
+5. 数据库仍然只使用 Supabase，不使用 EdgeOne KV。
+6. EdgeOne Node 版本建议使用 `20`。
 
 ## 导出接口
 

@@ -1,0 +1,13 @@
+{
+  "framework": "nuxt",
+  "buildCommand": "pnpm build",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "outputDirectory": "dist",
+  "nodeVersion": "20",
+  "environmentVariables": [
+    "SUPABASE_URL",
+    "SUPABASE_PUBLISHABLE_KEY",
+    "SUPABASE_SECRET_KEY",
+    "SUPABASE_BOOKINGS_TABLE"
+  ]
+}
