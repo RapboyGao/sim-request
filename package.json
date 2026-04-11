@@ -11,6 +11,12 @@
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
+    "@oxc-minify/binding-linux-x64-gnu": "0.117.0",
+    "@oxc-minify/binding-linux-x64-musl": "0.117.0",
+    "@oxc-parser/binding-linux-x64-gnu": "0.117.0",
+    "@oxc-parser/binding-linux-x64-musl": "0.117.0",
+    "@oxc-transform/binding-linux-x64-gnu": "0.117.0",
+    "@oxc-transform/binding-linux-x64-musl": "0.117.0",
     "@supabase/supabase-js": "^2.103.0",
     "nuxt": "^4.2.0",
     "vuetify": "^3.7.0"
