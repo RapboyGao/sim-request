@@ -5,15 +5,15 @@
         <v-card class="pa-6 mb-6 admin-hero">
           <div class="d-flex flex-wrap align-center justify-space-between gap-4">
             <div>
-              <p class="eyebrow">管理员面板</p>
+              <p class="eyebrow">{{ t('admin.eyebrow') }}</p>
               <h1 class="d-flex align-center">
                 <v-icon icon="mdi-shield-account-outline" class="mr-2" />
-                预约总览与导出
+                {{ t('admin.title') }}
               </h1>
-              <p class="subcopy">使用管理员账号登录后查看和导出数据。</p>
+              <p class="subcopy">{{ t('admin.subcopy') }}</p>
             </div>
             <v-btn v-if="authenticated" variant="tonal" color="primary" prepend-icon="mdi-logout" @click="logout">
-              退出登录
+              {{ t('admin.logout') }}
             </v-btn>
           </div>
         </v-card>
@@ -22,15 +22,15 @@
           <v-form @submit.prevent="login">
             <v-row>
               <v-col cols="12" md="5">
-                <v-text-field v-model="loginForm.username" label="用户名" prepend-inner-icon="mdi-account-outline"
+                <v-text-field v-model="loginForm.username" :label="t('admin.username')" prepend-inner-icon="mdi-account-outline"
                   autocomplete="username" />
               </v-col>
               <v-col cols="12" md="5">
-                <v-text-field v-model="loginForm.password" type="password" label="密码"
+                <v-text-field v-model="loginForm.password" type="password" :label="t('admin.password')"
                   prepend-inner-icon="mdi-key-outline" autocomplete="current-password" />
               </v-col>
               <v-col cols="12" md="2" class="d-flex align-end">
-                <v-btn block color="primary" type="submit" :loading="loginLoading" prepend-icon="mdi-login">登录</v-btn>
+                <v-btn block color="primary" type="submit" :loading="loginLoading" prepend-icon="mdi-login">{{ t('admin.login') }}</v-btn>
               </v-col>
             </v-row>
           </v-form>
@@ -43,25 +43,26 @@
           <v-card class="pa-6 mb-6 admin-hero">
             <div class="d-flex flex-wrap align-center justify-space-between gap-4">
               <div>
-                <p class="eyebrow">导出数据</p>
+                <p class="eyebrow">{{ t('admin.exportEyebrow') }}</p>
               </div>
-              <v-row class="export-actions" dense>
-                <v-col cols="12" sm="4">
-                  <v-btn block :href="csvExportUrl" color="primary" tag="a" prepend-icon="mdi-download">
-                    导出 CSV
+              <v-menu>
+                <template #activator="{ props }">
+                  <v-btn
+                    color="primary"
+                    variant="tonal"
+                    prepend-icon="mdi-menu-down"
+                    v-bind="props"
+                  >
+                    {{ t('admin.exportMenu') }}
                   </v-btn>
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <v-btn block :href="jsonExportUrl" variant="tonal" color="primary" tag="a" prepend-icon="mdi-code-json">
-                    导出 JSON
-                  </v-btn>
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <v-btn block color="error" variant="tonal" prepend-icon="mdi-delete" @click="cleanupDialog = true">
-                    清理旧记录
-                  </v-btn>
-                </v-col>
-              </v-row>
+                </template>
+                <v-list min-width="220" density="comfortable">
+                  <v-list-item :href="csvExportUrl" tag="a" :title="t('admin.exportCsv')" prepend-icon="mdi-download" />
+                  <v-list-item :href="jsonExportUrl" tag="a" :title="t('admin.exportJson')" prepend-icon="mdi-code-json" />
+                  <v-divider />
+                  <v-list-item :title="t('admin.cleanupButton')" prepend-icon="mdi-delete" @click="cleanupDialog = true" />
+                </v-list>
+              </v-menu>
             </div>
           </v-card>
 
@@ -70,13 +71,13 @@
             <v-table v-else>
               <thead>
                 <tr>
-                  <th>日期</th>
-                  <th>时段</th>
-                  <th>姓名</th>
-                  <th>同学</th>
-                  <th>状态</th>
-                  <th>序号</th>
-                  <th>提交时间</th>
+                  <th>{{ t('admin.columns.date') }}</th>
+                  <th>{{ t('admin.columns.slot') }}</th>
+                  <th>{{ t('admin.columns.name') }}</th>
+                  <th>{{ t('admin.columns.student') }}</th>
+                  <th>{{ t('admin.columns.status') }}</th>
+                  <th>{{ t('admin.columns.createdAt') }}</th>
+                  <th>{{ t('admin.columns.action') }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -84,15 +85,24 @@
                   <td>{{ entry.date }}</td>
                   <td>{{ entry.slot }}</td>
                   <td>{{ entry.name }}</td>
-                  <td>{{ entry.isStudent ? '是' : '否' }}</td>
+                  <td>{{ entry.isStudent ? t('admin.yes') : t('admin.no') }}</td>
                   <td>
                     <v-chip size="small" :color="entry.status === 'confirmed' ? 'primary' : 'secondary'" variant="tonal"
                       :prepend-icon="entry.status === 'confirmed' ? 'mdi-check' : 'mdi-timer-sand'">
-                      {{ entry.status === 'confirmed' ? '已确认' : '候补' }}
+                      {{ entry.status === 'confirmed' ? t('admin.confirmed') : t('admin.waitlist') }}
                     </v-chip>
                   </td>
-                  <td>{{ entry.rank }}</td>
                   <td>{{ formatTime(entry.createdAt) }}</td>
+                  <td>
+                    <v-btn
+                      icon="mdi-trash-can-outline"
+                      size="x-small"
+                      variant="text"
+                      color="error"
+                      :aria-label="t('admin.delete')"
+                      @click="promptDelete(entry)"
+                    />
+                  </td>
                 </tr>
               </tbody>
             </v-table>
@@ -102,14 +112,30 @@
             <v-card>
               <v-card-title class="d-flex align-center">
                 <v-icon icon="mdi-alert-octagon-outline" class="mr-2" color="error" />
-                确认清理旧记录
+                {{ t('admin.cleanupTitle') }}
               </v-card-title>
               <v-card-text>
-                这会删除“昨天及以前”的所有预约记录，且无法恢复。当前操作不会影响今天及以后的记录。
+                {{ t('admin.cleanupBody') }}
               </v-card-text>
               <v-card-actions class="justify-end">
-                <v-btn variant="text" @click="cleanupDialog = false">取消</v-btn>
-                <v-btn color="error" :loading="cleanupLoading" @click="cleanupOldBookings">确认删除</v-btn>
+                <v-btn variant="text" @click="cleanupDialog = false">{{ t('admin.cancel') }}</v-btn>
+                <v-btn color="error" :loading="cleanupLoading" @click="cleanupOldBookings">{{ t('admin.confirmDelete') }}</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
+          <v-dialog v-model="deleteDialog" max-width="520">
+            <v-card>
+              <v-card-title class="d-flex align-center">
+                <v-icon icon="mdi-delete-alert-outline" class="mr-2" color="error" />
+                {{ t('admin.deleteTitle') }}
+              </v-card-title>
+              <v-card-text>
+                {{ deletePrompt }}
+              </v-card-text>
+              <v-card-actions class="justify-end">
+                <v-btn variant="text" @click="deleteDialog = false">{{ t('admin.cancel') }}</v-btn>
+                <v-btn color="error" :loading="deleteLoading" @click="confirmDelete">{{ t('admin.confirmDelete') }}</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -120,6 +146,7 @@
 </template>
 
 <script setup lang="ts">
+const { t, locale } = useI18n()
 const loginForm = reactive({
   username: '',
   password: '',
@@ -129,6 +156,9 @@ const loginLoading = ref(false)
 const authenticated = ref(false)
 const cleanupDialog = ref(false)
 const cleanupLoading = ref(false)
+const deleteDialog = ref(false)
+const deleteLoading = ref(false)
+const deleteTarget = ref<{ date: string; slot: string; id: string; name: string } | null>(null)
 
 const { data, pending, refresh } = await useFetch('/api/admin/bookings', {
   immediate: false,
@@ -136,6 +166,11 @@ const { data, pending, refresh } = await useFetch('/api/admin/bookings', {
 
 const csvExportUrl = computed(() => '/api/admin/export?format=csv')
 const jsonExportUrl = computed(() => '/api/admin/export?format=json')
+const deletePrompt = computed(() =>
+  deleteTarget.value
+    ? `${deleteTarget.value.date} ${deleteTarget.value.slot} · ${deleteTarget.value.name}`
+    : '',
+)
 
 async function checkAuth() {
   const result = await $fetch<{ authenticated: boolean }>('/api/auth/me')
@@ -159,7 +194,7 @@ async function login() {
     authenticated.value = true
     await refresh()
   } catch (error: any) {
-    authError.value = error?.data?.statusMessage || '登录失败'
+    authError.value = error?.data?.statusMessage || t('admin.loginFailed')
   } finally {
     loginLoading.value = false
   }
@@ -184,8 +219,33 @@ async function cleanupOldBookings() {
   }
 }
 
+function promptDelete(entry: { date: string; slot: string; id: string; name: string }) {
+  deleteTarget.value = entry
+  deleteDialog.value = true
+}
+
+async function confirmDelete() {
+  if (!deleteTarget.value) return
+  deleteLoading.value = true
+  try {
+    await $fetch('/api/admin/delete-booking', {
+      method: 'POST',
+      body: {
+        date: deleteTarget.value.date,
+        slot: deleteTarget.value.slot,
+        id: deleteTarget.value.id,
+      },
+    })
+    deleteDialog.value = false
+    deleteTarget.value = null
+    await refresh()
+  } finally {
+    deleteLoading.value = false
+  }
+}
+
 function formatTime(value: string) {
-  return new Intl.DateTimeFormat('zh-CN', {
+  return new Intl.DateTimeFormat(locale.value, {
     dateStyle: 'short',
     timeStyle: 'medium',
   }).format(new Date(value))
@@ -215,9 +275,5 @@ await checkAuth()
 .subcopy {
   color: var(--muted);
   margin-bottom: 0;
-}
-
-.export-actions {
-  width: min(100%, 520px);
 }
 </style>

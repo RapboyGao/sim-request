@@ -183,6 +183,26 @@ export async function restoreBooking(event: any, input: { date: string; slot: st
   return ranked
 }
 
+export async function deleteBooking(event: any, input: { date: string; slot: string; id: string }) {
+  const key = storageKey(input.date, input.slot)
+  const store = await readAllBookings(event)
+  const current = store[key] || []
+  const nextEntries = current.filter((entry) => entry.id !== input.id)
+
+  if (nextEntries.length === current.length) {
+    return current
+  }
+
+  const ranked = computeRankedEntries(nextEntries)
+  if (ranked.length === 0) {
+    delete store[key]
+  } else {
+    store[key] = ranked
+  }
+  await writeAllBookings(event, store)
+  return ranked
+}
+
 export async function deleteBookingsBefore(event: any, cutoffDate: string) {
   const store = await readAllBookings(event)
   const nextStore: BookingMap = {}

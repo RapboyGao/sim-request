@@ -2,7 +2,7 @@
   <v-container class="py-8 booking-page">
     <v-row justify="center">
       <v-col cols="12" lg="10" xl="8">
-        <v-card class="pa-5 sticky-card">
+        <v-card class="pa-6 pt-8 sticky-card">
           <v-form @submit.prevent="submitBooking">
             <v-menu v-model="dateMenu" :close-on-content-click="false" transition="scale-transition">
               <template #activator="{ props }">
@@ -13,9 +13,15 @@
             </v-menu>
             <v-select v-model="form.slots" :items="slots" :label="t('home.slots')" multiple chips closable-chips
               prepend-inner-icon="mdi-clock-outline" required />
+            <div class="text-caption text-medium-emphasis mt-n2 mb-4">
+              {{ t('home.slotHint') }}
+            </div>
             <v-text-field v-model="form.name" :label="t('home.name')" :placeholder="t('home.namePlaceholder')"
               prepend-inner-icon="mdi-account-outline" required />
             <v-switch v-model="form.isStudent" :label="t('home.student')" inset />
+            <div class="text-caption text-medium-emphasis mt-n2 mb-4">
+              {{ t('home.priorityHint') }}
+            </div>
             <v-btn type="submit" color="primary" block class="mt-2" prepend-icon="mdi-send">{{ t('home.submit')
             }}</v-btn>
           </v-form>
@@ -31,7 +37,7 @@
 
 <script setup lang="ts">
 import { buildSlots } from '~/utils/slots'
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const slots = buildSlots()
 
@@ -100,9 +106,9 @@ function toDateInputValue(value: Date) {
 }
 
 function formatDateLabel(value: string) {
-  const parts = value.split('-')
-  if (parts.length !== 3) return value
-  return `${parts[0]}年${parts[1]}月${parts[2]}日`
+  const date = new Date(`${value}T00:00:00`)
+  if (Number.isNaN(date.getTime())) return value
+  return new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium' }).format(date)
 }
 </script>
 
@@ -139,5 +145,11 @@ function formatDateLabel(value: string) {
 .sticky-card {
   max-width: 720px;
   margin: 0 auto;
+}
+
+@media (min-width: 600px) {
+  .sticky-card {
+    margin-top: 0.5rem;
+  }
 }
 </style>
