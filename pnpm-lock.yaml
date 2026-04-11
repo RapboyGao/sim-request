@@ -25,8 +25,17 @@ importers:
         specifier: ^10.2.4
         version: 10.2.4(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@vue/compiler-dom@3.5.32)(db0@0.3.4)(eslint@10.2.0(jiti@2.6.1))(ioredis@5.10.1)(magicast@0.5.2)(rollup@4.60.1)(typescript@5.9.3)(vue@3.5.32(typescript@5.9.3))
       '@oxc-parser/binding-linux-x64-gnu':
-        specifier: 0.124.0
-        version: 0.124.0
+        specifier: 0.117.0
+        version: 0.117.0
+      '@oxc-parser/binding-linux-x64-musl':
+        specifier: 0.117.0
+        version: 0.117.0
+      '@oxc-transform/binding-linux-x64-gnu':
+        specifier: 0.117.0
+        version: 0.117.0
+      '@oxc-transform/binding-linux-x64-musl':
+        specifier: 0.117.0
+        version: 0.117.0
       '@types/node':
         specifier: ^22.13.0
         version: 22.19.17
@@ -1109,12 +1118,6 @@ packages:
 
   '@oxc-parser/binding-linux-x64-gnu@0.117.0':
     resolution: {integrity: sha512-1QrTrf8rige7UPJrYuDKJLQOuJlgkt+nRSJLBMHWNm9TdivzP48HaK3f4q18EjNlglKtn03lgjMu4fryDm8X4A==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    cpu: [x64]
-    os: [linux]
-
-  '@oxc-parser/binding-linux-x64-gnu@0.124.0':
-    resolution: {integrity: sha512-RRB1evQiXRtMCsQQiAh9U0H3HzguLpE0ytfStuhRgmOj7tqUCOVxkHsvM9geZjAax6NqVRj7VXx32qjjkZPsBw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
@@ -5646,16 +5649,12 @@ snapshots:
   '@oxc-parser/binding-linux-x64-gnu@0.112.0':
     optional: true
 
-  '@oxc-parser/binding-linux-x64-gnu@0.117.0':
-    optional: true
-
-  '@oxc-parser/binding-linux-x64-gnu@0.124.0': {}
+  '@oxc-parser/binding-linux-x64-gnu@0.117.0': {}
 
   '@oxc-parser/binding-linux-x64-musl@0.112.0':
     optional: true
 
-  '@oxc-parser/binding-linux-x64-musl@0.117.0':
-    optional: true
+  '@oxc-parser/binding-linux-x64-musl@0.117.0': {}
 
   '@oxc-parser/binding-openharmony-arm64@0.112.0':
     optional: true
@@ -5782,14 +5781,12 @@ snapshots:
   '@oxc-transform/binding-linux-x64-gnu@0.112.0':
     optional: true
 
-  '@oxc-transform/binding-linux-x64-gnu@0.117.0':
-    optional: true
+  '@oxc-transform/binding-linux-x64-gnu@0.117.0': {}
 
   '@oxc-transform/binding-linux-x64-musl@0.112.0':
     optional: true
 
-  '@oxc-transform/binding-linux-x64-musl@0.117.0':
-    optional: true
+  '@oxc-transform/binding-linux-x64-musl@0.117.0': {}
 
   '@oxc-transform/binding-openharmony-arm64@0.112.0':
     optional: true
