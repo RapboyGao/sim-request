@@ -1,0 +1,45 @@
+{
+  "app": {
+    "title": "Réservation de visite du simulateur",
+    "navBooking": "Réserver",
+    "navRules": "Règles",
+    "navCalendar": "Calendrier",
+    "navAdmin": "Admin",
+    "navLanguage": "Langue"
+  },
+  "home": {
+    "eyebrow": "Réservation de visite du simulateur",
+    "title": "Réservez par date et par créneaux de 2 heures",
+    "summary": "Chaque créneau confirme jusqu'à 2 personnes. Les réservations supplémentaires vont sur liste d'attente. Les étudiants sont prioritaires.",
+    "date": "Date de réservation",
+    "slots": "Créneaux",
+    "name": "Nom",
+    "namePlaceholder": "Entrez votre nom",
+    "student": "Étudiant",
+    "submit": "Envoyer",
+    "success": "Réservation envoyée avec succès",
+    "error": "Échec de l'envoi"
+  },
+  "rules": {
+    "eyebrow": "Règles de réservation",
+    "title": "Simple, clair et adapté au mobile",
+    "summary": "Nous ne montrons que l’essentiel pour garder la page courte.",
+    "slotRuleTitle": "Règles des créneaux",
+    "slotRuleDesc": "La journée est découpée en 12 créneaux de 2 heures. Chaque créneau confirme jusqu'à 2 personnes; le reste est placé en attente.",
+    "priorityRuleTitle": "Priorité",
+    "priorityRuleDesc": "Les étudiants sont prioritaires; à priorité égale, l’ordre suit l’heure d’envoi.",
+    "bookingRuleTitle": "Comment réserver",
+    "bookingRuleDesc": "Saisissez une date, un nom, le statut étudiant et sélectionnez un ou plusieurs créneaux depuis la page d’accueil."
+  },
+  "calendar": {
+    "eyebrow": "Calendrier",
+    "title": "Voir l’état des créneaux d’une journée",
+    "date": "Choisir une date",
+    "confirmed": "Confirmé",
+    "waitlist": "Attente",
+    "confirmedList": "Liste confirmée",
+    "waitlistList": "Liste d'attente",
+    "noneConfirmed": "Aucune réservation confirmée",
+    "noneWaitlist": "Aucune liste d'attente"
+  }
+}

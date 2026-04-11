@@ -5,8 +5,8 @@
         <v-card class="pa-5 mb-4">
           <div class="d-flex align-center justify-space-between mb-3">
             <div>
-              <p class="eyebrow">预约日历</p>
-              <h1 class="text-h5 mb-1">查看某天各时段状态</h1>
+              <p class="eyebrow">{{ t('calendar.eyebrow') }}</p>
+              <h1 class="text-h5 mb-1">{{ t('calendar.title') }}</h1>
             </div>
           </div>
 
@@ -14,7 +14,7 @@
             <template #activator="{ props }">
               <v-text-field
                 :model-value="displayDate"
-                label="选择日期"
+                :label="t('calendar.date')"
                 readonly
                 append-inner-icon="mdi-calendar"
                 v-bind="props"
@@ -32,8 +32,8 @@
 
         <v-card v-else class="pa-5">
           <div class="d-flex flex-wrap gap-2 mb-4">
-            <v-chip color="primary" variant="tonal">已确认 {{ confirmedTotal }}</v-chip>
-            <v-chip color="secondary" variant="tonal">候补 {{ waitlistTotal }}</v-chip>
+            <v-chip color="primary" variant="tonal">{{ t('calendar.confirmed') }} {{ confirmedTotal }}</v-chip>
+            <v-chip color="secondary" variant="tonal">{{ t('calendar.waitlist') }} {{ waitlistTotal }}</v-chip>
           </div>
 
           <v-expansion-panels>
@@ -46,24 +46,24 @@
               </v-expansion-panel-title>
               <v-expansion-panel-text>
                 <div class="mb-3">
-                  <div class="section-title">确认名单</div>
+                  <div class="section-title">{{ t('calendar.confirmedList') }}</div>
                   <div class="compact-list">
                     <div v-for="entry in item.confirmed" :key="entry.id" class="compact-row">
                       <span>{{ entry.name }}</span>
                       <v-chip v-if="entry.isStudent" size="x-small" color="secondary" variant="tonal">同学</v-chip>
                     </div>
-                    <div v-if="item.confirmed.length === 0" class="text-medium-emphasis">暂无确认预约</div>
+                      <div v-if="item.confirmed.length === 0" class="text-medium-emphasis">{{ t('calendar.noneConfirmed') }}</div>
                   </div>
                 </div>
 
                 <div>
-                  <div class="section-title">候补名单</div>
+                  <div class="section-title">{{ t('calendar.waitlistList') }}</div>
                   <div class="compact-list">
                     <div v-for="entry in item.waitlist" :key="entry.id" class="compact-row">
                       <span>{{ entry.name }}</span>
                       <v-chip v-if="entry.isStudent" size="x-small" color="secondary" variant="tonal">同学</v-chip>
                     </div>
-                    <div v-if="item.waitlist.length === 0" class="text-medium-emphasis">暂无候补</div>
+                    <div v-if="item.waitlist.length === 0" class="text-medium-emphasis">{{ t('calendar.noneWaitlist') }}</div>
                   </div>
                 </div>
               </v-expansion-panel-text>
@@ -78,6 +78,7 @@
 <script setup lang="ts">
 import type { BookingEntry, SlotSummary } from '~/types/booking'
 import { buildSlots } from '~/utils/slots'
+const { t } = useI18n()
 
 const slots = buildSlots()
 const selectedDate = ref(new Date().toISOString().slice(0, 10))

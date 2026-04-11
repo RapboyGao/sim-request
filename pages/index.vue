@@ -4,11 +4,9 @@
       <v-col cols="12" lg="10" xl="8">
         <v-card class="hero-card mb-6 pa-6">
           <div class="hero-copy">
-            <p class="eyebrow">模拟机观摩预约</p>
-            <h1>按日期和 2 小时时段预约观摩名额</h1>
-            <p class="subcopy">
-              每个时段最多 2 人确认，超出自动进入候补。填写姓名并标记是否为同学，同学优先确认。
-            </p>
+            <p class="eyebrow">{{ t('home.eyebrow') }}</p>
+            <h1>{{ t('home.title') }}</h1>
+            <p class="subcopy">{{ t('home.summary') }}</p>
           </div>
         </v-card>
 
@@ -16,9 +14,9 @@
           <v-form @submit.prevent="submitBooking">
             <v-menu v-model="dateMenu" :close-on-content-click="false" transition="scale-transition">
               <template #activator="{ props }">
-                <v-text-field
+                  <v-text-field
                   :model-value="displayDate"
-                  label="预约日期"
+                  :label="t('home.date')"
                   readonly
                   required
                   append-inner-icon="mdi-calendar"
@@ -31,18 +29,18 @@
                 @update:model-value="onDateSelected"
               />
             </v-menu>
-            <v-select
-              v-model="form.slots"
-              :items="slots"
-              label="预约时段"
-              multiple
-              chips
-              closable-chips
-              required
-            />
-            <v-text-field v-model="form.name" label="姓名" placeholder="请输入姓名" required />
-            <v-switch v-model="form.isStudent" label="是否为同学" inset />
-            <v-btn type="submit" color="primary" block class="mt-2">提交预约</v-btn>
+              <v-select
+                  v-model="form.slots"
+                  :items="slots"
+                  :label="t('home.slots')"
+                  multiple
+                  chips
+                  closable-chips
+                  required
+                />
+            <v-text-field v-model="form.name" :label="t('home.name')" :placeholder="t('home.namePlaceholder')" required />
+            <v-switch v-model="form.isStudent" :label="t('home.student')" inset />
+            <v-btn type="submit" color="primary" block class="mt-2">{{ t('home.submit') }}</v-btn>
           </v-form>
 
           <v-alert v-if="message.text" class="mt-4" :type="message.type" variant="tonal">
@@ -56,6 +54,7 @@
 
 <script setup lang="ts">
 import { buildSlots } from '~/utils/slots'
+const { t } = useI18n()
 
 const slots = buildSlots()
 
@@ -89,13 +88,13 @@ async function submitBooking() {
       },
     })
     message.type = 'success'
-    message.text = '预约提交成功'
+    message.text = t('home.success')
     form.name = ''
     form.isStudent = false
     form.slots = defaultSlot ? [defaultSlot] : []
   } catch (error: any) {
     message.type = 'error'
-    message.text = error?.data?.statusMessage || '提交失败'
+    message.text = error?.data?.statusMessage || t('home.error')
   }
 }
 

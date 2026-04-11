@@ -1,0 +1,45 @@
+{
+  "app": {
+    "title": "Simulator Viewing Booking",
+    "navBooking": "Book",
+    "navRules": "Rules",
+    "navCalendar": "Calendar",
+    "navAdmin": "Admin",
+    "navLanguage": "Language"
+  },
+  "home": {
+    "eyebrow": "Simulator viewing booking",
+    "title": "Book a viewing slot by date and 2-hour time blocks",
+    "summary": "Each slot confirms up to 2 people. Extra bookings go to the waitlist. Students get higher priority.",
+    "date": "Booking date",
+    "slots": "Time slots",
+    "name": "Name",
+    "namePlaceholder": "Enter your name",
+    "student": "Student",
+    "submit": "Submit booking",
+    "success": "Booking submitted successfully",
+    "error": "Submission failed"
+  },
+  "rules": {
+    "eyebrow": "Booking rules",
+    "title": "Simple, clear, and mobile-friendly",
+    "summary": "Only the essentials are shown so the rules page stays short.",
+    "slotRuleTitle": "Slot rules",
+    "slotRuleDesc": "The day is split into 12 two-hour slots. Each slot confirms up to 2 people; extras join the waitlist.",
+    "priorityRuleTitle": "Priority rules",
+    "priorityRuleDesc": "Students are prioritized over non-students; same priority is sorted by submission time.",
+    "bookingRuleTitle": "How to book",
+    "bookingRuleDesc": "Enter a date, name, student status, and select one or more slots from the home page."
+  },
+  "calendar": {
+    "eyebrow": "Booking calendar",
+    "title": "View a day’s slot status",
+    "date": "Select date",
+    "confirmed": "Confirmed",
+    "waitlist": "Waitlist",
+    "confirmedList": "Confirmed list",
+    "waitlistList": "Waitlist list",
+    "noneConfirmed": "No confirmed bookings",
+    "noneWaitlist": "No waitlist bookings"
+  }
+}
