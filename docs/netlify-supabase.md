@@ -1,0 +1,40 @@
+# Netlify + Supabase 部署检查清单
+
+## Netlify
+
+- Build command: `pnpm build`
+- Publish directory: `.output/public`
+- Node version: `22.11.0`
+
+## Environment variables
+
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- Optional: `SUPABASE_BOOKINGS_TABLE=bookings`
+
+## Supabase table
+
+```sql
+create table if not exists public.bookings (
+  id uuid primary key,
+  date text not null,
+  slot text not null,
+  name text not null,
+  is_student boolean not null default false,
+  created_at timestamptz not null default now(),
+  status text not null default 'active'
+);
+
+create index if not exists bookings_date_slot_idx on public.bookings (date, slot);
+create index if not exists bookings_created_at_idx on public.bookings (created_at);
+```
+
+## Local development
+
+```bash
+pnpm install
+pnpm dev
+```
+
+Local data still uses `.data/bookings.json`.

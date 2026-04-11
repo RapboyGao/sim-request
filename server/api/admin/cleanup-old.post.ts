@@ -24,6 +24,6 @@ export default defineEventHandler(async (event) => {
   return {
     ok: true,
     cutoffDate,
-    removedCount: result.removedKeys.length,
+    removedCount: result?.removedKeys.length || 0,
   }
 })

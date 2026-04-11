@@ -20,8 +20,12 @@ export default defineNuxtConfig({
     plugins: [vuetify()],
   },
   runtimeConfig: {
-    bookingKvBinding: process.env.BOOKING_KV_BINDING || 'BOOKING_KV',
+    supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
     localJsonStorageFile: process.env.BOOKING_STORAGE_FILE || '.data/bookings.json',
+    public: {
+      supabaseUrl: process.env.SUPABASE_URL || '',
+      supabaseAnonKey: process.env.SUPABASE_ANON_KEY || '',
+    },
   },
   i18n: {
     strategy: 'prefix_except_default',
@@ -36,6 +40,7 @@ export default defineNuxtConfig({
     ],
   },
   nitro: {
+    preset: 'netlify',
     prerender: {
       routes: ['/'],
     },

@@ -1,0 +1,11 @@
+[build]
+  command = "pnpm build"
+  publish = ".output/public"
+
+[build.environment]
+  NODE_VERSION = "22.11.0"
+  NPM_FLAGS = "--version"
+
+[functions]
+  node_bundler = "esbuild"
+

@@ -1,5 +1,11 @@
 .nuxt
 .output
+.netlify
+.supabase
 node_modules
 pnpm-debug.log*
 .data
+dist
+.env
+.env.local
+.env.*.local
