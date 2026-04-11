@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   devServer: {
     port: 1345,
   },
-  css: ['~/assets/main.css', 'vuetify/styles'],
+  css: ['~/assets/scss/main.scss', 'vuetify/styles'],
   modules: ['@nuxtjs/i18n'],
   build: {
     transpile: ['vuetify'],

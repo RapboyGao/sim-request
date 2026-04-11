@@ -25,6 +25,7 @@
     "@nuxt/eslint-config": "^1.8.0",
     "@nuxtjs/i18n": "^10.2.4",
     "@types/node": "^22.13.0",
+    "sass": "^1.99.0",
     "typescript": "^5.8.0",
     "vite-plugin-vuetify": "^2.1.0"
   }

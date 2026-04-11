@@ -17,6 +17,15 @@
   --primary-strong: #115e59;
   --accent: #f97316;
   --shadow: rgba(15, 23, 42, 0.08);
+
+  --v-theme-background: 246, 244, 239;
+  --v-theme-surface: 255, 255, 255;
+  --v-theme-surface-variant: 241, 237, 228;
+  --v-theme-on-surface: 31, 41, 55;
+  --v-theme-on-surface-variant: 107, 114, 128;
+  --v-theme-primary: 15, 118, 110;
+  --v-theme-secondary: 249, 115, 22;
+  --v-theme-error: 220, 38, 38;
 }
 
 [data-theme='dark'] {
@@ -38,39 +47,13 @@
   --primary-strong: #5eead4;
   --accent: #fb923c;
   --shadow: rgba(0, 0, 0, 0.32);
-}
 
-html,
-body,
-#__nuxt {
-  min-height: 100%;
-  margin: 0;
-  background:
-    radial-gradient(circle at top left, var(--bg-accent-start), transparent 30%),
-    radial-gradient(circle at right top, var(--bg-accent-end), transparent 26%),
-    linear-gradient(180deg, var(--bg-gradient-end) 0%, var(--bg) 100%);
-  color: var(--text);
-}
-
-body {
-  font-family:
-    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    sans-serif;
-}
-
-a {
-  color: inherit;
-}
-
-.v-card,
-.v-dialog .v-card,
-.v-menu .v-list,
-.v-navigation-drawer {
-  background-color: var(--surface);
-  color: var(--text);
-}
-
-.v-divider {
-  opacity: 1;
-  border-color: var(--border);
+  --v-theme-background: 15, 23, 42;
+  --v-theme-surface: 17, 24, 39;
+  --v-theme-surface-variant: 31, 41, 55;
+  --v-theme-on-surface: 229, 231, 235;
+  --v-theme-on-surface-variant: 156, 163, 175;
+  --v-theme-primary: 45, 212, 191;
+  --v-theme-secondary: 251, 146, 60;
+  --v-theme-error: 248, 113, 113;
 }
