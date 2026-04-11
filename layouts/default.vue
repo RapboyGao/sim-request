@@ -15,8 +15,13 @@
             </v-btn>
           </template>
           <v-list density="compact">
-            <v-list-item v-for="locale in locales" :key="locale.code" :to="switchLocalePath(locale.code)"
-              :title="locale.code" :prepend-icon="localeIcon(locale.code)" />
+            <v-list-item
+              v-for="locale in locales"
+              :key="locale.code"
+              :to="switchLocalePath(locale.code)"
+              :title="localeLabel(locale.code)"
+              :prepend-icon="localeIcon(locale.code)"
+            />
           </v-list>
         </v-menu>
         <v-menu>

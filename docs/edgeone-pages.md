@@ -27,13 +27,15 @@ create table if not exists public.bookings (
   date text not null,
   slot text not null,
   name text not null,
-  is_student boolean not null default false,
   created_at timestamptz not null default now(),
-  status text not null default 'active'
+  status text not null default 'active',
+  priority_level text not null default 'normal'
 );
 
 create index if not exists bookings_date_slot_idx on public.bookings (date, slot);
 create index if not exists bookings_created_at_idx on public.bookings (created_at);
+
+-- Allowed values: specified | classmate | normal
 ```
 
 ## 备注

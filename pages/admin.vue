@@ -74,7 +74,7 @@
                 <col class="col-date" />
                 <col class="col-slot" />
                 <col class="col-name" />
-                <col class="col-student" />
+                <col class="col-classmate" />
               <col class="col-status" />
                 <col class="col-priority" />
               <col class="col-created" />
@@ -85,7 +85,7 @@
                   <th>{{ t('admin.columns.date') }}</th>
                   <th>{{ t('admin.columns.slot') }}</th>
                   <th>{{ t('admin.columns.name') }}</th>
-                  <th>{{ t('admin.columns.student') }}</th>
+                  <th>{{ t('admin.columns.classmate') }}</th>
                   <th>{{ t('admin.columns.status') }}</th>
                   <th>{{ t('admin.columns.priority') }}</th>
                   <th>{{ t('admin.columns.createdAt') }}</th>
@@ -97,7 +97,7 @@
                   <td>{{ entry.date }}</td>
                   <td>{{ entry.slot }}</td>
                   <td>{{ entry.name }}</td>
-                  <td>{{ entry.isStudent ? t('admin.yes') : t('admin.no') }}</td>
+                  <td>{{ entry.priorityLevel === 'classmate' ? t('admin.yes') : t('admin.no') }}</td>
                   <td>
                     <v-chip size="small" :color="entry.status === 'canceled' ? 'secondary' : 'primary'" variant="tonal"
                       :prepend-icon="entry.status === 'canceled' ? 'mdi-cancel' : 'mdi-check'">
@@ -197,11 +197,11 @@ const deleteDialog = ref(false)
 const deleteLoading = ref(false)
 const deleteTarget = ref<{ date: string; slot: string; id: string; name: string } | null>(null)
 const priorityLoading = ref(false)
-type PriorityLevel = 'specified' | 'student' | 'normal'
+type PriorityLevel = 'specified' | 'classmate' | 'normal'
 
 const priorityOptions = computed<Array<{ title: string; value: PriorityLevel }>>(() => [
   { title: t('admin.prioritySpecified'), value: 'specified' },
-  { title: t('admin.priorityStudent'), value: 'student' },
+  { title: t('admin.priorityClassmate'), value: 'classmate' },
   { title: t('admin.priorityNormal'), value: 'normal' },
 ])
 
@@ -229,7 +229,7 @@ const sortedEntries = computed(() => {
     if (left.priorityLevel !== right.priorityLevel) {
       const order: Record<string, number> = {
         specified: 0,
-        student: 1,
+        classmate: 1,
         normal: 2,
       }
       return (order[left.priorityLevel] ?? 2) - (order[right.priorityLevel] ?? 2)
@@ -239,8 +239,6 @@ const sortedEntries = computed(() => {
       if (left.status === 'canceled') return 1
       if (right.status === 'canceled') return -1
     }
-
-    if (left.isStudent !== right.isStudent) return left.isStudent ? -1 : 1
     return left.createdAt.localeCompare(right.createdAt)
   })
 })
@@ -299,10 +297,10 @@ function promptDelete(entry: { date: string; slot: string; id: string; name: str
 
 function priorityMeta(level?: string) {
   if (level === 'specified') {
-    return { label: t('admin.prioritySpecified'), color: 'error', icon: 'mdi-star-four-points' }
+    return { label: t('admin.prioritySpecified'), color: 'primary', icon: 'mdi-arrow-collapse-up' }
   }
-  if (level === 'student') {
-    return { label: t('admin.priorityStudent'), color: 'success', icon: 'mdi-school-outline' }
+  if (level === 'classmate') {
+    return { label: t('admin.priorityClassmate'), color: 'success', icon: 'mdi-school-outline' }
   }
   return { label: t('admin.priorityNormal'), color: 'secondary', icon: 'mdi-account-outline' }
 }
@@ -387,7 +385,7 @@ await checkAuth()
   width: 20%;
 }
 
-.admin-table :deep(.col-student) {
+.admin-table :deep(.col-classmate) {
   width: 72px;
 }
 

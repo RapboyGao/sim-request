@@ -14,12 +14,35 @@
     </div>
     <v-text-field v-model="form.name" :label="t('home.name')" :placeholder="t('home.namePlaceholder')"
       prepend-inner-icon="mdi-account-outline" required />
-    <v-switch v-model="form.isStudent" :label="t('home.student')" inset />
+    <v-select
+      v-model="form.priorityLevel"
+      :items="priorityItems"
+      :label="t('home.priorityLabel')"
+      prepend-inner-icon="mdi-badge-account-outline"
+      item-title="title"
+      item-value="value"
+      required
+    >
+      <template #item="{ props, item }">
+        <v-list-item v-bind="props">
+          <template #prepend>
+            <v-icon :icon="item.raw.icon" />
+          </template>
+        </v-list-item>
+      </template>
+      <template #selection="{ item }">
+        <v-icon :icon="item.raw.icon" size="16" class="me-2" />
+        <span>{{ item.title }}</span>
+      </template>
+    </v-select>
     <div class="text-caption text-medium-emphasis mt-n2 mb-4">
       {{ t('home.priorityHint') }}
     </div>
     <div class="text-caption text-medium-emphasis mt-n2 mb-4">
       {{ t('home.calendarHint') }}
+    </div>
+    <div class="text-caption text-medium-emphasis mt-n2 mb-4">
+      {{ t('home.cancelRestoreHint') }}
     </div>
     <v-alert
       v-if="duplicateSlots.length > 0"
@@ -73,7 +96,7 @@ const form = reactive({
   date: today,
   slots: defaultSlot ? [defaultSlot] : [],
   name: '',
-  isStudent: false,
+  priorityLevel: 'normal' as 'normal' | 'classmate',
 })
 
 const message = reactive<{ text: string; type: 'success' | 'error' | 'info' }>({
@@ -83,6 +106,18 @@ const message = reactive<{ text: string; type: 'success' | 'error' | 'info' }>({
 const duplicateSlots = ref<string[]>([])
 
 const displayDate = computed(() => formatDateLabel(form.date))
+const priorityItems = computed(() => [
+  {
+    title: translateWithFallback('home.priorityNormal', '普通'),
+    value: 'normal',
+    icon: 'mdi-account-outline',
+  },
+  {
+    title: translateWithFallback('home.priorityClassmate', '同学'),
+    value: 'classmate',
+    icon: 'mdi-badge-account-outline',
+  },
+])
 const duplicateMessage = computed(() => {
   if (duplicateSlots.value.length === 1) {
     return t('home.duplicateSlotSingle')
@@ -100,13 +135,13 @@ async function submitBooking() {
         date: form.date,
         slots: form.slots,
         name: form.name,
-        isStudent: form.isStudent,
+        isClassmate: form.priorityLevel === 'classmate',
       },
     })
     message.type = 'success'
     message.text = t('home.success')
     form.name = ''
-    form.isStudent = false
+    form.priorityLevel = 'normal'
     form.slots = defaultSlot ? [defaultSlot] : []
   } catch (error: any) {
     message.type = 'error'
@@ -146,6 +181,11 @@ function formatDateLabel(value: string) {
   const date = new Date(`${value}T00:00:00`)
   if (Number.isNaN(date.getTime())) return value
   return new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium' }).format(date)
+}
+
+function translateWithFallback(key: string, fallback: string) {
+  const value = t(key)
+  return value === key ? fallback : value
 }
 
 function removeDuplicateSlots() {

@@ -21,7 +21,6 @@ create table if not exists public.bookings (
   date text not null,
   slot text not null,
   name text not null,
-  is_student boolean not null default false,
   priority_level text not null default 'normal',
   created_at timestamptz not null default now(),
   status text not null default 'active'
@@ -33,12 +32,7 @@ create index if not exists bookings_created_at_idx on public.bookings (created_a
 alter table public.bookings
   add column if not exists priority_level text not null default 'normal';
 
-update public.bookings
-set priority_level = case
-  when priority_level is null then
-    case when is_student then 'student' else 'normal' end
-  else priority_level
-end;
+-- Allowed values: specified | classmate | normal
 ```
 
 ## Local development

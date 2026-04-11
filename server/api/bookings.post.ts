@@ -6,14 +6,14 @@ export default defineEventHandler(async (event) => {
     date?: string
     slots?: unknown[]
     name?: string
-    isStudent?: boolean
+    isClassmate?: boolean
   }
   const date = String(body.date || '')
   const slots: string[] = Array.isArray(body.slots)
     ? body.slots.map((slot) => String(slot))
     : []
   const name = String(body.name || '').trim()
-  const isStudent = Boolean(body.isStudent)
+  const isClassmate = Boolean(body.isClassmate)
 
   if (!isValidDate(date)) {
     throw createError({ statusCode: 400, statusMessage: '日期格式不正确' })
@@ -56,7 +56,7 @@ export default defineEventHandler(async (event) => {
 
   const bookings = []
   for (const slot of selectedSlots) {
-    bookings.push(await createBooking(event, { date, slot, name, isStudent }))
+    bookings.push(await createBooking(event, { date, slot, name, isClassmate }))
   }
 
   return {

@@ -45,7 +45,6 @@ export default defineEventHandler(async (event) => {
       date,
       slot,
       name: item.name,
-      isStudent: item.isStudent ? '是' : '否',
       priorityLevel: item.priorityLevel,
       status: item.status === 'canceled' ? '已取消' : '未取消',
       createdAt: item.createdAt,
@@ -74,7 +73,6 @@ export default defineEventHandler(async (event) => {
       date: row.date,
       slot: row.slot,
       name: row.name,
-      is_student: row.isStudent === '是',
       priority_level: row.priorityLevel,
       created_at: row.createdAt,
       status: row.status === '已取消' ? 'canceled' : 'active',
@@ -82,12 +80,11 @@ export default defineEventHandler(async (event) => {
   }
 
   const csv = [
-    ['日期', '时段', '姓名', '是否为同学', '级别', '状态', '提交时间'].map(toCsvValue).join(','),
+    ['日期', '时段', '姓名', '级别', '状态', '提交时间'].map(toCsvValue).join(','),
     ...rows.map((row) => [
       row.date,
       row.slot,
       row.name,
-      row.isStudent,
       row.priorityLevel,
       row.status,
       row.createdAt,

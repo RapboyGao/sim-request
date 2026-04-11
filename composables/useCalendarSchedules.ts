@@ -9,7 +9,7 @@ type DaySummary = {
 type DisplayEntry = {
   key: string
   name: string
-  isStudent: boolean
+  priorityLevel: BookingEntry['priorityLevel']
   createdAt: string
   targets: Array<{ date: string; slot: string; id: string; label: string }>
 }
@@ -138,7 +138,7 @@ function buildDisplayEntries(segments: SlotSummary[], type: 'confirmed' | 'waitl
         : sortActiveEntries(segment.canceled)
 
     for (const entry of selected) {
-      const key = `${entry.name}|${entry.isStudent ? '1' : '0'}|${entry.status}`
+      const key = `${entry.name}|${entry.priorityLevel}|${entry.status}`
       const target = {
         date,
         slot: segment.slot,
@@ -149,7 +149,7 @@ function buildDisplayEntries(segments: SlotSummary[], type: 'confirmed' | 'waitl
         rows.set(key, {
           key,
           name: entry.name,
-          isStudent: entry.isStudent,
+          priorityLevel: entry.priorityLevel,
           createdAt: entry.createdAt,
           targets: [target],
         })
@@ -165,7 +165,14 @@ function buildDisplayEntries(segments: SlotSummary[], type: 'confirmed' | 'waitl
   }
 
   return [...rows.values()].sort((left, right) => {
-    if (left.isStudent !== right.isStudent) return left.isStudent ? -1 : 1
+    if (left.priorityLevel !== right.priorityLevel) {
+      const order: Record<BookingEntry['priorityLevel'], number> = {
+        specified: 0,
+        classmate: 1,
+        normal: 2,
+      }
+      return order[left.priorityLevel] - order[right.priorityLevel]
+    }
     return left.createdAt.localeCompare(right.createdAt)
   })
 }
@@ -182,7 +189,7 @@ function areSlotSummariesEqual(
 
 function signature(entries: BookingEntry[]) {
   return entries
-    .map((entry) => `${entry.name}|${entry.isStudent ? '1' : '0'}|${entry.status}`)
+    .map((entry) => `${entry.name}|${entry.priorityLevel}|${entry.status}`)
     .join('||')
 }
 
@@ -220,7 +227,14 @@ function toSlotEnd(date: string, slot: string) {
 
 function sortActiveEntries(entries: BookingEntry[]) {
   return [...entries].sort((left, right) => {
-    if (left.isStudent !== right.isStudent) return left.isStudent ? -1 : 1
+    if (left.priorityLevel !== right.priorityLevel) {
+      const order: Record<BookingEntry['priorityLevel'], number> = {
+        specified: 0,
+        classmate: 1,
+        normal: 2,
+      }
+      return order[left.priorityLevel] - order[right.priorityLevel]
+    }
     return left.createdAt.localeCompare(right.createdAt)
   })
 }

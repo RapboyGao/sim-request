@@ -24,7 +24,8 @@
             <div class="entry-main">
               <div class="entry-name-line">
                 <span>{{ entry.name }}</span>
-                <v-icon v-if="entry.isStudent" icon="mdi-school-outline" size="14" color="success" />
+                <v-icon v-if="entry.priorityLevel === 'specified'" icon="mdi-arrow-collapse-up" size="14" color="primary" />
+                <v-icon v-if="entry.priorityLevel === 'classmate'" icon="mdi-school-outline" size="14" color="success" />
               </div>
               <span class="entry-time">{{ formatTimeLabel(entry.createdAt) }}</span>
             </div>
@@ -73,7 +74,8 @@
             <div class="entry-main">
               <div class="entry-name-line">
                 <span>{{ entry.name }}</span>
-                <v-icon v-if="entry.isStudent" icon="mdi-school-outline" size="14" color="success" />
+                <v-icon v-if="entry.priorityLevel === 'specified'" icon="mdi-arrow-collapse-up" size="14" color="primary" />
+                <v-icon v-if="entry.priorityLevel === 'classmate'" icon="mdi-school-outline" size="14" color="success" />
               </div>
               <span class="entry-time">{{ formatTimeLabel(entry.createdAt) }}</span>
             </div>
@@ -163,6 +165,10 @@
             </div>
           </div>
           <div v-if="item.canceledRows.length === 0" class="text-medium-emphasis">{{ t('calendar.noneCanceled') }}</div>
+        </div>
+        <div class="hint-row text-caption text-medium-emphasis mt-1 mb-2">
+          <span class="hint-bullet">•</span>
+          <span>{{ t('calendar.canceledHint') }}</span>
         </div>
       </div>
     </div>

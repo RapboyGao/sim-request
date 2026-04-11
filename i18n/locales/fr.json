@@ -14,21 +14,26 @@
   "home": {
     "eyebrow": "Observation Réservation",
     "title": "Réservez par date et par créneaux de 2 heures",
-    "summary": "Chaque créneau confirme jusqu'à 2 personnes. Les réservations supplémentaires vont sur liste d'attente. Les étudiants peuvent passer devant et sont prioritaires.",
+    "summary": "Chaque créneau confirme jusqu’à 2 personnes. Les réservations supplémentaires vont sur liste d’attente. Les camarades de classe peuvent passer devant et sont prioritaires.",
     "date": "Date de réservation",
     "slots": "Créneaux",
     "slotHint": "Une réservation de 4 heures nécessite de sélectionner deux créneaux de 2 heures.",
     "name": "Nom",
     "namePlaceholder": "Entrez votre nom",
-    "student": "Étudiant",
-    "priorityHint": "Les étudiants peuvent passer devant et, à priorité égale, l’ordre suit l’heure d’envoi.",
+    "student": "Camarade de classe",
+    "studentToggleNormal": "Normal",
+    "studentToggleStudent": "Camarade de classe",
+    "priorityLevels": "Lors de la réservation, vous pouvez choisir Normal ou Camarade de classe.",
+    "priorityHint": "Les camarades de classe peuvent passer devant et, à priorité égale, l’ordre suit l’heure d’envoi.",
     "calendarHint": "Avant d'aller au centre des simulateurs, vérifiez le \"Calendrier\" pour confirmer que votre réservation a bien été enregistrée.",
     "duplicateSlotSingle": "Créneau de réservation en double détecté :",
     "duplicateSlotMultiple": "Créneaux de réservation en double détectés :",
     "removeDuplicateSlots": "Supprimer les créneaux en double",
     "submit": "Envoyer",
     "success": "Réservation envoyée avec succès",
-    "error": "Échec de l'envoi"
+    "error": "Échec de l'envoi",
+    "priorityLabel": "Niveau de priorité",
+    "cancelRestoreHint": "Si vous ne pouvez pas venir à l’heure réservée, vous pouvez d’abord annuler la réservation. Elle pourra être restaurée plus tard, et l’ordre d’origine restera inchangé."
   },
   "rules": {
     "eyebrow": "Observation Réservation",
@@ -37,16 +42,16 @@
     "slotRuleTitle": "Règles des créneaux",
     "slotRuleDesc": "La journée est découpée en 12 créneaux de 2 heures. Chaque créneau confirme jusqu'à 2 personnes; le reste est placé en attente.",
     "priorityRuleTitle": "Priorité",
-    "priorityRuleDesc": "Les étudiants peuvent passer devant et, à priorité égale, l’ordre suit l’heure d’envoi.",
+    "priorityRuleDesc": "Les camarades de classe peuvent passer devant et, à priorité égale, l’ordre suit l’heure d’envoi.",
     "bookingRuleTitle": "Comment réserver",
-    "bookingRuleDesc": "Saisissez une date, un nom, le statut étudiant et sélectionnez un ou plusieurs créneaux depuis la page d’accueil.",
+    "bookingRuleDesc": "Saisissez une date, un nom, le statut de camarade de classe et sélectionnez un ou plusieurs créneaux depuis la page d’accueil.",
     "processTitle": "Étapes de réservation",
     "stepOneTitle": "Choisir une date et des créneaux",
     "stepOneDesc": "Sélectionnez la date souhaitée puis un ou plusieurs créneaux.",
     "stepTwoTitle": "Saisir le nom et envoyer",
-    "stepTwoDesc": "Entrez votre nom réel et indiquez si vous êtes étudiant.",
+    "stepTwoDesc": "Entrez votre nom réel et indiquez si vous êtes un camarade de classe avant d’envoyer.",
     "stepThreeTitle": "Le système attribue automatiquement",
-    "stepThreeDesc": "Les étudiants sont prioritaires et les dépassements vont en attente."
+    "stepThreeDesc": "Les réservations désignées par l’enseignant passent en premier, puis les camarades de classe, puis les réservations normales. Les dépassements vont en attente."
   },
   "calendar": {
     "eyebrow": "Calendrier",
@@ -71,7 +76,8 @@
     "confirmRestoreTitle": "Confirmer la restauration",
     "restoreBooking": "Restaurer la réservation",
     "restoreAllBookings": "Restaurer toutes les réservations",
-    "confirmCancelTitle": "Confirmer l'annulation"
+    "confirmCancelTitle": "Confirmer l'annulation",
+    "canceledHint": "Si vous ne pouvez pas venir temporairement, vous pouvez d’abord annuler la réservation. Elle pourra être restaurée plus tard, et l’ordre d’origine restera inchangé."
   },
   "admin": {
     "eyebrow": "Panneau d'administration",
@@ -99,12 +105,13 @@
       "date": "Date",
       "slot": "Créneau",
       "name": "Nom",
-      "student": "Étudiant",
+      "student": "Camarade de classe",
       "status": "Statut",
       "priority": "Priorité",
       "rank": "Rang",
       "createdAt": "Envoyé le",
-      "action": "Action"
+      "action": "Action",
+      "classmate": "Camarade de classe"
     },
     "delete": "删除",
     "deleteTitle": "确认删除预约",
@@ -116,8 +123,9 @@
     "priorityTitle": "Définir la priorité de réservation",
     "priorityLabel": "Niveau de priorité",
     "confirmPriority": "Confirmer",
-    "prioritySpecified": "Spécifié",
-    "priorityStudent": "Étudiant",
-    "priorityNormal": "Normal"
+    "prioritySpecified": "Désigné par l’enseignant",
+    "priorityStudent": "Camarade de classe",
+    "priorityNormal": "Normal",
+    "priorityClassmate": "Camarade de classe"
   }
 }

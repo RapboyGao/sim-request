@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: '参数不完整' })
   }
 
-  if (priorityLevel !== 'specified' && priorityLevel !== 'student' && priorityLevel !== 'normal') {
+  if (priorityLevel !== 'specified' && priorityLevel !== 'classmate' && priorityLevel !== 'normal') {
     throw createError({ statusCode: 400, statusMessage: '级别不正确' })
   }
 

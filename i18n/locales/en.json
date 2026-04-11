@@ -14,21 +14,26 @@
   "home": {
     "eyebrow": "Observation Booking",
     "title": "Book a viewing slot by date and 2-hour time blocks",
-    "summary": "Each slot confirms up to 2 people. Extra bookings go to the waitlist. Students can jump the queue and get higher priority.",
+    "summary": "Each slot confirms up to 2 people. Extra bookings go to the waitlist. Classmates can jump the queue and get higher priority.",
     "date": "Booking date",
     "slots": "Time slots",
     "slotHint": "A 4-hour simulator booking requires selecting two 2-hour slots.",
     "name": "Name",
     "namePlaceholder": "Enter your name",
-    "student": "Student",
-    "priorityHint": "Students can jump the queue, and same priority is sorted by submission time.",
+    "student": "Classmate status",
+    "studentToggleNormal": "Normal",
+    "studentToggleStudent": "Classmate",
+    "priorityLevels": "You can choose Normal or Classmate when booking.",
+    "priorityHint": "Classmates can jump the queue, and same priority is sorted by submission time.",
     "calendarHint": "Before going to the simulator center, check the \"Booking calendar\" to confirm your booking was successful.",
     "duplicateSlotSingle": "Duplicate booking detected for the slot:",
     "duplicateSlotMultiple": "Duplicate bookings detected for the slots:",
     "removeDuplicateSlots": "Remove duplicate slots",
     "submit": "Submit booking",
     "success": "Booking submitted successfully",
-    "error": "Submission failed"
+    "error": "Submission failed",
+    "priorityLabel": "Priority level",
+    "cancelRestoreHint": "If you cannot make the booking time, you can cancel it first. It can still be restored later, and the original ordering will remain unchanged."
   },
   "rules": {
     "eyebrow": "Observation Booking",
@@ -37,16 +42,16 @@
     "slotRuleTitle": "Slot rules",
     "slotRuleDesc": "The day is split into 12 two-hour slots. Each slot confirms up to 2 people; extras join the waitlist.",
     "priorityRuleTitle": "Priority rules",
-    "priorityRuleDesc": "Students can jump the queue, and same priority is sorted by submission time.",
+    "priorityRuleDesc": "Classmates can jump the queue, and same priority is sorted by submission time.",
     "bookingRuleTitle": "How to book",
-    "bookingRuleDesc": "Enter a date, name, student status, and select one or more slots from the home page.",
+    "bookingRuleDesc": "Enter a date, name, classmate status, and select one or more slots from the home page.",
     "processTitle": "Booking flow",
     "stepOneTitle": "Choose a date and slots",
     "stepOneDesc": "Pick the date you want, then select one or more time slots.",
     "stepTwoTitle": "Fill in your name and submit",
-    "stepTwoDesc": "Enter your real name and mark whether you are a student.",
+    "stepTwoDesc": "Enter your real name and mark whether you are a classmate before submitting.",
     "stepThreeTitle": "The system assigns results",
-    "stepThreeDesc": "Students get priority, and overflow bookings go to the waitlist."
+    "stepThreeDesc": "Teacher-specified comes first, then classmates, then normal bookings. Overflow bookings go to the waitlist."
   },
   "calendar": {
     "eyebrow": "Booking calendar",
@@ -71,7 +76,8 @@
     "confirmRestoreTitle": "Confirm restore",
     "restoreBooking": "Restore booking",
     "restoreAllBookings": "Restore all bookings",
-    "confirmCancelTitle": "Confirm cancellation"
+    "confirmCancelTitle": "Confirm cancellation",
+    "canceledHint": "If you cannot make it temporarily, you can cancel the booking first. It can still be restored later, and the original ordering will remain unchanged."
   },
   "admin": {
     "eyebrow": "Admin panel",
@@ -99,12 +105,13 @@
       "date": "Date",
       "slot": "Slot",
       "name": "Name",
-      "student": "Student",
+      "student": "Classmate",
       "status": "Status",
       "priority": "Priority",
       "rank": "Rank",
       "createdAt": "Submitted at",
-      "action": "Action"
+      "action": "Action",
+      "classmate": "Classmate"
     },
     "delete": "删除",
     "deleteTitle": "确认删除预约",
@@ -116,8 +123,9 @@
     "priorityTitle": "Set booking priority",
     "priorityLabel": "Priority level",
     "confirmPriority": "Confirm",
-    "prioritySpecified": "Specified",
-    "priorityStudent": "Student",
-    "priorityNormal": "Normal"
+    "prioritySpecified": "Teacher-specified",
+    "priorityStudent": "Classmate",
+    "priorityNormal": "Normal",
+    "priorityClassmate": "Classmate"
   }
 }

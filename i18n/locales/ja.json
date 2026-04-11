@@ -14,21 +14,26 @@
   "home": {
     "eyebrow": "Observation 予約",
     "title": "日付と2時間枠で見学枠を予約する",
-    "summary": "各枠の確定は2人まで。超過分はキャンセル待ちになります。学生は優先され、先に割り込むことができます。",
+    "summary": "各枠の確定は2人まで。超過分はキャンセル待ちになります。同級生は優先され、先に割り込むことができます。",
     "date": "予約日",
     "slots": "時間枠",
     "slotHint": "4時間のシミュレータ予約には、2時間枠を2つ選択してください。",
     "name": "氏名",
     "namePlaceholder": "氏名を入力",
-    "student": "学生かどうか",
-    "priorityHint": "学生は先に割り込むことができ、同じ条件では送信順で並びます。",
+    "student": "同級生かどうか",
+    "studentToggleNormal": "通常",
+    "studentToggleStudent": "同級生",
+    "priorityLevels": "予約時は通常または同級生を選択できます。",
+    "priorityHint": "同級生は先に割り込むことができ、同じ条件では送信順で並びます。",
     "calendarHint": "シミュレータ中線へ向かう前に、「予約カレンダー」で予約が成功していることを確認してください。",
     "duplicateSlotSingle": "重複予約が検出された時間枠：",
     "duplicateSlotMultiple": "重複予約が検出された時間枠：",
     "removeDuplicateSlots": "重複枠を削除",
     "submit": "予約を送信",
     "success": "予約を送信しました",
-    "error": "送信に失敗しました"
+    "error": "送信に失敗しました",
+    "priorityLabel": "優先度",
+    "cancelRestoreHint": "予約時間に来られない場合は、いったん予約をキャンセルできます。あとで復元でき、元の順序も維持されます。"
   },
   "rules": {
     "eyebrow": "Observation 予約",
@@ -37,16 +42,16 @@
     "slotRuleTitle": "時間枠",
     "slotRuleDesc": "1日は12個の2時間枠に分かれています。各枠の確定は2人までで、超過分は待機になります。",
     "priorityRuleTitle": "優先順位",
-    "priorityRuleDesc": "学生は先に割り込むことができ、同じ条件では送信順で並びます。",
+    "priorityRuleDesc": "同級生は先に割り込むことができ、同じ条件では送信順で並びます。",
     "bookingRuleTitle": "予約方法",
-    "bookingRuleDesc": "ホームで日付、氏名、学生かどうかを入力し、複数の枠を選択して送信します。",
+    "bookingRuleDesc": "ホームで日付、氏名、同級生かどうかを入力し、複数の枠を選択して送信します。",
     "processTitle": "予約の流れ",
     "stepOneTitle": "日付と枠を選ぶ",
     "stepOneDesc": "予約したい日付を選び、1つ以上の時間枠を選択します。",
     "stepTwoTitle": "氏名を入力して送信",
-    "stepTwoDesc": "本名を入力し、学生かどうかを選んで送信します。",
+    "stepTwoDesc": "本名を入力し、同級生かどうかを選んで送信します。",
     "stepThreeTitle": "システムが自動判定",
-    "stepThreeDesc": "学生を優先し、定員超過分は待機に回します。"
+    "stepThreeDesc": "教員指定が最優先、次に同級生、最後に通常で、定員超過分は待機に回します。"
   },
   "calendar": {
     "eyebrow": "予約カレンダー",
@@ -71,7 +76,8 @@
     "confirmRestoreTitle": "復元を確認",
     "restoreBooking": "予約を復元",
     "restoreAllBookings": "すべての予約を復元",
-    "confirmCancelTitle": "キャンセル確認"
+    "confirmCancelTitle": "キャンセル確認",
+    "canceledHint": "一時的に来られない場合は、まず予約をキャンセルできます。その後に復元でき、元の順序も維持されます。"
   },
   "admin": {
     "eyebrow": "管理画面",
@@ -99,12 +105,13 @@
       "date": "日付",
       "slot": "時間枠",
       "name": "氏名",
-      "student": "学生",
+      "student": "同級生",
       "status": "状態",
       "priority": "優先度",
       "rank": "順番",
       "createdAt": "送信時刻",
-      "action": "操作"
+      "action": "操作",
+      "classmate": "同級生"
     },
     "delete": "删除",
     "deleteTitle": "确认删除预约",
@@ -116,8 +123,9 @@
     "priorityTitle": "予約優先度を設定",
     "priorityLabel": "優先度",
     "confirmPriority": "設定を確定",
-    "prioritySpecified": "指定",
-    "priorityStudent": "学生",
-    "priorityNormal": "通常"
+    "prioritySpecified": "教員指定",
+    "priorityStudent": "同級生",
+    "priorityNormal": "通常",
+    "priorityClassmate": "同級生"
   }
 }

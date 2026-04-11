@@ -25,13 +25,13 @@ function getSupabaseConfig() {
 function sortEntries(entries: BookingEntry[]) {
   const priorityOrder: Record<BookingPriority, number> = {
     specified: 0,
-    student: 1,
+    classmate: 1,
     normal: 2,
   }
 
   return [...entries].sort((a, b) => {
-    const leftPriority = normalizePriorityLevel(a.priorityLevel, a.isStudent ? 'student' : 'normal')
-    const rightPriority = normalizePriorityLevel(b.priorityLevel, b.isStudent ? 'student' : 'normal')
+    const leftPriority = normalizePriorityLevel(a.priorityLevel)
+    const rightPriority = normalizePriorityLevel(b.priorityLevel)
 
     if (priorityOrder[leftPriority] !== priorityOrder[rightPriority]) {
       return priorityOrder[leftPriority] - priorityOrder[rightPriority]
@@ -44,7 +44,7 @@ function normalizePriorityLevel(
   value: unknown,
   fallback: BookingPriority = 'normal',
 ): BookingPriority {
-  if (value === 'specified' || value === 'student' || value === 'normal') {
+  if (value === 'specified' || value === 'classmate' || value === 'normal') {
     return value
   }
   return fallback
@@ -63,7 +63,7 @@ function getPriorityFromRow(row: {
   priority_level?: unknown
   is_student?: unknown
 }) {
-  const priority = normalizePriorityLevel(row.priority_level, row.is_student ? 'student' : 'normal')
+  const priority = normalizePriorityLevel(row.priority_level, row.is_student ? 'classmate' : 'normal')
   return priority
 }
 
@@ -88,7 +88,7 @@ async function readSupabaseBookings(event: any): Promise<BookingMap | null> {
   const { client, table } = supabase
   const { data, error } = await client
     .from(table)
-    .select('date,slot,id,name,is_student,created_at,status')
+    .select('date,slot,id,name,priority_level,created_at,status,is_student')
     .order('date', { ascending: true })
     .order('slot', { ascending: true })
     .order('created_at', { ascending: true })
@@ -103,7 +103,7 @@ async function readSupabaseBookings(event: any): Promise<BookingMap | null> {
     slot: string
     id: string
     name: string
-    is_student: boolean
+    is_student?: boolean
     priority_level?: BookingPriority
     created_at: string
     status: BookingEntry['status']
@@ -115,7 +115,6 @@ async function readSupabaseBookings(event: any): Promise<BookingMap | null> {
       date: row.date,
       slot: row.slot,
       name: row.name,
-      isStudent: row.is_student,
       priorityLevel: getPriorityFromRow(row),
       createdAt: row.created_at,
       status: row.status,
@@ -143,7 +142,6 @@ async function writeSupabaseBookings(event: any, data: BookingMap) {
       date,
       slot,
       name: entry.name,
-      is_student: entry.isStudent,
       priority_level: entry.priorityLevel,
       created_at: entry.createdAt,
       status: entry.status,
@@ -229,7 +227,7 @@ export async function listDayBookings(event: any, date: string) {
   return results
 }
 
-export async function createBooking(event: any, input: { date: string; slot: string; name: string; isStudent: boolean }) {
+export async function createBooking(event: any, input: { date: string; slot: string; name: string; isClassmate: boolean }) {
   const now = new Date().toISOString()
   const key = storageKey(input.date, input.slot)
   const normalizedName = normalizeBookingName(input.name)
@@ -238,8 +236,7 @@ export async function createBooking(event: any, input: { date: string; slot: str
     date: input.date,
     slot: input.slot,
     name: normalizedName,
-    isStudent: input.isStudent,
-    priorityLevel: input.isStudent ? 'student' : 'normal',
+    priorityLevel: input.isClassmate ? 'classmate' : 'normal',
     createdAt: now,
     status: 'active',
   }
@@ -392,7 +389,6 @@ export async function setBookingPriority(
       ? {
           ...entry,
           priorityLevel: input.priorityLevel,
-          isStudent: input.priorityLevel === 'student',
         }
       : entry,
   )

@@ -21,6 +21,9 @@
     "name": "姓名",
     "namePlaceholder": "请输入姓名",
     "student": "是否为同学",
+    "studentToggleNormal": "普通",
+    "studentToggleStudent": "同学",
+    "priorityLevels": "当前可选普通或同学。预约时选择后即可提交。",
     "priorityHint": "同学有权插队，同一优先级按提交时间排序。",
     "calendarHint": "前往模拟机中心前请查看“预约日历”确认预约成功。",
     "duplicateSlotSingle": "检测到重复提交的时段：",
@@ -28,7 +31,9 @@
     "removeDuplicateSlots": "移除重复时段",
     "submit": "提交预约",
     "success": "预约提交成功",
-    "error": "提交失败"
+    "error": "提交失败",
+    "priorityLabel": "优先级",
+    "cancelRestoreHint": "如果预约时间来不了，可先取消预约；之后仍可恢复，且原有排序不受影响。"
   },
   "rules": {
     "eyebrow": "Observation 预约",
@@ -46,7 +51,7 @@
     "stepTwoTitle": "填写姓名并提交",
     "stepTwoDesc": "输入真实姓名，并标记是否为同学后提交。",
     "stepThreeTitle": "系统自动分配",
-    "stepThreeDesc": "同学优先，超过名额后自动进入候补。"
+    "stepThreeDesc": "教员指定优先，同学其次，普通最后，超出名额后自动进入候补。"
   },
   "calendar": {
     "eyebrow": "预约日历",
@@ -72,7 +77,8 @@
     "restoreBooking": "恢复预约",
     "restoreAllBookings": "全部恢复预约",
     "restoreHint": "恢复预约",
-    "confirmCancelTitle": "确认取消预约"
+    "confirmCancelTitle": "确认取消预约",
+    "canceledHint": "若暂时来不了，可先取消预约；之后可恢复，且原有排序不受影响。"
   },
   "admin": {
     "eyebrow": "管理员面板",
@@ -105,7 +111,8 @@
       "priority": "级别",
       "rank": "序号",
       "createdAt": "提交时间",
-      "action": "操作"
+      "action": "操作",
+      "classmate": "同学"
     },
     "delete": "删除",
     "deleteTitle": "确认删除预约",
@@ -117,8 +124,9 @@
     "priorityTitle": "设置预约级别",
     "priorityLabel": "预约级别",
     "confirmPriority": "确认设置",
-    "prioritySpecified": "指定",
+    "prioritySpecified": "教员指定",
     "priorityStudent": "同学",
-    "priorityNormal": "普通"
+    "priorityNormal": "普通",
+    "priorityClassmate": "同学"
   }
 }
