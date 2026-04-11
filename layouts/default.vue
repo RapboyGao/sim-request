@@ -80,8 +80,8 @@ const drawer = ref(false)
 
 function cycleThemeMode() {
   const order = ['system', 'light', 'dark'] as const
-  const currentIndex = order.indexOf(themeMode.value)
-  const next = order[(currentIndex + 1) % order.length]
+  const currentIndex = order.indexOf(themeMode.value as (typeof order)[number])
+  const next = order[(currentIndex + 1) % order.length] || 'system'
   setThemeMode(next)
 }
 
