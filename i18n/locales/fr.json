@@ -101,6 +101,7 @@
       "name": "Nom",
       "student": "Étudiant",
       "status": "Statut",
+      "priority": "Priorité",
       "rank": "Rang",
       "createdAt": "Envoyé le",
       "action": "Action"
@@ -110,6 +111,13 @@
     "active": "Actif",
     "canceled": "Annulé",
     "exportJsonSupabase": "Exporter JSON (Supabase)",
-    "exportJsonDebug": "Exporter JSON (débogage)"
+    "exportJsonDebug": "Exporter JSON (débogage)",
+    "setPriority": "Définir la priorité",
+    "priorityTitle": "Définir la priorité de réservation",
+    "priorityLabel": "Niveau de priorité",
+    "confirmPriority": "Confirmer",
+    "prioritySpecified": "Spécifié",
+    "priorityStudent": "Étudiant",
+    "priorityNormal": "Normal"
   }
 }

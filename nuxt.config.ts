@@ -1,6 +1,7 @@
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 
 export default defineNuxtConfig({
+  ssr: false,
   compatibilityDate: '2026-04-10',
   devtools: { enabled: true },
   devServer: {
@@ -44,8 +45,5 @@ export default defineNuxtConfig({
   },
   nitro: {
     preset: 'netlify',
-    prerender: {
-      routes: ['/'],
-    },
   },
 })

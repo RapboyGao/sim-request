@@ -101,6 +101,7 @@
       "name": "氏名",
       "student": "学生",
       "status": "状態",
+      "priority": "優先度",
       "rank": "順番",
       "createdAt": "送信時刻",
       "action": "操作"
@@ -110,6 +111,13 @@
     "active": "未キャンセル",
     "canceled": "キャンセル済み",
     "exportJsonSupabase": "JSONを出力（Supabase）",
-    "exportJsonDebug": "JSONを出力（デバッグ）"
+    "exportJsonDebug": "JSONを出力（デバッグ）",
+    "setPriority": "優先度を設定",
+    "priorityTitle": "予約優先度を設定",
+    "priorityLabel": "優先度",
+    "confirmPriority": "設定を確定",
+    "prioritySpecified": "指定",
+    "priorityStudent": "学生",
+    "priorityNormal": "通常"
   }
 }

@@ -75,9 +75,10 @@
                 <col class="col-slot" />
                 <col class="col-name" />
                 <col class="col-student" />
-                <col class="col-status" />
-                <col class="col-created" />
-                <col class="col-action" />
+              <col class="col-status" />
+                <col class="col-priority" />
+              <col class="col-created" />
+              <col class="col-action" />
               </colgroup>
               <thead>
                 <tr>
@@ -86,6 +87,7 @@
                   <th>{{ t('admin.columns.name') }}</th>
                   <th>{{ t('admin.columns.student') }}</th>
                   <th>{{ t('admin.columns.status') }}</th>
+                  <th>{{ t('admin.columns.priority') }}</th>
                   <th>{{ t('admin.columns.createdAt') }}</th>
                   <th>{{ t('admin.columns.action') }}</th>
                 </tr>
@@ -101,6 +103,30 @@
                       :prepend-icon="entry.status === 'canceled' ? 'mdi-cancel' : 'mdi-check'">
                       {{ entry.status === 'canceled' ? t('admin.canceled') : t('admin.active') }}
                     </v-chip>
+                  </td>
+                  <td>
+                    <v-menu>
+                      <template #activator="{ props }">
+                        <v-chip
+                          size="small"
+                          variant="tonal"
+                          :color="priorityMeta(entry.priorityLevel).color"
+                          :prepend-icon="priorityMeta(entry.priorityLevel).icon"
+                          v-bind="props"
+                        >
+                          {{ priorityMeta(entry.priorityLevel).label }}
+                        </v-chip>
+                      </template>
+                      <v-list min-width="180" density="comfortable">
+                        <v-list-item
+                          v-for="option in priorityOptions"
+                          :key="option.value"
+                          :title="option.title"
+                          :prepend-icon="priorityMeta(option.value).icon"
+                          @click="applyPriority(entry, option.value)"
+                        />
+                      </v-list>
+                    </v-menu>
                   </td>
                   <td>{{ formatTime(entry.createdAt) }}</td>
                   <td>
@@ -149,6 +175,7 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+
         </template>
       </v-col>
     </v-row>
@@ -169,6 +196,14 @@ const cleanupLoading = ref(false)
 const deleteDialog = ref(false)
 const deleteLoading = ref(false)
 const deleteTarget = ref<{ date: string; slot: string; id: string; name: string } | null>(null)
+const priorityLoading = ref(false)
+type PriorityLevel = 'specified' | 'student' | 'normal'
+
+const priorityOptions = computed<Array<{ title: string; value: PriorityLevel }>>(() => [
+  { title: t('admin.prioritySpecified'), value: 'specified' },
+  { title: t('admin.priorityStudent'), value: 'student' },
+  { title: t('admin.priorityNormal'), value: 'normal' },
+])
 
 const { data, pending, refresh } = await useFetch('/api/admin/bookings', {
   immediate: false,
@@ -190,6 +225,15 @@ const sortedEntries = computed(() => {
 
     const slotCompare = left.slot.localeCompare(right.slot)
     if (slotCompare !== 0) return slotCompare
+
+    if (left.priorityLevel !== right.priorityLevel) {
+      const order: Record<string, number> = {
+        specified: 0,
+        student: 1,
+        normal: 2,
+      }
+      return (order[left.priorityLevel] ?? 2) - (order[right.priorityLevel] ?? 2)
+    }
 
     if (left.status !== right.status) {
       if (left.status === 'canceled') return 1
@@ -251,6 +295,34 @@ async function cleanupOldBookings() {
 function promptDelete(entry: { date: string; slot: string; id: string; name: string }) {
   deleteTarget.value = entry
   deleteDialog.value = true
+}
+
+function priorityMeta(level?: string) {
+  if (level === 'specified') {
+    return { label: t('admin.prioritySpecified'), color: 'error', icon: 'mdi-star-four-points' }
+  }
+  if (level === 'student') {
+    return { label: t('admin.priorityStudent'), color: 'success', icon: 'mdi-school-outline' }
+  }
+  return { label: t('admin.priorityNormal'), color: 'secondary', icon: 'mdi-account-outline' }
+}
+
+async function applyPriority(entry: { date: string; slot: string; id: string; name: string; priorityLevel: string }, priorityLevel: PriorityLevel) {
+  priorityLoading.value = true
+  try {
+    await $fetch('/api/admin/set-priority', {
+      method: 'POST',
+      body: {
+        date: entry.date,
+        slot: entry.slot,
+        id: entry.id,
+        priorityLevel,
+      },
+    })
+    await refresh()
+  } finally {
+    priorityLoading.value = false
+  }
 }
 
 async function confirmDelete() {
@@ -321,6 +393,10 @@ await checkAuth()
 
 .admin-table :deep(.col-status) {
   width: 96px;
+}
+
+.admin-table :deep(.col-priority) {
+  width: 140px;
 }
 
 .admin-table :deep(.col-created) {

@@ -31,8 +31,9 @@ pnpm build
    - `SUPABASE_PUBLISHABLE_KEY`
    - `SUPABASE_SECRET_KEY`
    - 可选：`SUPABASE_BOOKINGS_TABLE`，默认 `bookings`
-5. 本地仍使用 `.data/bookings.json`，线上优先使用 Supabase。
-6. Netlify Node 版本建议使用 `20`。
+5. 数据表需要包含 `priority_level` 字段，用于支持 `指定 / 同学 / 普通` 三档优先级。
+6. 本地仍使用 `.data/bookings.json`，线上优先使用 Supabase。
+7. Netlify Node 版本建议使用 `20`。
 
 ### EdgeOne Pages + Supabase
 

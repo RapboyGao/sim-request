@@ -102,6 +102,7 @@
       "name": "姓名",
       "student": "同学",
       "status": "状态",
+      "priority": "级别",
       "rank": "序号",
       "createdAt": "提交时间",
       "action": "操作"
@@ -111,6 +112,13 @@
     "active": "未取消",
     "canceled": "已取消",
     "exportJsonSupabase": "导出 JSON（Supabase）",
-    "exportJsonDebug": "导出 JSON（调试）"
+    "exportJsonDebug": "导出 JSON（调试）",
+    "setPriority": "设置级别",
+    "priorityTitle": "设置预约级别",
+    "priorityLabel": "预约级别",
+    "confirmPriority": "确认设置",
+    "prioritySpecified": "指定",
+    "priorityStudent": "同学",
+    "priorityNormal": "普通"
   }
 }

@@ -1,7 +1,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import { buildSlots } from '~/utils/slots'
-import type { BookingEntry } from '~/types/booking'
+import type { BookingEntry, BookingPriority } from '~/types/booking'
 import { getSupabaseServerClient } from '~/server/utils/supabase'
 
 type BookingMap = Record<string, BookingEntry[]>
@@ -23,10 +23,31 @@ function getSupabaseConfig() {
 }
 
 function sortEntries(entries: BookingEntry[]) {
+  const priorityOrder: Record<BookingPriority, number> = {
+    specified: 0,
+    student: 1,
+    normal: 2,
+  }
+
   return [...entries].sort((a, b) => {
-    if (a.isStudent !== b.isStudent) return a.isStudent ? -1 : 1
+    const leftPriority = normalizePriorityLevel(a.priorityLevel, a.isStudent ? 'student' : 'normal')
+    const rightPriority = normalizePriorityLevel(b.priorityLevel, b.isStudent ? 'student' : 'normal')
+
+    if (priorityOrder[leftPriority] !== priorityOrder[rightPriority]) {
+      return priorityOrder[leftPriority] - priorityOrder[rightPriority]
+    }
     return a.createdAt.localeCompare(b.createdAt)
   })
+}
+
+function normalizePriorityLevel(
+  value: unknown,
+  fallback: BookingPriority = 'normal',
+): BookingPriority {
+  if (value === 'specified' || value === 'student' || value === 'normal') {
+    return value
+  }
+  return fallback
 }
 
 function normalizeBookingName(name: string) {
@@ -36,6 +57,14 @@ function normalizeBookingName(name: string) {
 function hasDuplicateBooking(entries: BookingEntry[], name: string) {
   const normalizedName = normalizeBookingName(name)
   return entries.some((entry) => normalizeBookingName(entry.name) === normalizedName)
+}
+
+function getPriorityFromRow(row: {
+  priority_level?: unknown
+  is_student?: unknown
+}) {
+  const priority = normalizePriorityLevel(row.priority_level, row.is_student ? 'student' : 'normal')
+  return priority
 }
 
 async function readLocalStorage(filePath: string): Promise<BookingMap> {
@@ -75,6 +104,7 @@ async function readSupabaseBookings(event: any): Promise<BookingMap | null> {
     id: string
     name: string
     is_student: boolean
+    priority_level?: BookingPriority
     created_at: string
     status: BookingEntry['status']
   }>) {
@@ -86,6 +116,7 @@ async function readSupabaseBookings(event: any): Promise<BookingMap | null> {
       slot: row.slot,
       name: row.name,
       isStudent: row.is_student,
+      priorityLevel: getPriorityFromRow(row),
       createdAt: row.created_at,
       status: row.status,
     })
@@ -113,6 +144,7 @@ async function writeSupabaseBookings(event: any, data: BookingMap) {
       slot,
       name: entry.name,
       is_student: entry.isStudent,
+      priority_level: entry.priorityLevel,
       created_at: entry.createdAt,
       status: entry.status,
     }))
@@ -207,6 +239,7 @@ export async function createBooking(event: any, input: { date: string; slot: str
     slot: input.slot,
     name: normalizedName,
     isStudent: input.isStudent,
+    priorityLevel: input.isStudent ? 'student' : 'normal',
     createdAt: now,
     status: 'active',
   }
@@ -340,4 +373,31 @@ export async function deleteBookingsBefore(event: any, cutoffDate: string) {
     }),
     remainingKeys: Object.keys(nextStore),
   }
+}
+
+export async function setBookingPriority(
+  event: any,
+  input: { date: string; slot: string; id: string; priorityLevel: BookingPriority },
+) {
+  const key = storageKey(input.date, input.slot)
+  const store = await readAllBookings(event)
+  const current = store[key] || []
+  const target = current.find((entry) => entry.id === input.id)
+  if (!target) {
+    return current
+  }
+
+  const nextEntries = current.map((entry) =>
+    entry.id === input.id
+      ? {
+          ...entry,
+          priorityLevel: input.priorityLevel,
+          isStudent: input.priorityLevel === 'student',
+        }
+      : entry,
+  )
+
+  store[key] = sortEntries(nextEntries)
+  await writeAllBookings(event, store)
+  return store[key]
 }

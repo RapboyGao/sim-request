@@ -1,4 +1,5 @@
 export type BookingStatus = 'active' | 'canceled'
+export type BookingPriority = 'specified' | 'student' | 'normal'
 
 export interface BookingEntry {
   id: string
@@ -6,6 +7,7 @@ export interface BookingEntry {
   slot: string
   name: string
   isStudent: boolean
+  priorityLevel: BookingPriority
   createdAt: string
   status: BookingStatus
 }
