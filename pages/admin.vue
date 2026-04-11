@@ -69,19 +69,72 @@
 
           <v-card class="pa-5">
             <v-skeleton-loader v-if="pending" type="table-heading, table-row@6" />
-            <v-table v-else class="admin-table">
+            <template v-else>
+              <div class="admin-bulkbar mb-4">
+                <v-checkbox
+                  v-model="selectAll"
+                  :indeterminate="selectedIds.length > 0 && selectedIds.length < sortedEntries.length"
+                  :label="t('admin.bulkSelectAll')"
+                  hide-details
+                  density="compact"
+                />
+                <div class="admin-bulkbar-meta">
+                  {{ t('admin.bulkSelectedCount', { count: selectedIds.length }) }}
+                </div>
+                <v-menu>
+                  <template #activator="{ props }">
+                    <v-btn
+                      color="primary"
+                      variant="tonal"
+                      :disabled="selectedIds.length === 0"
+                      prepend-icon="mdi-tune"
+                      v-bind="props"
+                    >
+                      {{ t('admin.bulkPriority') }}
+                    </v-btn>
+                  </template>
+                  <v-list min-width="200" density="comfortable">
+                    <v-list-item
+                      v-for="option in priorityOptions"
+                      :key="option.value"
+                      :title="option.title"
+                      :prepend-icon="priorityMeta(option.value).icon"
+                      @click="applyPriorityToSelected(option.value)"
+                    />
+                  </v-list>
+                </v-menu>
+                <v-btn
+                  color="error"
+                  variant="tonal"
+                  :disabled="selectedIds.length === 0"
+                  prepend-icon="mdi-delete-outline"
+                  @click="promptBulkDelete"
+                >
+                  {{ t('admin.bulkDelete') }}
+                </v-btn>
+              </div>
+              <v-table class="admin-table">
               <colgroup>
+                <col class="col-select" />
                 <col class="col-date" />
                 <col class="col-slot" />
                 <col class="col-name" />
                 <col class="col-classmate" />
-              <col class="col-status" />
+                <col class="col-status" />
                 <col class="col-priority" />
-              <col class="col-created" />
-              <col class="col-action" />
+                <col class="col-created" />
+                <col class="col-action" />
               </colgroup>
               <thead>
                 <tr>
+                  <th class="text-center">
+                    <v-checkbox
+                      v-model="selectAll"
+                      :indeterminate="selectedIds.length > 0 && selectedIds.length < sortedEntries.length"
+                      hide-details
+                      density="compact"
+                    />
+                  </th>
                   <th>{{ t('admin.columns.date') }}</th>
                   <th>{{ t('admin.columns.slot') }}</th>
                   <th>{{ t('admin.columns.name') }}</th>
@@ -94,6 +147,9 @@
               </thead>
               <tbody>
                 <tr v-for="entry in sortedEntries" :key="entry.id">
+                  <td class="text-center">
+                    <v-checkbox v-model="selectedIds" :value="entry.id" hide-details density="compact" />
+                  </td>
                   <td>{{ entry.date }}</td>
                   <td>{{ entry.slot }}</td>
                   <td>{{ entry.name }}</td>
@@ -141,7 +197,8 @@
                   </td>
                 </tr>
               </tbody>
-            </v-table>
+              </v-table>
+            </template>
           </v-card>
 
           <v-dialog v-model="cleanupDialog" max-width="520">
@@ -176,6 +233,24 @@
             </v-card>
           </v-dialog>
 
+          <v-dialog v-model="bulkDeleteDialog" max-width="520">
+            <v-card>
+              <v-card-title class="d-flex align-center">
+                <v-icon icon="mdi-delete-alert-outline" class="mr-2" color="error" />
+                {{ t('admin.bulkDeleteTitle') }}
+              </v-card-title>
+              <v-card-text>
+                {{ t('admin.bulkDeleteBody', { count: selectedIds.length }) }}
+              </v-card-text>
+              <v-card-actions class="justify-end">
+                <v-btn variant="text" @click="bulkDeleteDialog = false">{{ t('admin.cancel') }}</v-btn>
+                <v-btn color="error" :loading="bulkDeleteLoading" @click="confirmBulkDelete">
+                  {{ t('admin.confirmDelete') }}
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
         </template>
       </v-col>
     </v-row>
@@ -195,8 +270,11 @@ const cleanupDialog = ref(false)
 const cleanupLoading = ref(false)
 const deleteDialog = ref(false)
 const deleteLoading = ref(false)
+const bulkDeleteDialog = ref(false)
+const bulkDeleteLoading = ref(false)
 const deleteTarget = ref<{ date: string; slot: string; id: string; name: string } | null>(null)
 const priorityLoading = ref(false)
+const selectedIds = ref<string[]>([])
 type PriorityLevel = 'specified' | 'classmate' | 'normal'
 
 const priorityOptions = computed<Array<{ title: string; value: PriorityLevel }>>(() => [
@@ -241,6 +319,13 @@ const sortedEntries = computed(() => {
     }
     return left.createdAt.localeCompare(right.createdAt)
   })
+})
+
+const selectAll = computed({
+  get: () => sortedEntries.value.length > 0 && selectedIds.value.length === sortedEntries.value.length,
+  set: (checked: boolean) => {
+    selectedIds.value = checked ? sortedEntries.value.map((entry) => entry.id) : []
+  },
 })
 
 async function checkAuth() {
@@ -295,6 +380,11 @@ function promptDelete(entry: { date: string; slot: string; id: string; name: str
   deleteDialog.value = true
 }
 
+function promptBulkDelete() {
+  if (selectedIds.value.length === 0) return
+  bulkDeleteDialog.value = true
+}
+
 function priorityMeta(level?: string) {
   if (level === 'specified') {
     return { label: t('admin.prioritySpecified'), color: 'primary', icon: 'mdi-arrow-collapse-up' }
@@ -323,6 +413,29 @@ async function applyPriority(entry: { date: string; slot: string; id: string; na
   }
 }
 
+async function applyPriorityToSelected(priorityLevel: PriorityLevel) {
+  if (selectedIds.value.length === 0) return
+  priorityLoading.value = true
+  try {
+    const targets = sortedEntries.value.filter((entry) => selectedIds.value.includes(entry.id))
+    for (const entry of targets) {
+      await $fetch('/api/admin/set-priority', {
+        method: 'POST',
+        body: {
+          date: entry.date,
+          slot: entry.slot,
+          id: entry.id,
+          priorityLevel,
+        },
+      })
+    }
+    selectedIds.value = []
+    await refresh()
+  } finally {
+    priorityLoading.value = false
+  }
+}
+
 async function confirmDelete() {
   if (!deleteTarget.value) return
   deleteLoading.value = true
@@ -340,6 +453,29 @@ async function confirmDelete() {
     await refresh()
   } finally {
     deleteLoading.value = false
+  }
+}
+
+async function confirmBulkDelete() {
+  if (selectedIds.value.length === 0) return
+  bulkDeleteLoading.value = true
+  try {
+    const targets = sortedEntries.value.filter((entry) => selectedIds.value.includes(entry.id))
+    for (const entry of targets) {
+      await $fetch('/api/admin/delete-booking', {
+        method: 'POST',
+        body: {
+          date: entry.date,
+          slot: entry.slot,
+          id: entry.id,
+        },
+      })
+    }
+    bulkDeleteDialog.value = false
+    selectedIds.value = []
+    await refresh()
+  } finally {
+    bulkDeleteLoading.value = false
   }
 }
 
@@ -376,6 +512,10 @@ await checkAuth()
   width: 96px;
 }
 
+.admin-table :deep(.col-select) {
+  width: 48px;
+}
+
 .admin-table :deep(.col-slot) {
   width: 96px;
 }
@@ -404,6 +544,19 @@ await checkAuth()
 
 .admin-table :deep(.col-action) {
   width: 56px;
+}
+
+.admin-bulkbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+}
+
+.admin-bulkbar-meta {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-right: auto;
 }
 
 .admin-hero {
