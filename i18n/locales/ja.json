@@ -64,6 +64,7 @@
     "noneConfirmed": "確定予約なし",
     "noneWaitlist": "待機予約なし",
     "empty": "表示できる予約記録がありません",
+    "bookFromThisCard": "この枠から予約",
     "emptySearch": "条件に一致する氏名がありません",
     "searchLabel": "氏名で検索",
     "bookingCount": "件の予約",

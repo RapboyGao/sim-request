@@ -67,6 +67,7 @@
     "noneWaitlist": "暂无候补",
     "noneCanceled": "暂无已取消预约",
     "empty": "当前没有可显示的预约记录",
+    "bookFromThisCard": "用此场次预约",
     "bookingCount": "条预约",
     "cancel": "取消",
     "restore": "恢复",

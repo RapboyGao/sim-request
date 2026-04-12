@@ -64,6 +64,7 @@
     "noneConfirmed": "확정 예약 없음",
     "noneWaitlist": "대기 예약 없음",
     "empty": "표시할 예약 기록이 없습니다",
+    "bookFromThisCard": "이 시간대로 예약",
     "emptySearch": "현재 검색 조건에 맞는 이름이 없습니다",
     "searchLabel": "이름으로 검색",
     "bookingCount": "건 예약",

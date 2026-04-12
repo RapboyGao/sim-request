@@ -64,6 +64,7 @@
     "noneConfirmed": "No confirmed bookings",
     "noneWaitlist": "No waitlist bookings",
     "empty": "No booking records to display",
+    "bookFromThisCard": "Book from this slot",
     "bookingCount": "bookings",
     "canceled": "Canceled",
     "canceledList": "Canceled list",

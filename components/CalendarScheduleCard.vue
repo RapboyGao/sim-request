@@ -2,9 +2,14 @@
   <v-card class="schedule-card pa-4">
     <div class="schedule-title">
       <span>{{ item.date }} {{ item.slotLabel }}</span>
-      <v-chip size="small" color="primary" variant="tonal" prepend-icon="mdi-check">
-        {{ item.confirmed.length }}/2
-      </v-chip>
+      <v-btn
+        icon="mdi-calendar-plus-outline"
+        size="small"
+        variant="text"
+        color="primary"
+        :aria-label="t('calendar.bookFromThisCard')"
+        @click="bookFromThisCard"
+      />
     </div>
     <div class="schedule-subtitle">
       <span>{{ t('calendar.confirmed') }} {{ item.confirmed.length }}</span>
@@ -187,6 +192,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   cancel: [payload: { entry: { key: string; targets: FlatSchedule['confirmed'][number]['targets'] }; slots?: string[] }]
   restore: [payload: { entry: { key: string; targets: FlatSchedule['canceledRows'][number]['targets'] }; slots?: string[] }]
+  book: [payload: { date: string; slots: string[] }]
 }>()
 
 const cancelSlots = computed(() => [...new Set(props.item.sourceSlots)])
@@ -199,6 +205,13 @@ function openCancel(entry: FlatSchedule['confirmed'][number] | FlatSchedule['wai
 
 function openRestore(entry: FlatSchedule['canceledRows'][number], slots?: string[]) {
   emit('restore', { entry, slots })
+}
+
+function bookFromThisCard() {
+  emit('book', {
+    date: props.item.date,
+    slots: [...new Set(props.item.sourceSlots)],
+  })
 }
 
 function formatTimeLabel(value: string) {

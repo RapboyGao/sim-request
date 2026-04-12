@@ -88,6 +88,7 @@ import { buildSlots } from '~/utils/slots'
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
+const route = useRoute()
 const slots = buildSlots()
 
 const today = new Date().toISOString().slice(0, 10)
@@ -162,6 +163,21 @@ function onDateSelected(value: unknown) {
   dateMenu.value = false
 }
 
+function applyRoutePrefill() {
+  const queryDate = typeof route.query.date === 'string' ? normalizeDate(route.query.date) : ''
+  if (queryDate) {
+    form.date = queryDate
+  }
+
+  const querySlots = typeof route.query.slots === 'string' ? route.query.slots.split(',').map(slot => slot.trim()).filter(Boolean) : []
+  if (querySlots.length > 0) {
+    const validSlots = querySlots.filter(slot => slots.includes(slot))
+    if (validSlots.length > 0) {
+      form.slots = [...new Set(validSlots)]
+    }
+  }
+}
+
 function normalizeDate(value: unknown) {
   if (typeof value === 'string') {
     if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value
@@ -196,4 +212,10 @@ function removeDuplicateSlots() {
   form.slots = form.slots.filter((slot) => !duplicateSlots.value.includes(slot))
   duplicateSlots.value = []
 }
+
+watch(
+  () => [route.query.date, route.query.slots],
+  () => applyRoutePrefill(),
+  { immediate: true },
+)
 </script>

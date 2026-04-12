@@ -17,6 +17,7 @@
               :item="item"
               @cancel="openCancelDialogForEntry(item, $event.entry, $event.slots)"
               @restore="openRestoreDialog(item, $event.entry, $event.slots)"
+              @book="bookFromSchedule"
             />
           </div>
         </div>
@@ -61,6 +62,7 @@ useHead({
 })
 
 const cutoff = computed(() => new Date(Date.now() - 4 * 60 * 60 * 1000))
+const localePath = useLocalePath()
 const { data, pending, refresh } = await useFetch('/api/bookings')
 const { flatSchedules } = useCalendarSchedules(computed(() => data.value?.bookings || null), cutoff)
 
@@ -134,6 +136,15 @@ function openRestoreDialog(
   if (targets.length === 0) return
 
   openCancelDialog({ item, targets, mode: 'restore' })
+}
+
+async function bookFromSchedule(payload: { date: string; slots: string[] }) {
+  const query = new URLSearchParams()
+  query.set('date', payload.date)
+  if (payload.slots.length > 0) {
+    query.set('slots', payload.slots.join(','))
+  }
+  await navigateTo(`${localePath('/')}?${query.toString()}`)
 }
 
 async function confirmCancel() {
