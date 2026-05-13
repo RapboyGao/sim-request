@@ -38,10 +38,10 @@
               <v-menu location="end">
                 <template #activator="{ props }">
                   <v-btn
-                    icon="mdi-delete-outline"
-                    size="x-small"
+                    icon="mdi-dots-vertical"
+                    size="small"
                     variant="text"
-                    color="error"
+                    color="primary"
                     :aria-label="t('calendar.cancel')"
                     v-bind="props"
                   />
@@ -50,15 +50,15 @@
                   <v-list-item
                     v-for="slot in cancelSlots"
                     :key="slot"
-                    :title="`${t('calendar.cancelBooking')} ${slot}`"
+                    :title="`${t('calendar.cancelBookingRecoverable')} ${slot}`"
                     prepend-icon="mdi-clock-outline"
                     @click="openCancel(entry, [slot])"
                   />
                   <v-divider v-if="cancelSlots.length > 1" />
                   <v-list-item
                     v-if="cancelSlots.length > 1"
-                    :title="t('calendar.cancelAllBookings')"
-                    prepend-icon="mdi-delete-sweep-outline"
+                    :title="t('calendar.cancelAllBookingsRecoverable')"
+                    prepend-icon="mdi-backup-restore"
                     @click="openCancel(entry)"
                   />
                 </v-list>
@@ -88,10 +88,10 @@
               <v-menu location="end">
                 <template #activator="{ props }">
                   <v-btn
-                    icon="mdi-delete-outline"
-                    size="x-small"
+                    icon="mdi-dots-vertical"
+                    size="small"
                     variant="text"
-                    color="error"
+                    color="primary"
                     :aria-label="t('calendar.cancel')"
                     v-bind="props"
                   />
@@ -100,15 +100,15 @@
                   <v-list-item
                     v-for="slot in cancelSlots"
                     :key="slot"
-                    :title="`${t('calendar.cancelBooking')} ${slot}`"
+                    :title="`${t('calendar.cancelBookingRecoverable')} ${slot}`"
                     prepend-icon="mdi-clock-outline"
                     @click="openCancel(entry, [slot])"
                   />
                   <v-divider v-if="cancelSlots.length > 1" />
                   <v-list-item
                     v-if="cancelSlots.length > 1"
-                    :title="t('calendar.cancelAllBookings')"
-                    prepend-icon="mdi-delete-sweep-outline"
+                    :title="t('calendar.cancelAllBookingsRecoverable')"
+                    prepend-icon="mdi-backup-restore"
                     @click="openCancel(entry)"
                   />
                 </v-list>

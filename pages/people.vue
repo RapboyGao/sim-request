@@ -80,7 +80,7 @@
                       <v-list density="compact" min-width="220">
                         <v-list-item
                           v-if="row.status !== 'canceled'"
-                          :title="t('people.cancelBooking')"
+                          :title="t('people.cancelBookingRecoverable')"
                           prepend-icon="mdi-delete-outline"
                           @click="openActionDialog('cancel', row)"
                         />
