@@ -79,8 +79,13 @@
                       </template>
                       <v-list density="compact" min-width="220">
                         <v-list-item
+                          :title="t('people.recoverableHint')"
+                          prepend-icon="mdi-information-outline"
+                          disabled
+                        />
+                        <v-list-item
                           v-if="row.status !== 'canceled'"
-                          :title="t('people.cancelBookingRecoverable')"
+                          :title="t('people.cancelBooking')"
                           prepend-icon="mdi-delete-outline"
                           @click="openActionDialog('cancel', row)"
                         />

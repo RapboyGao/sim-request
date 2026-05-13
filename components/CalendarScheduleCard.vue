@@ -48,16 +48,21 @@
                 </template>
                 <v-list density="compact" min-width="220">
                   <v-list-item
+                    :title="t('calendar.cancelRecoverableHint')"
+                    prepend-icon="mdi-information-outline"
+                    disabled
+                  />
+                  <v-list-item
                     v-for="slot in cancelSlots"
                     :key="slot"
-                    :title="`${t('calendar.cancelBookingRecoverable')} ${slot}`"
+                    :title="`${t('calendar.cancelBooking')} ${slot}`"
                     prepend-icon="mdi-clock-outline"
                     @click="openCancel(entry, [slot])"
                   />
                   <v-divider v-if="cancelSlots.length > 1" />
                   <v-list-item
                     v-if="cancelSlots.length > 1"
-                    :title="t('calendar.cancelAllBookingsRecoverable')"
+                    :title="t('calendar.cancelAllBookings')"
                     prepend-icon="mdi-backup-restore"
                     @click="openCancel(entry)"
                   />
@@ -98,16 +103,21 @@
                 </template>
                 <v-list density="compact" min-width="220">
                   <v-list-item
+                    :title="t('calendar.cancelRecoverableHint')"
+                    prepend-icon="mdi-information-outline"
+                    disabled
+                  />
+                  <v-list-item
                     v-for="slot in cancelSlots"
                     :key="slot"
-                    :title="`${t('calendar.cancelBookingRecoverable')} ${slot}`"
+                    :title="`${t('calendar.cancelBooking')} ${slot}`"
                     prepend-icon="mdi-clock-outline"
                     @click="openCancel(entry, [slot])"
                   />
                   <v-divider v-if="cancelSlots.length > 1" />
                   <v-list-item
                     v-if="cancelSlots.length > 1"
-                    :title="t('calendar.cancelAllBookingsRecoverable')"
+                    :title="t('calendar.cancelAllBookings')"
                     prepend-icon="mdi-backup-restore"
                     @click="openCancel(entry)"
                   />
