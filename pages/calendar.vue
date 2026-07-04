@@ -55,6 +55,7 @@
 <script setup lang="ts">
 import type { FlatSchedule } from '~/composables/useCalendarSchedules'
 import type { BookingPromotion } from '~/types/booking'
+import { formatMergedSlotLabels } from '~/utils/slots'
 
 const { t } = useI18n()
 
@@ -86,10 +87,7 @@ const cancelDialog = reactive({
 function openCancelDialog(payload: { item: FlatSchedule; targets: CancelDialogTarget[]; mode?: 'cancel' | 'restore' }) {
   cancelDialog.targets = payload.targets
   cancelDialog.mode = payload.mode || 'cancel'
-  const labels = payload.targets.map((target) => target.label)
-  const scope = labels.length > 1
-    ? `${payload.item.date} ${payload.item.slotLabel}：${labels.join('，')}`
-    : `${payload.item.date} ${labels[0] || payload.item.slotLabel}`
+  const scope = formatMergedSlotLabels(payload.item.date, payload.targets.map((target) => target.slot)).join('，')
   cancelDialog.message = cancelDialog.mode === 'restore'
     ? `确认恢复这些预约记录：${scope}`
     : `确认取消这些预约记录：${scope}`
