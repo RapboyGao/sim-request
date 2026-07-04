@@ -34,7 +34,7 @@
     "success": "예약이 제출되었습니다",
     "error": "제출 실패",
     "priorityLabel": "우선순위",
-    "cancelRestoreHint": "예약 시간에 올 수 없다면 먼저 예약을 취소할 수 있습니다. 이후에도 복원할 수 있으며, 기존 순서는 유지됩니다."
+    "cancelRestoreHint": "항공편이나 다른 사유로 올 수 없다면 꼭 취소해 주세요. 취소 후에도 원래 순위대로 복원할 수 있습니다."
   },
   "rules": {
     "eyebrow": "Observation 예약",

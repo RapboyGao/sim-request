@@ -34,7 +34,7 @@
     "success": "Booking submitted successfully",
     "error": "Submission failed",
     "priorityLabel": "Priority level",
-    "cancelRestoreHint": "If you cannot make the booking time, you can cancel it first. It can still be restored later, and the original ordering will remain unchanged."
+    "cancelRestoreHint": "If you cannot make it because of a flight or other reason, remember to cancel it. After cancellation, it can still be restored with the original ranking."
   },
   "rules": {
     "eyebrow": "Observation Booking",

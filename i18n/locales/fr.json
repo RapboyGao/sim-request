@@ -34,7 +34,7 @@
     "success": "Réservation envoyée avec succès",
     "error": "Échec de l'envoi",
     "priorityLabel": "Niveau de priorité",
-    "cancelRestoreHint": "Si vous ne pouvez pas venir à l’heure réservée, vous pouvez d’abord annuler la réservation. Elle pourra être restaurée plus tard, et l’ordre d’origine restera inchangé."
+    "cancelRestoreHint": "Si vous ne pouvez pas venir à cause d’un vol ou d’une autre raison, n’oubliez pas d’annuler. Après annulation, la réservation peut être restaurée en conservant le classement initial."
   },
   "rules": {
     "eyebrow": "Observation Réservation",

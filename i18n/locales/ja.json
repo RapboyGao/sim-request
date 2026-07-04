@@ -34,7 +34,7 @@
     "success": "予約を送信しました",
     "error": "送信に失敗しました",
     "priorityLabel": "優先度",
-    "cancelRestoreHint": "予約時間に来られない場合は、いったん予約をキャンセルできます。あとで復元でき、元の順序も維持されます。"
+    "cancelRestoreHint": "便やその他の理由で来られない場合は、必ずキャンセルしてください。キャンセル後も元の順位のまま復元できます。"
   },
   "rules": {
     "eyebrow": "Observation 予約",

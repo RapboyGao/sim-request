@@ -34,7 +34,7 @@
     "success": "预约提交成功",
     "error": "提交失败",
     "priorityLabel": "优先级",
-    "cancelRestoreHint": "如果预约时间来不了，可先取消预约；之后仍可恢复，且原有排序不受影响。"
+    "cancelRestoreHint": "如果有航班或其他原因来不了，记得取消，取消后仍可按原排名恢复。"
   },
   "rules": {
     "eyebrow": "Observation 预约",
