@@ -1,7 +1,7 @@
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import { buildSlots } from '~/utils/slots'
-import type { BookingEntry, BookingPriority } from '~/types/booking'
+import type { BookingEntry, BookingPriority, BookingPromotion } from '~/types/booking'
 import { getSupabaseServerClient } from '~/server/utils/supabase'
 
 type BookingMap = Record<string, BookingEntry[]>
@@ -287,8 +287,11 @@ export async function cancelBooking(event: any, input: { date: string; slot: str
   const current = store[key] || []
   const target = current.find((entry) => entry.id === input.id)
   if (!target) {
-    return current
+    return { entries: current, promotions: [] as BookingPromotion[] }
   }
+
+  const activeBefore = sortEntries(current.filter((entry) => entry.status !== 'canceled'))
+  const beforeConfirmedIds = new Set(activeBefore.slice(0, 2).map((entry) => entry.id))
 
   const nextEntries = current.map((entry) =>
     entry.id === input.id
@@ -301,7 +304,19 @@ export async function cancelBooking(event: any, input: { date: string; slot: str
 
   store[key] = sortEntries(nextEntries)
   await writeAllBookings(event, store)
-  return store[key]
+  const activeAfter = sortEntries((store[key] || []).filter((entry) => entry.status !== 'canceled'))
+  const afterConfirmed = activeAfter.slice(0, 2)
+  const promotions = afterConfirmed
+    .filter((entry) => !beforeConfirmedIds.has(entry.id))
+    .map<BookingPromotion>((entry) => ({
+      id: entry.id,
+      name: entry.name,
+      date: input.date,
+      slot: input.slot,
+      priorityLevel: entry.priorityLevel,
+    }))
+
+  return { entries: store[key], promotions }
 }
 
 export async function restoreBooking(event: any, input: { date: string; slot: string; id: string }) {

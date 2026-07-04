@@ -14,6 +14,6 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: '缺少取消参数' })
   }
 
-  const entries = await cancelBooking(event, { date, slot, id })
-  return { ok: true, entries }
+  const result = await cancelBooking(event, { date, slot, id })
+  return { ok: true, ...result }
 })

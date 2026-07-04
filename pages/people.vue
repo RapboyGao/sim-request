@@ -136,6 +136,7 @@
 
 <script setup lang="ts">
 import type { PersonBookingRow } from '~/composables/usePersonSchedules'
+import type { BookingPromotion } from '~/types/booking'
 
 const { t } = useI18n()
 
@@ -151,6 +152,7 @@ const searchTerm = ref('')
 const debouncedSearchTerm = ref('')
 const searchLoading = ref(false)
 let searchTimer: ReturnType<typeof setTimeout> | undefined
+const { showCancellationNotice } = useCancellationNotice()
 const focusId = computed(() => typeof route.query.focus === 'string' ? route.query.focus : '')
 const focusedCardId = computed(() => {
   if (!focusId.value) return ''
@@ -202,7 +204,7 @@ async function confirmAction() {
   actionDialog.loading = true
   try {
     const route = actionDialog.mode === 'restore' ? '/api/bookings/restore' : '/api/bookings/cancel'
-    await $fetch(route, {
+    const response = await $fetch<{ promotions?: BookingPromotion[] }>(route, {
       method: 'POST',
       body: {
         date: actionDialog.row.date,
@@ -212,6 +214,9 @@ async function confirmAction() {
     })
     actionDialog.open = false
     await refresh()
+    if (actionDialog.mode === 'cancel' && Array.isArray(response.promotions) && response.promotions.length > 0) {
+      showCancellationNotice(response.promotions)
+    }
   } finally {
     actionDialog.loading = false
   }

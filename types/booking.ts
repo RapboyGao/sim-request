@@ -11,6 +11,14 @@ export interface BookingEntry {
   status: BookingStatus
 }
 
+export interface BookingPromotion {
+  id: string
+  name: string
+  date: string
+  slot: string
+  priorityLevel: BookingPriority
+}
+
 export interface SlotSummary {
   slot: string
   active: BookingEntry[]

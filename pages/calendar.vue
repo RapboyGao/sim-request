@@ -54,6 +54,7 @@
 
 <script setup lang="ts">
 import type { FlatSchedule } from '~/composables/useCalendarSchedules'
+import type { BookingPromotion } from '~/types/booking'
 
 const { t } = useI18n()
 
@@ -65,6 +66,7 @@ const cutoff = computed(() => new Date(Date.now() - 4 * 60 * 60 * 1000))
 const localePath = useLocalePath()
 const { data, pending, refresh } = await useFetch('/api/bookings')
 const { flatSchedules } = useCalendarSchedules(computed(() => data.value?.bookings || null), cutoff)
+const { showCancellationNotice } = useCancellationNotice()
 
 type CancelDialogTarget = {
   date: string
@@ -150,21 +152,30 @@ async function bookFromSchedule(payload: { date: string; slots: string[] }) {
 async function confirmCancel() {
   cancelDialog.loading = true
   try {
+    const promotions: BookingPromotion[] = []
     const route = cancelDialog.mode === 'restore'
       ? '/api/bookings/restore'
       : '/api/bookings/cancel'
     for (const target of cancelDialog.targets) {
-      await Promise.all(target.ids.map((id) => $fetch(route, {
-        method: 'POST',
-        body: {
-          date: target.date,
-          slot: target.slot,
-          id,
-        },
-      })))
+      for (const id of target.ids) {
+        const response = await $fetch<{ promotions?: BookingPromotion[] }>(route, {
+          method: 'POST',
+          body: {
+            date: target.date,
+            slot: target.slot,
+            id,
+          },
+        })
+        if (route === '/api/bookings/cancel' && Array.isArray(response.promotions)) {
+          promotions.push(...response.promotions)
+        }
+      }
     }
     cancelDialog.open = false
     await refresh()
+    if (promotions.length > 0) {
+      showCancellationNotice(promotions)
+    }
   } finally {
     cancelDialog.loading = false
   }
