@@ -34,6 +34,7 @@
     "success": "预约提交成功",
     "error": "提交失败",
     "priorityLabel": "优先级",
+    "goToPeople": "前往按人查看",
     "cancelRestoreHint": "如果有航班或其他原因来不了，记得取消，取消后仍可按原排名恢复。"
   },
   "rules": {

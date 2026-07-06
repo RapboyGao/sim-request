@@ -81,6 +81,7 @@
     </v-footer>
 
     <RouteLoadingOverlay :active="routeLoading" />
+    <BookingSuccessOverlay />
     <CancellationSuccessOverlay />
   </v-app>
 </template>

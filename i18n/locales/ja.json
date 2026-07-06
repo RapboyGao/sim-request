@@ -34,6 +34,7 @@
     "success": "予約を送信しました",
     "error": "送信に失敗しました",
     "priorityLabel": "優先度",
+    "goToPeople": "人物別画面へ",
     "cancelRestoreHint": "便やその他の理由で来られない場合は、必ずキャンセルしてください。キャンセル後も元の順位のまま復元できます。"
   },
   "rules": {

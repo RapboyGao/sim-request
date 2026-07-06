@@ -34,6 +34,7 @@
     "success": "Booking submitted successfully",
     "error": "Submission failed",
     "priorityLabel": "Priority level",
+    "goToPeople": "Go to by-person view",
     "cancelRestoreHint": "If you cannot make it because of a flight or other reason, remember to cancel it. After cancellation, it can still be restored with the original ranking."
   },
   "rules": {
