@@ -12,8 +12,31 @@
     <div class="text-caption text-medium-emphasis mt-n2 mb-4">
       {{ t('home.slotHint') }}
     </div>
-    <v-text-field v-model="form.name" :label="t('home.name')" :placeholder="t('home.namePlaceholder')"
-      prepend-inner-icon="mdi-account-outline" required />
+    <v-row dense class="mt-0">
+      <v-col cols="12" md="6">
+        <v-text-field
+          v-model="form.name"
+          :label="t('home.name')"
+          :placeholder="t('home.namePlaceholder')"
+          prepend-inner-icon="mdi-account-outline"
+          required
+        />
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-text-field
+          v-model="form.phone"
+          :label="t('home.phone')"
+          :placeholder="t('home.phonePlaceholder')"
+          prepend-inner-icon="mdi-cellphone"
+          type="tel"
+          autocomplete="tel"
+          inputmode="numeric"
+        />
+      </v-col>
+    </v-row>
+    <div class="text-caption text-medium-emphasis mt-n2 mb-4">
+      {{ t('home.phoneHint') }}
+    </div>
     <v-select
       v-model="form.priorityLevel"
       :items="priorityItems"
@@ -82,6 +105,7 @@
 
 <script setup lang="ts">
 import { buildSlots } from '~/utils/slots'
+import { isValidChinaMainlandPhone } from '~/utils/booking-name'
 
 const { t, locale } = useI18n()
 const route = useRoute()
@@ -95,6 +119,7 @@ const form = reactive({
   date: today,
   slots: defaultSlot ? [defaultSlot] : [],
   name: '',
+  phone: '',
   priorityLevel: 'normal' as 'normal' | 'classmate',
 })
 
@@ -127,18 +152,41 @@ const duplicateMessage = computed(() => {
 async function submitBooking() {
   message.text = ''
   duplicateSlots.value = []
+  const name = form.name.trim()
+  const phone = form.phone.replace(/\s+/g, '').trim()
+
+  if (!name) {
+    message.type = 'error'
+    message.text = t('home.nameRequired')
+    return
+  }
+
+  if (name.includes('@')) {
+    message.type = 'error'
+    message.text = t('home.nameInvalid')
+    return
+  }
+
+  if (phone && !isValidChinaMainlandPhone(phone)) {
+    message.type = 'error'
+    message.text = t('home.phoneInvalid')
+    return
+  }
+
   try {
     const response = await $fetch<{ bookings?: Array<{ id: string }> }>('/api/bookings', {
       method: 'POST',
       body: {
         date: form.date,
         slots: form.slots,
-        name: form.name,
+        name,
+        phone,
         isClassmate: form.priorityLevel === 'classmate',
       },
     })
     const bookingId = response.bookings?.[0]?.id || ''
     form.name = ''
+    form.phone = ''
     form.priorityLevel = 'normal'
     form.slots = defaultSlot ? [defaultSlot] : []
     showBookingSuccessNotice(bookingId)

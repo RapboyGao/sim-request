@@ -4,7 +4,7 @@
   "type": "module",
   "packageManager": "pnpm@10.11.0",
   "scripts": {
-    "dev": "nuxt dev",
+    "dev": "nuxt dev --host",
     "build": "nuxt build",
     "preview": "nuxt preview",
     "typecheck": "pnpm exec nuxi typecheck"

@@ -167,7 +167,7 @@
                   </td>
                   <td>{{ entry.date }}</td>
                   <td>{{ entry.slot }}</td>
-                  <td>{{ entry.name }}</td>
+                  <td>{{ displayBookingName(entry.name) }}</td>
                   <td>{{ entry.priorityLevel === 'classmate' ? t('admin.yes') : t('admin.no') }}</td>
                   <td>
                     <v-chip size="small" :color="entry.status === 'canceled' ? 'secondary' : 'primary'" variant="tonal"
@@ -273,6 +273,8 @@
 </template>
 
 <script setup lang="ts">
+import { displayStoredBookingName as displayBookingName } from '~/utils/booking-name'
+
 const { t, locale } = useI18n()
 
 useHead({
@@ -316,7 +318,7 @@ const jsonSupabaseExportUrl = computed(() => '/api/admin/export?format=json&vari
 const jsonDebugExportUrl = computed(() => '/api/admin/export?format=json&variant=debug')
 const deletePrompt = computed(() =>
   deleteTarget.value
-    ? `${deleteTarget.value.date} ${deleteTarget.value.slot} · ${deleteTarget.value.name}`
+    ? `${deleteTarget.value.date} ${deleteTarget.value.slot} · ${displayBookingName(deleteTarget.value.name)}`
     : '',
 )
 const sortedEntries = computed(() => {
@@ -349,7 +351,10 @@ const searchActive = computed(() => debouncedSearchTerm.value.trim().length > 0)
 const filteredEntries = computed(() => {
   const term = debouncedSearchTerm.value.trim().toLowerCase()
   if (!term) return sortedEntries.value
-  return sortedEntries.value.filter((entry) => entry.name.toLowerCase().includes(term))
+  return sortedEntries.value.filter((entry) => {
+    const displayName = displayBookingName(entry.name).toLowerCase()
+    return entry.name.toLowerCase().includes(term) || displayName.includes(term)
+  })
 })
 
 const selectAll = computed({

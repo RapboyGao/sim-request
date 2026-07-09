@@ -17,7 +17,7 @@
           <div class="cancel-notice__list">
             <div v-for="item in notice.items" :key="item.id" class="cancel-notice__item">
               <div class="cancel-notice__item-head">
-                <div class="cancel-notice__name">{{ item.name }}</div>
+                <div class="cancel-notice__name">{{ displayBookingName(item.name) }}</div>
                 <v-icon
                   :icon="priorityMeta(item.priorityLevel).icon"
                   :color="priorityMeta(item.priorityLevel).color"
@@ -52,6 +52,7 @@
 <script setup lang="ts">
 import type { BookingPriority } from '~/types/booking'
 import { formatMergedSlotLabels } from '~/utils/slots'
+import { displayStoredBookingName as displayBookingName } from '~/utils/booking-name'
 
 const { t } = useI18n()
 const { notice, hideCancellationNotice } = useCancellationNotice()

@@ -36,7 +36,7 @@
             >
               <div class="person-header">
                 <div>
-                  <div class="person-name">{{ person.name }}</div>
+                  <div class="person-name">{{ displayBookingName(person.name) }}</div>
                   <div class="person-subtitle">
                     {{ person.rows.length }} {{ t('people.bookingCount') }}
                   </div>
@@ -137,6 +137,7 @@
 <script setup lang="ts">
 import type { PersonBookingRow } from '~/composables/usePersonSchedules'
 import type { BookingPromotion } from '~/types/booking'
+import { displayStoredBookingName as displayBookingName } from '~/utils/booking-name'
 
 const { t } = useI18n()
 
@@ -175,7 +176,10 @@ const searchActive = computed(() => debouncedSearchTerm.value.trim().length > 0)
 const filteredPersonSchedules = computed(() => {
   const term = debouncedSearchTerm.value.trim().toLowerCase()
   if (!term) return personSchedules.value
-  return personSchedules.value.filter((person) => person.name.toLowerCase().includes(term))
+  return personSchedules.value.filter((person) => {
+    const displayName = displayBookingName(person.name).toLowerCase()
+    return person.name.toLowerCase().includes(term) || displayName.includes(term)
+  })
 })
 
 function statusMeta(status: PersonBookingRow['status']) {
