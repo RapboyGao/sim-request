@@ -167,7 +167,9 @@
                   </td>
                   <td>{{ entry.date }}</td>
                   <td>{{ entry.slot }}</td>
-                  <td>{{ displayBookingName(entry.name) }}</td>
+                  <td>
+                    <BookingNameDisplay :value="entry.name" variant="table" />
+                  </td>
                   <td>{{ entry.priorityLevel === 'classmate' ? t('admin.yes') : t('admin.no') }}</td>
                   <td>
                     <v-chip size="small" :color="entry.status === 'canceled' ? 'secondary' : 'primary'" variant="tonal"
@@ -238,8 +240,11 @@
                 <v-icon icon="mdi-delete-alert-outline" class="mr-2" color="error" />
                 {{ t('admin.deleteTitle') }}
               </v-card-title>
-              <v-card-text>
-                {{ deletePrompt }}
+              <v-card-text v-if="deleteTarget" class="admin-delete-dialog__body">
+                <div class="text-body-2 text-medium-emphasis">
+                  {{ deleteTarget.date }} {{ deleteTarget.slot }}
+                </div>
+                <BookingNameDisplay :value="deleteTarget.name" variant="table" />
               </v-card-text>
               <v-card-actions class="justify-end">
                 <v-btn variant="text" @click="deleteDialog = false">{{ t('admin.cancel') }}</v-btn>
@@ -273,7 +278,8 @@
 </template>
 
 <script setup lang="ts">
-import { displayStoredBookingName as displayBookingName } from '~/utils/booking-name'
+import BookingNameDisplay from '~/components/BookingNameDisplay.vue'
+import { getBookingSearchText } from '~/utils/booking-name'
 
 const { t, locale } = useI18n()
 
@@ -316,11 +322,6 @@ const { data, pending, refresh } = await useFetch('/api/admin/bookings', {
 const csvExportUrl = computed(() => '/api/admin/export?format=csv')
 const jsonSupabaseExportUrl = computed(() => '/api/admin/export?format=json&variant=supabase')
 const jsonDebugExportUrl = computed(() => '/api/admin/export?format=json&variant=debug')
-const deletePrompt = computed(() =>
-  deleteTarget.value
-    ? `${deleteTarget.value.date} ${deleteTarget.value.slot} · ${displayBookingName(deleteTarget.value.name)}`
-    : '',
-)
 const sortedEntries = computed(() => {
   const entries = data.value?.entries || []
   return [...entries].sort((left, right) => {
@@ -351,10 +352,7 @@ const searchActive = computed(() => debouncedSearchTerm.value.trim().length > 0)
 const filteredEntries = computed(() => {
   const term = debouncedSearchTerm.value.trim().toLowerCase()
   if (!term) return sortedEntries.value
-  return sortedEntries.value.filter((entry) => {
-    const displayName = displayBookingName(entry.name).toLowerCase()
-    return entry.name.toLowerCase().includes(term) || displayName.includes(term)
-  })
+  return sortedEntries.value.filter((entry) => getBookingSearchText(entry.name).includes(term))
 })
 
 const selectAll = computed({
@@ -594,6 +592,11 @@ await checkAuth()
 
 .admin-table :deep(.col-action) {
   width: 56px;
+}
+
+.admin-delete-dialog__body {
+  display: grid;
+  gap: 8px;
 }
 
 .admin-bulkbar {

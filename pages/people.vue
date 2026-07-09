@@ -36,7 +36,7 @@
             >
               <div class="person-header">
                 <div>
-                  <div class="person-name">{{ displayBookingName(person.name) }}</div>
+                  <BookingNameDisplay :value="person.name" />
                   <div class="person-subtitle">
                     {{ person.rows.length }} {{ t('people.bookingCount') }}
                   </div>
@@ -135,9 +135,10 @@
 </template>
 
 <script setup lang="ts">
+import BookingNameDisplay from '~/components/BookingNameDisplay.vue'
 import type { PersonBookingRow } from '~/composables/usePersonSchedules'
 import type { BookingPromotion } from '~/types/booking'
-import { displayStoredBookingName as displayBookingName } from '~/utils/booking-name'
+import { getBookingSearchText } from '~/utils/booking-name'
 
 const { t } = useI18n()
 
@@ -176,10 +177,7 @@ const searchActive = computed(() => debouncedSearchTerm.value.trim().length > 0)
 const filteredPersonSchedules = computed(() => {
   const term = debouncedSearchTerm.value.trim().toLowerCase()
   if (!term) return personSchedules.value
-  return personSchedules.value.filter((person) => {
-    const displayName = displayBookingName(person.name).toLowerCase()
-    return person.name.toLowerCase().includes(term) || displayName.includes(term)
-  })
+  return personSchedules.value.filter((person) => getBookingSearchText(person.name).includes(term))
 })
 
 function statusMeta(status: PersonBookingRow['status']) {

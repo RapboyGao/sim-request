@@ -12,7 +12,7 @@ export function composeStoredBookingName(name: string, phone = '') {
   return trimmedPhone ? `${trimmedName}@${trimmedPhone}` : trimmedName
 }
 
-export function splitStoredBookingName(value: string) {
+export function parseStoredBookingName(value: string) {
   const trimmed = value.trim()
   const atIndex = trimmed.lastIndexOf('@')
   if (atIndex <= 0) {
@@ -22,12 +22,15 @@ export function splitStoredBookingName(value: string) {
     }
   }
 
+  const name = trimmed.slice(0, atIndex).trim()
+  const phone = trimmed.slice(atIndex + 1).trim()
   return {
-    name: trimmed.slice(0, atIndex).trim(),
-    phone: trimmed.slice(atIndex + 1).trim(),
+    name,
+    phone,
   }
 }
 
-export function displayStoredBookingName(value: string) {
-  return splitStoredBookingName(value).name
+export function getBookingSearchText(value: string) {
+  const parsed = parseStoredBookingName(value)
+  return `${parsed.name} ${parsed.phone}`.trim().toLowerCase()
 }

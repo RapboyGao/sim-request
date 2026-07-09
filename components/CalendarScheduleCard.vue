@@ -28,7 +28,7 @@
           <div v-for="entry in item.confirmed" :key="entry.key" class="compact-row">
             <div class="entry-main">
               <div class="entry-name-line">
-                <span>{{ displayBookingName(entry.name) }}</span>
+                <BookingNameDisplay :value="entry.name" variant="compact" />
                 <v-icon v-if="entry.priorityLevel === 'specified'" icon="mdi-arrow-collapse-up" size="14" color="primary" />
                 <v-icon v-if="entry.priorityLevel === 'classmate'" icon="mdi-school-outline" size="14" color="success" />
               </div>
@@ -83,7 +83,7 @@
           <div v-for="entry in item.waitlist" :key="entry.key" class="compact-row">
             <div class="entry-main">
               <div class="entry-name-line">
-                <span>{{ displayBookingName(entry.name) }}</span>
+                <BookingNameDisplay :value="entry.name" variant="compact" />
                 <v-icon v-if="entry.priorityLevel === 'specified'" icon="mdi-arrow-collapse-up" size="14" color="primary" />
                 <v-icon v-if="entry.priorityLevel === 'classmate'" icon="mdi-school-outline" size="14" color="success" />
               </div>
@@ -138,7 +138,7 @@
           <div v-for="entry in item.canceledRows" :key="entry.key" class="compact-row">
             <div class="entry-main">
               <div class="entry-name-line">
-                <span>{{ displayBookingName(entry.name) }}</span>
+                <BookingNameDisplay :value="entry.name" variant="compact" />
               </div>
               <span class="entry-time">{{ formatTimeLabel(entry.createdAt) }}</span>
             </div>
@@ -192,7 +192,7 @@
 
 <script setup lang="ts">
 import type { FlatSchedule } from '~/composables/useCalendarSchedules'
-import { displayStoredBookingName as displayBookingName } from '~/utils/booking-name'
+import BookingNameDisplay from '~/components/BookingNameDisplay.vue'
 
 const { t } = useI18n()
 

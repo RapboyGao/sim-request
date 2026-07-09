@@ -17,7 +17,7 @@
           <div class="cancel-notice__list">
             <div v-for="item in notice.items" :key="item.id" class="cancel-notice__item">
               <div class="cancel-notice__item-head">
-                <div class="cancel-notice__name">{{ displayBookingName(item.name) }}</div>
+                <BookingNameDisplay :value="item.name" variant="compact" />
                 <v-icon
                   :icon="priorityMeta(item.priorityLevel).icon"
                   :color="priorityMeta(item.priorityLevel).color"
@@ -50,9 +50,9 @@
 </template>
 
 <script setup lang="ts">
+import BookingNameDisplay from '~/components/BookingNameDisplay.vue'
 import type { BookingPriority } from '~/types/booking'
 import { formatMergedSlotLabels } from '~/utils/slots'
-import { displayStoredBookingName as displayBookingName } from '~/utils/booking-name'
 
 const { t } = useI18n()
 const { notice, hideCancellationNotice } = useCancellationNotice()
@@ -144,15 +144,9 @@ function priorityMeta(level: BookingPriority) {
 
 .cancel-notice__item-head {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-}
-
-.cancel-notice__name {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--text);
 }
 
 .cancel-notice__slots {
