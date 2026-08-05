@@ -20,6 +20,7 @@
     "@oxc-transform/binding-linux-x64-musl": "0.117.0",
     "@supabase/supabase-js": "^2.103.0",
     "@vueuse/core": "^14.4.0",
+    "echarts": "^6.1.0",
     "mathjs": "^15.2.0",
     "nuxt": "^4.2.0",
     "qrcode": "^1.5.4",

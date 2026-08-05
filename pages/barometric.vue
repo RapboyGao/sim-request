@@ -52,53 +52,64 @@
           </v-col>
         </v-row>
 
-        <v-card class="pa-5 pa-sm-6 mt-6 difference-card" variant="flat">
-          <div class="d-flex flex-wrap align-center justify-space-between gap-3 mb-5">
+        <v-card class="mt-6 chart-card" variant="flat">
+          <div class="d-flex flex-wrap align-center justify-space-between gap-3 mb-4">
             <div>
-              <h2 class="text-h6 font-weight-bold mt-1">{{ t('barometric.differenceTitle') }}</h2>
+              <div class="eyebrow">
+                <v-icon icon="mdi-chart-bell-curve-cumulative" size="18" class="mr-1" />
+                {{ t('barometric.chartEyebrow') }}
+              </div>
+              <h2 class="text-h6 font-weight-bold mt-1">{{ t('barometric.chartTitle') }}</h2>
             </div>
+            <div class="chart-controls">
+              <v-select
+                v-model="chartHeightUnit"
+                :items="heightUnitItems"
+                :label="t('barometric.height')"
+                density="compact"
+                hide-details
+                item-title="title"
+                item-value="value"
+                class="chart-control-select"
+              />
+              <v-select
+                v-model="chartPressureUnit"
+                :items="pressureUnitItems"
+                :label="t('barometric.pressure')"
+                density="compact"
+                hide-details
+                item-title="title"
+                item-value="value"
+                class="chart-control-select"
+              />
+            </div>
+          </div>
+          <div ref="chartContainer" class="barometric-chart" />
+          <v-divider class="my-5" />
+          <div class="d-flex flex-wrap align-center justify-space-between gap-3 mb-4">
+            <h2 class="text-h6 font-weight-bold">{{ t('barometric.differenceTitle') }}</h2>
             <v-chip size="small" variant="outlined">{{ t('barometric.differenceFormula') }}</v-chip>
           </div>
-
           <v-row dense>
             <v-col cols="12" md="6">
-              <div class="difference-item">
+              <div class="chart-difference-item">
                 <div class="difference-item__label">{{ t('barometric.heightDifference') }}</div>
-                <div class="difference-item__value">
-                  <span>{{ heightDifference === null ? '—' : formatDifference(heightDifference) }}</span>
-                  <v-select
-                    :model-value="state.heightDifferenceUnit"
-                    :items="heightUnitItems"
-                    density="compact"
-                    hide-details
-                    item-title="title"
-                    item-value="value"
-                    class="difference-item__select"
-                    @update:model-value="updateDifferenceUnit('height', $event)"
-                  />
+                <div class="chart-difference-value">
+                  {{ chartHeightDifference === null ? '—' : formatDifference(chartHeightDifference, chartHeightUnit) }}
+                  <span>{{ chartHeightUnit }}</span>
                 </div>
               </div>
             </v-col>
             <v-col cols="12" md="6">
-              <div class="difference-item">
+              <div class="chart-difference-item">
                 <div class="difference-item__label">{{ t('barometric.pressureDifference') }}</div>
-                <div class="difference-item__value">
-                  <span>{{ pressureDifference === null ? '—' : formatDifference(pressureDifference) }}</span>
-                  <v-select
-                    :model-value="state.pressureDifferenceUnit"
-                    :items="pressureUnitItems"
-                    density="compact"
-                    hide-details
-                    item-title="title"
-                    item-value="value"
-                    class="difference-item__select"
-                    @update:model-value="updateDifferenceUnit('pressure', $event)"
-                  />
+                <div class="chart-difference-value">
+                  {{ chartPressureDifference === null ? '—' : formatDifference(chartPressureDifference, chartPressureUnit) }}
+                  <span>{{ chartPressureUnit }}</span>
                 </div>
               </div>
             </v-col>
           </v-row>
-
         </v-card>
 
         <v-card class="pa-5 pa-sm-6 mt-6 qr-card" variant="flat">
@@ -124,27 +135,36 @@
 
 <script setup lang="ts">
 import QRCode from 'qrcode'
+import type { ECharts, EChartsOption } from 'echarts'
 import {
   HEIGHT_UNITS,
+  MAX_MODEL_ALTITUDE_METERS,
   PRESSURE_UNITS,
-  formatDisplayValue,
+  convertHeightToMeters,
+  convertMetersToHeight,
+  convertPascalsToPressure,
+  formatValueForUnit,
+  pressureFromAltitude,
   type HeightUnit,
   type PressureUnit,
 } from '~/utils/barometric'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const route = useRoute()
 const keyboardMode = ref<'numeric' | 'formula'>('formula')
 const qrCodeDataUrl = ref('')
+const chartHeightUnit = ref<HeightUnit>('ft')
+const chartPressureUnit = ref<PressureUnit>('psi')
+const compactChart = ref(false)
+const chartContainer = ref<HTMLDivElement | null>(null)
+const chart = shallowRef<ECharts | null>(null)
+let chartResizeObserver: ResizeObserver | null = null
 const {
   state,
   points,
-  heightDifference,
-  pressureDifference,
   updateInput,
   updateUnit,
   commitInput,
-  updateDifferenceUnit: setDifferenceUnit,
 } = useBarometricConverter()
 
 useHead({
@@ -166,7 +186,148 @@ async function generateQRCode() {
   }
 }
 
+function buildChartOption(): EChartsOption {
+  const pointHeights = [points.value.A.heightMeters, points.value.B.heightMeters]
+    .filter((value): value is number => value !== null && Number.isFinite(value))
+  const rangePaddingMeters = convertHeightToMeters(1000, 'ft')
+  const defaultMinimumAltitude = convertHeightToMeters(-1000, 'ft')
+  const defaultMaximumAltitude = convertHeightToMeters(41000, 'ft')
+  const minimumPointAltitude = pointHeights.length > 0 ? Math.min(...pointHeights) : defaultMinimumAltitude
+  const maximumPointAltitude = pointHeights.length > 0 ? Math.max(...pointHeights) : defaultMaximumAltitude
+  const minimumAltitude = Math.min(
+    defaultMinimumAltitude,
+    minimumPointAltitude < defaultMinimumAltitude ? minimumPointAltitude - rangePaddingMeters : defaultMinimumAltitude,
+  )
+  const maximumAltitude = Math.max(
+    defaultMaximumAltitude,
+    maximumPointAltitude > defaultMaximumAltitude ? maximumPointAltitude + rangePaddingMeters : defaultMaximumAltitude,
+  )
+  const chartMaximumAltitude = Math.min(MAX_MODEL_ALTITUDE_METERS, maximumAltitude)
+  const curveData = Array.from({ length: 181 }, (_, index) => {
+    const altitudeM = minimumAltitude + (chartMaximumAltitude - minimumAltitude) * index / 180
+    return [convertMetersToHeight(altitudeM, chartHeightUnit.value), convertPascalsToPressure(pressureFromAltitude(altitudeM), chartPressureUnit.value)]
+  })
+  const formatHeight = (value: number) => formatValueForUnit(value, chartHeightUnit.value)
+  const formatPressure = (value: number) => formatValueForUnit(value, chartPressureUnit.value)
+  const chartGrid = compactChart.value
+    ? { left: 8, right: 4, top: 16, bottom: 44, containLabel: true }
+    : { left: 36, right: 8, top: 20, bottom: 48, containLabel: true }
+
+  const pointSeries = [
+    {
+      name: 'A',
+      value: points.value.A.heightMeters !== null && points.value.A.pressurePa !== null
+        ? [convertMetersToHeight(points.value.A.heightMeters, chartHeightUnit.value), convertPascalsToPressure(points.value.A.pressurePa, chartPressureUnit.value)]
+        : null,
+      color: '#0f766e',
+    },
+    {
+      name: 'B',
+      value: points.value.B.heightMeters !== null && points.value.B.pressurePa !== null
+        ? [convertMetersToHeight(points.value.B.heightMeters, chartHeightUnit.value), convertPascalsToPressure(points.value.B.pressurePa, chartPressureUnit.value)]
+        : null,
+      color: '#f97316',
+    },
+  ]
+
+  return {
+    animation: false,
+    grid: chartGrid,
+    tooltip: {
+      trigger: 'axis',
+      valueFormatter: (value: unknown) => formatPressure(Number(value)),
+    },
+    xAxis: {
+      type: 'value',
+      min: convertMetersToHeight(minimumAltitude, chartHeightUnit.value),
+      max: convertMetersToHeight(chartMaximumAltitude, chartHeightUnit.value),
+      boundaryGap: [0, 0],
+      name: `${t('barometric.altitudeAxis')} (${chartHeightUnit.value})`,
+      nameLocation: 'middle',
+      nameGap: -30,
+      axisLabel: {
+        formatter: (value: number) => formatHeight(value),
+        inside: true,
+      },
+    },
+    yAxis: {
+      type: 'value',
+      name: `${t('barometric.pressureAxis')} (${chartPressureUnit.value})`,
+      nameLocation: 'middle',
+      nameGap: -32,
+      axisLabel: {
+        formatter: (value: number) => formatPressure(value),
+        margin: compactChart.value ? 3 : 8,
+        inside: true,
+      },
+      min: Math.min(...curveData.map(point => point[1]!)),
+      max: Math.max(...curveData.map(point => point[1]!)),
+    },
+    series: [
+      {
+        name: t('barometric.standardCurve'),
+        type: 'line',
+        data: curveData,
+        showSymbol: false,
+        smooth: true,
+        lineStyle: { color: '#64748b', width: 2 },
+      },
+      ...pointSeries
+        .filter(point => point.value !== null)
+        .map(point => ({
+          name: point.name,
+          type: 'scatter' as const,
+          data: [point.value],
+          symbolSize: 16,
+          itemStyle: { color: point.color, borderColor: '#fff', borderWidth: 2 },
+          label: { show: true, formatter: point.name, position: 'top' as const, fontWeight: 'bold' as const },
+        })),
+    ],
+  }
+}
+
+function updateChart() {
+  chart.value?.setOption(buildChartOption(), true)
+}
+
+function updateChartViewport() {
+  const nextCompactChart = window.innerWidth <= 600
+  if (compactChart.value !== nextCompactChart) {
+    compactChart.value = nextCompactChart
+    updateChart()
+  }
+  chart.value?.resize()
+}
+
 onMounted(generateQRCode)
+onMounted(async () => {
+  const { init } = await import('echarts')
+  if (!chartContainer.value) return
+  chart.value = init(chartContainer.value)
+  compactChart.value = window.innerWidth <= 600
+  updateChart()
+  chartResizeObserver = new ResizeObserver(() => chart.value?.resize())
+  chartResizeObserver.observe(chartContainer.value)
+  window.addEventListener('resize', updateChartViewport)
+})
+onBeforeUnmount(() => {
+  chartResizeObserver?.disconnect()
+  window.removeEventListener('resize', updateChartViewport)
+  chart.value?.dispose()
+  chart.value = null
+})
+watch(
+  () => [
+    points.value.A.heightMeters,
+    points.value.A.pressurePa,
+    points.value.B.heightMeters,
+    points.value.B.pressurePa,
+    chartHeightUnit.value,
+    chartPressureUnit.value,
+    locale.value,
+  ],
+  updateChart,
+)
 watch(() => route.fullPath, generateQRCode)
 
 const heightUnitItems = computed(() => HEIGHT_UNITS.map(value => ({
@@ -180,6 +341,16 @@ const pressureUnitItems = computed(() => PRESSURE_UNITS.map(value => ({
 })))
 
 const inputMode = computed(() => keyboardMode.value === 'formula' ? 'text' : 'decimal')
+
+const chartHeightDifference = computed(() => {
+  if (points.value.A.heightMeters === null || points.value.B.heightMeters === null) return null
+  return convertMetersToHeight(points.value.A.heightMeters - points.value.B.heightMeters, chartHeightUnit.value)
+})
+
+const chartPressureDifference = computed(() => {
+  if (points.value.A.pressurePa === null || points.value.B.pressurePa === null) return null
+  return convertPascalsToPressure(points.value.A.pressurePa - points.value.B.pressurePa, chartPressureUnit.value)
+})
 
 function toggleKeyboardMode() {
   keyboardMode.value = keyboardMode.value === 'numeric' ? 'formula' : 'numeric'
@@ -195,16 +366,10 @@ function commitPointInput(pointId: 'A' | 'B', kind: 'height' | 'pressure') {
   })
 }
 
-function formatDifference(value: number) {
-  return formatDisplayValue(value)
+function formatDifference(value: number, unit: HeightUnit | PressureUnit) {
+  return formatValueForUnit(value, unit)
 }
 
-function updateDifferenceUnitForPage(kind: 'height' | 'pressure', unit: HeightUnit | PressureUnit) {
-  setDifferenceUnit(kind, unit)
-}
-
-// Keep the template handler name explicit so unit values remain strongly typed.
-const updateDifferenceUnit = updateDifferenceUnitForPage
 </script>
 
 <style scoped>
@@ -213,11 +378,34 @@ const updateDifferenceUnit = updateDifferenceUnitForPage
 }
 
 .barometric-hero,
-.difference-card,
 .qr-card {
   border: 1px solid var(--border);
   background: linear-gradient(135deg, var(--bg-accent-start), var(--bg-accent-soft-2));
   box-shadow: 0 10px 30px var(--shadow);
+}
+
+.chart-card {
+  border: 0;
+  overflow: visible;
+  background: transparent;
+  box-shadow: none;
+}
+
+.barometric-chart {
+  width: 100%;
+  height: 380px;
+}
+
+.chart-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.chart-control-select {
+  width: 150px;
 }
 
 .qr-card__content {
@@ -276,7 +464,7 @@ const updateDifferenceUnit = updateDifferenceUnitForPage
   text-transform: uppercase;
 }
 
-.difference-item {
+.chart-difference-item {
   height: 100%;
   padding: 1rem;
   border: 1px solid var(--border);
@@ -291,22 +479,28 @@ const updateDifferenceUnit = updateDifferenceUnitForPage
   font-weight: 600;
 }
 
-.difference-item__value {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 132px;
-  gap: 0.75rem;
-  align-items: center;
+.chart-difference-value {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
   color: rgb(var(--v-theme-primary));
   font-size: clamp(1.45rem, 3vw, 2rem);
   font-weight: 800;
 }
 
-.difference-item__select {
+.chart-difference-value span {
+  color: var(--muted);
   font-size: 0.9rem;
-  font-weight: 400;
+  font-weight: 600;
 }
 
 @media (max-width: 600px) {
+  .barometric-chart {
+    width: calc(100% + 1.5rem);
+    height: 320px;
+    margin-inline: -0.75rem;
+  }
+
   .barometric-hero__content {
     flex-direction: column;
   }
@@ -325,12 +519,11 @@ const updateDifferenceUnit = updateDifferenceUnitForPage
     width: 100%;
   }
 
+  .chart-controls {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
 }
 
-@media (max-width: 420px) {
-  .difference-item__value {
-    grid-template-columns: 1fr;
-    gap: 0.25rem;
-  }
-}
 </style>

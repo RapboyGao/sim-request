@@ -6,6 +6,26 @@ export type HeightUnit = (typeof HEIGHT_UNITS)[number]
 export const PRESSURE_UNITS = ['psi', 'inHg', 'Pa', 'hPa', 'kPa', 'bar', 'atm', 'mmHg'] as const
 export type PressureUnit = (typeof PRESSURE_UNITS)[number]
 
+const HEIGHT_DISPLAY_DECIMAL_PLACES: Record<HeightUnit, number> = {
+  ft: 0,
+  m: 2,
+  km: 4,
+  in: 1,
+  mi: 3,
+  nmi: 3,
+}
+
+const PRESSURE_DISPLAY_DECIMAL_PLACES: Record<PressureUnit, number> = {
+  psi: 3,
+  inHg: 2,
+  Pa: 0,
+  hPa: 1,
+  kPa: 2,
+  bar: 4,
+  atm: 4,
+  mmHg: 1,
+}
+
 const HEIGHT_TO_METERS: Record<HeightUnit, number> = {
   ft: 0.3048,
   m: 1,
@@ -29,7 +49,8 @@ const PRESSURE_TO_PASCALS: Record<PressureUnit, number> = {
 const G0 = 9.80665
 const MOLAR_MASS = 28.9644
 const GAS_CONSTANT = 8.31432e3
-const MAX_ALTITUDE_METERS = 86000
+export const MAX_MODEL_ALTITUDE_METERS = 86000
+const MAX_ALTITUDE_METERS = MAX_MODEL_ALTITUDE_METERS
 
 type AtmosphereLayer = {
   baseAltitudeM: number
@@ -140,8 +161,30 @@ export function altitudeFromPressure(pressurePa: number) {
   ) / layer.lapseRateKPerM
 }
 
-export function formatInputValue(value: number) {
+export function getUnitDecimalPlaces(unit: HeightUnit | PressureUnit) {
+  return unit in HEIGHT_DISPLAY_DECIMAL_PLACES
+    ? HEIGHT_DISPLAY_DECIMAL_PLACES[unit as HeightUnit]
+    : PRESSURE_DISPLAY_DECIMAL_PLACES[unit as PressureUnit]
+}
+
+export function formatValueForUnit(value: number, unit: HeightUnit | PressureUnit) {
+  if (!Number.isFinite(value)) return '—'
+
+  const decimalPlaces = getUnitDecimalPlaces(unit)
+  const roundedValue = Number(value.toFixed(decimalPlaces))
+  if (Object.is(roundedValue, -0) || roundedValue === 0) return '0'
+
+  return roundedValue.toLocaleString('en-US', {
+    maximumFractionDigits: decimalPlaces,
+  })
+}
+
+export function formatInputValue(value: number, unit?: HeightUnit | PressureUnit) {
   if (Object.is(value, -0) || value === 0) return '0'
+  if (unit) {
+    const decimalPlaces = getUnitDecimalPlaces(unit)
+    return Number(value.toFixed(decimalPlaces)).toString()
+  }
   return Number(value.toPrecision(12)).toString()
 }
 

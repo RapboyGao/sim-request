@@ -6,6 +6,8 @@ import {
   convertPascalsToPressure,
   convertPressureToPascals,
   evaluateNumericExpression,
+  formatInputValue,
+  formatValueForUnit,
   getMinimumModelPressure,
   pressureFromAltitude,
 } from '../utils/barometric'
@@ -57,5 +59,12 @@ describe('units and expressions', () => {
     expect(evaluateNumericExpression('9000÷3')).toBe(3000)
     expect(evaluateNumericExpression('')).toBeNull()
     expect(evaluateNumericExpression('sqrt(-1)')).toBeNull()
+  })
+
+  it('formats converted values according to their display units', () => {
+    expect(formatValueForUnit(50.000000001, 'ft')).toBe('50')
+    expect(formatValueForUnit(1524.0000001, 'm')).toBe('1,524')
+    expect(formatValueForUnit(14.695948775, 'psi')).toBe('14.696')
+    expect(formatInputValue(50.000000001, 'ft')).toBe('50')
   })
 })

@@ -34,13 +34,13 @@ const DEFAULT_STATE: BarometricStoredState = {
   pointA: {
     heightExpression: '0',
     heightUnit: 'ft',
-    pressureExpression: formatInputValue(convertPascalsToPressure(101325, 'psi')),
+    pressureExpression: formatInputValue(convertPascalsToPressure(101325, 'psi'), 'psi'),
     pressureUnit: 'psi',
   },
   pointB: {
     heightExpression: '0',
     heightUnit: 'ft',
-    pressureExpression: formatInputValue(convertPascalsToPressure(101325, 'psi')),
+    pressureExpression: formatInputValue(convertPascalsToPressure(101325, 'psi'), 'psi'),
     pressureUnit: 'psi',
   },
   heightDifferenceUnit: 'ft',
@@ -111,11 +111,11 @@ export function useBarometricConverter() {
       if (kind === 'height') {
         const altitudeM = convertHeightToMeters(numericValue, next.heightUnit)
         const pressurePa = pressureFromAltitude(altitudeM)
-        next.pressureExpression = formatInputValue(convertPascalsToPressure(pressurePa, next.pressureUnit))
+        next.pressureExpression = formatInputValue(convertPascalsToPressure(pressurePa, next.pressureUnit), next.pressureUnit)
       } else {
         const pressurePa = convertPressureToPascals(numericValue, next.pressureUnit)
         const altitudeM = altitudeFromPressure(pressurePa)
-        next.heightExpression = formatInputValue(convertMetersToHeight(altitudeM, next.heightUnit))
+        next.heightExpression = formatInputValue(convertMetersToHeight(altitudeM, next.heightUnit), next.heightUnit)
       }
     } catch {
       updatePoint(pointId, next)
@@ -137,10 +137,10 @@ export function useBarometricConverter() {
       try {
         if (kind === 'height') {
           const altitudeM = convertHeightToMeters(numericValue, point.heightUnit)
-          next.heightExpression = formatInputValue(convertMetersToHeight(altitudeM, unit as HeightUnit))
+          next.heightExpression = formatInputValue(convertMetersToHeight(altitudeM, unit as HeightUnit), unit as HeightUnit)
         } else {
           const pressurePa = convertPressureToPascals(numericValue, point.pressureUnit)
-          next.pressureExpression = formatInputValue(convertPascalsToPressure(pressurePa, unit as PressureUnit))
+          next.pressureExpression = formatInputValue(convertPascalsToPressure(pressurePa, unit as PressureUnit), unit as PressureUnit)
         }
       } catch {
         // Keep the expression unchanged when the other value is invalid.
@@ -168,7 +168,7 @@ export function useBarometricConverter() {
     }
 
     updatePoint(pointId, {
-      [expressionKey]: formatInputValue(numericValue),
+      [expressionKey]: formatInputValue(numericValue, kind === 'height' ? point.heightUnit : point.pressureUnit),
     })
     return true
   }
