@@ -19,6 +19,9 @@ export type BarometricPointState = {
   heightUnit: HeightUnit
   pressureExpression: string
   pressureUnit: PressureUnit
+  lastInputKind?: 'height' | 'pressure'
+  canonicalHeightMeters?: number
+  canonicalPressurePa?: number
 }
 
 export type BarometricStoredState = {
@@ -36,12 +39,18 @@ const DEFAULT_STATE: BarometricStoredState = {
     heightUnit: 'ft',
     pressureExpression: formatInputValue(convertPascalsToPressure(101325, 'psi'), 'psi'),
     pressureUnit: 'psi',
+    lastInputKind: 'height',
+    canonicalHeightMeters: 0,
+    canonicalPressurePa: 101325,
   },
   pointB: {
     heightExpression: '0',
     heightUnit: 'ft',
     pressureExpression: formatInputValue(convertPascalsToPressure(101325, 'psi'), 'psi'),
     pressureUnit: 'psi',
+    lastInputKind: 'height',
+    canonicalHeightMeters: 0,
+    canonicalPressurePa: 101325,
   },
   heightDifferenceUnit: 'ft',
   pressureDifferenceUnit: 'psi',
@@ -58,6 +67,9 @@ function isPointState(value: unknown): value is BarometricPointState {
     && typeof point.pressureExpression === 'string'
     && typeof point.heightUnit === 'string'
     && typeof point.pressureUnit === 'string'
+    && (point.lastInputKind === undefined || point.lastInputKind === 'height' || point.lastInputKind === 'pressure')
+    && (point.canonicalHeightMeters === undefined || Number.isFinite(point.canonicalHeightMeters))
+    && (point.canonicalPressurePa === undefined || Number.isFinite(point.canonicalPressurePa))
 }
 
 function isStoredState(value: unknown): value is BarometricStoredState {
@@ -99,10 +111,13 @@ export function useBarometricConverter() {
     const next = {
       ...point,
       [kind === 'height' ? 'heightExpression' : 'pressureExpression']: expression,
+      lastInputKind: kind,
     }
     const numericValue = evaluateNumericExpression(expression)
 
     if (numericValue === null) {
+      next.canonicalHeightMeters = undefined
+      next.canonicalPressurePa = undefined
       updatePoint(pointId, next)
       return
     }
@@ -112,12 +127,18 @@ export function useBarometricConverter() {
         const altitudeM = convertHeightToMeters(numericValue, next.heightUnit)
         const pressurePa = pressureFromAltitude(altitudeM)
         next.pressureExpression = formatInputValue(convertPascalsToPressure(pressurePa, next.pressureUnit), next.pressureUnit)
+        next.canonicalHeightMeters = altitudeM
+        next.canonicalPressurePa = pressurePa
       } else {
         const pressurePa = convertPressureToPascals(numericValue, next.pressureUnit)
         const altitudeM = altitudeFromPressure(pressurePa)
         next.heightExpression = formatInputValue(convertMetersToHeight(altitudeM, next.heightUnit), next.heightUnit)
+        next.canonicalHeightMeters = altitudeM
+        next.canonicalPressurePa = pressurePa
       }
     } catch {
+      next.canonicalHeightMeters = undefined
+      next.canonicalPressurePa = undefined
       updatePoint(pointId, next)
       return
     }
@@ -136,10 +157,14 @@ export function useBarometricConverter() {
     if (numericValue !== null) {
       try {
         if (kind === 'height') {
-          const altitudeM = convertHeightToMeters(numericValue, point.heightUnit)
+          const altitudeM = Number.isFinite(point.canonicalHeightMeters)
+            ? point.canonicalHeightMeters!
+            : convertHeightToMeters(numericValue, point.heightUnit)
           next.heightExpression = formatInputValue(convertMetersToHeight(altitudeM, unit as HeightUnit), unit as HeightUnit)
         } else {
-          const pressurePa = convertPressureToPascals(numericValue, point.pressureUnit)
+          const pressurePa = Number.isFinite(point.canonicalPressurePa)
+            ? point.canonicalPressurePa!
+            : convertPressureToPascals(numericValue, point.pressureUnit)
           next.pressureExpression = formatInputValue(convertPascalsToPressure(pressurePa, unit as PressureUnit), unit as PressureUnit)
         }
       } catch {
@@ -157,11 +182,16 @@ export function useBarometricConverter() {
     const numericValue = evaluateNumericExpression(expression)
     if (numericValue === null) return false
 
+    let canonicalHeightMeters: number
+    let canonicalPressurePa: number
+
     try {
       if (kind === 'height') {
-        pressureFromAltitude(convertHeightToMeters(numericValue, point.heightUnit))
+        canonicalHeightMeters = convertHeightToMeters(numericValue, point.heightUnit)
+        canonicalPressurePa = pressureFromAltitude(canonicalHeightMeters)
       } else {
-        altitudeFromPressure(convertPressureToPascals(numericValue, point.pressureUnit))
+        canonicalPressurePa = convertPressureToPascals(numericValue, point.pressureUnit)
+        canonicalHeightMeters = altitudeFromPressure(canonicalPressurePa)
       }
     } catch {
       return false
@@ -169,6 +199,9 @@ export function useBarometricConverter() {
 
     updatePoint(pointId, {
       [expressionKey]: formatInputValue(numericValue, kind === 'height' ? point.heightUnit : point.pressureUnit),
+      lastInputKind: kind,
+      canonicalHeightMeters,
+      canonicalPressurePa,
     })
     return true
   }
@@ -226,6 +259,26 @@ function resolvePoint(point: BarometricPointState) {
     } catch {
       pressureError = true
     }
+  }
+
+  // The paired field is rounded for readability. Use the last edited field
+  // as the authoritative value so that display rounding never affects math.
+  if (point.lastInputKind !== 'pressure' && heightMeters !== null) {
+    pressurePa = Number.isFinite(point.canonicalPressurePa)
+      ? point.canonicalPressurePa!
+      : pressureFromAltitude(heightMeters)
+    heightMeters = Number.isFinite(point.canonicalHeightMeters)
+      ? point.canonicalHeightMeters!
+      : heightMeters
+    pressureError = false
+  } else if (point.lastInputKind === 'pressure' && pressurePa !== null) {
+    heightMeters = Number.isFinite(point.canonicalHeightMeters)
+      ? point.canonicalHeightMeters!
+      : altitudeFromPressure(pressurePa)
+    pressurePa = Number.isFinite(point.canonicalPressurePa)
+      ? point.canonicalPressurePa!
+      : pressurePa
+    heightError = false
   }
 
   return {

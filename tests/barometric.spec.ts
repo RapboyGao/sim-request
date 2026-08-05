@@ -9,6 +9,7 @@ import {
   formatInputValue,
   formatValueForUnit,
   getMinimumModelPressure,
+  PRESSURE_UNITS,
   pressureFromAltitude,
 } from '../utils/barometric'
 
@@ -18,9 +19,9 @@ describe('barometric formula', () => {
   })
 
   it('matches known standard-atmosphere layer bases', () => {
-    expect(pressureFromAltitude(11000)).toBeCloseTo(22632.1, 0)
-    expect(pressureFromAltitude(20000)).toBeCloseTo(5474.89, 0)
-    expect(pressureFromAltitude(51000)).toBeCloseTo(66.9389, 1)
+    expect(pressureFromAltitude(11000)).toBeCloseTo(22632.063973462926, 10)
+    expect(pressureFromAltitude(20000)).toBeCloseTo(5474.888669677778, 10)
+    expect(pressureFromAltitude(51000)).toBeCloseTo(66.93887311868737, 10)
   })
 
   it('round-trips altitude through pressure at layer boundaries', () => {
@@ -66,5 +67,17 @@ describe('units and expressions', () => {
     expect(formatValueForUnit(1524.0000001, 'm')).toBe('1,524')
     expect(formatValueForUnit(14.695948775, 'psi')).toBe('14.696')
     expect(formatInputValue(50.000000001, 'ft')).toBe('50')
+  })
+
+  it('keeps pressure display rounding within 0.1 ft of altitude', () => {
+    for (const altitude of [0, 10000, 20000, 41000, 86000]) {
+      const pressurePa = pressureFromAltitude(altitude)
+
+      for (const unit of PRESSURE_UNITS) {
+        const displayedPressure = Number(formatInputValue(convertPascalsToPressure(pressurePa, unit), unit))
+        const displayedAltitude = altitudeFromPressure(convertPressureToPascals(displayedPressure, unit))
+        expect(Math.abs(displayedAltitude - altitude), `${altitude} m in ${unit}`).toBeLessThanOrEqual(0.03048 + 1e-9)
+      }
+    }
   })
 })

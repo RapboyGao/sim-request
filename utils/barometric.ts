@@ -25,6 +25,8 @@ const PRESSURE_DISPLAY_DECIMAL_PLACES: Record<PressureUnit, number> = {
   atm: 4,
   mmHg: 1,
 }
+const MAX_DISPLAY_HEIGHT_ERROR_METERS = 0.03048 // 0.1 ft
+const MAX_PRESSURE_DISPLAY_DECIMAL_PLACES = 15
 
 const HEIGHT_TO_METERS: Record<HeightUnit, number> = {
   ft: 0.3048,
@@ -47,8 +49,8 @@ const PRESSURE_TO_PASCALS: Record<PressureUnit, number> = {
 }
 
 const G0 = 9.80665
-const MOLAR_MASS = 28.9644
-const GAS_CONSTANT = 8.31432e3
+const MOLAR_MASS = 0.0289644
+const GAS_CONSTANT = 8.31432
 export const MAX_MODEL_ALTITUDE_METERS = 86000
 const MAX_ALTITUDE_METERS = MAX_MODEL_ALTITUDE_METERS
 
@@ -62,12 +64,13 @@ type AtmosphereLayer = {
 // U.S. Standard Atmosphere 1976 layer bases from the referenced formula.
 const ATMOSPHERE_LAYERS: AtmosphereLayer[] = [
   { baseAltitudeM: 0, basePressurePa: 101325, baseTemperatureK: 288.15, lapseRateKPerM: -0.0065 },
-  { baseAltitudeM: 11000, basePressurePa: 22632.1, baseTemperatureK: 216.65, lapseRateKPerM: 0 },
-  { baseAltitudeM: 20000, basePressurePa: 5474.89, baseTemperatureK: 216.65, lapseRateKPerM: 0.001 },
-  { baseAltitudeM: 32000, basePressurePa: 868.019, baseTemperatureK: 228.65, lapseRateKPerM: 0.0028 },
-  { baseAltitudeM: 47000, basePressurePa: 110.9063, baseTemperatureK: 270.65, lapseRateKPerM: 0 },
-  { baseAltitudeM: 51000, basePressurePa: 66.9389, baseTemperatureK: 270.65, lapseRateKPerM: -0.0028 },
-  { baseAltitudeM: 71000, basePressurePa: 3.95642, baseTemperatureK: 214.65, lapseRateKPerM: -0.002 },
+  // Derived from the preceding layer with the exact standard-atmosphere constants.
+  { baseAltitudeM: 11000, basePressurePa: 22632.063973462926, baseTemperatureK: 216.65, lapseRateKPerM: 0 },
+  { baseAltitudeM: 20000, basePressurePa: 5474.888669677778, baseTemperatureK: 216.65, lapseRateKPerM: 0.001 },
+  { baseAltitudeM: 32000, basePressurePa: 868.0186847552288, baseTemperatureK: 228.65, lapseRateKPerM: 0.0028 },
+  { baseAltitudeM: 47000, basePressurePa: 110.90630555496605, baseTemperatureK: 270.65, lapseRateKPerM: 0 },
+  { baseAltitudeM: 51000, basePressurePa: 66.93887311868737, baseTemperatureK: 270.65, lapseRateKPerM: -0.0028 },
+  { baseAltitudeM: 71000, basePressurePa: 3.9564204280407327, baseTemperatureK: 214.65, lapseRateKPerM: -0.002 },
 ]
 
 const EXPONENT_BASE = G0 * MOLAR_MASS / GAS_CONSTANT
@@ -161,16 +164,42 @@ export function altitudeFromPressure(pressurePa: number) {
   ) / layer.lapseRateKPerM
 }
 
-export function getUnitDecimalPlaces(unit: HeightUnit | PressureUnit) {
+function getPressureDecimalPlaces(value: number, unit: PressureUnit) {
+  const minimumDecimalPlaces = PRESSURE_DISPLAY_DECIMAL_PLACES[unit]
+  if (!Number.isFinite(value)) return minimumDecimalPlaces
+
+  let altitudeM: number
+  try {
+    altitudeM = altitudeFromPressure(convertPressureToPascals(value, unit))
+  } catch {
+    return minimumDecimalPlaces
+  }
+
+  for (let decimalPlaces = minimumDecimalPlaces; decimalPlaces <= MAX_PRESSURE_DISPLAY_DECIMAL_PLACES; decimalPlaces += 1) {
+    const roundedValue = Number(value.toFixed(decimalPlaces))
+    try {
+      const roundedAltitudeM = altitudeFromPressure(convertPressureToPascals(roundedValue, unit))
+      if (Math.abs(roundedAltitudeM - altitudeM) <= MAX_DISPLAY_HEIGHT_ERROR_METERS) {
+        return decimalPlaces
+      }
+    } catch {
+      // Try one more decimal place when rounding reaches an invalid pressure.
+    }
+  }
+
+  return MAX_PRESSURE_DISPLAY_DECIMAL_PLACES
+}
+
+export function getUnitDecimalPlaces(unit: HeightUnit | PressureUnit, value?: number) {
   return unit in HEIGHT_DISPLAY_DECIMAL_PLACES
     ? HEIGHT_DISPLAY_DECIMAL_PLACES[unit as HeightUnit]
-    : PRESSURE_DISPLAY_DECIMAL_PLACES[unit as PressureUnit]
+    : getPressureDecimalPlaces(value ?? Number.NaN, unit as PressureUnit)
 }
 
 export function formatValueForUnit(value: number, unit: HeightUnit | PressureUnit) {
   if (!Number.isFinite(value)) return '—'
 
-  const decimalPlaces = getUnitDecimalPlaces(unit)
+  const decimalPlaces = getUnitDecimalPlaces(unit, value)
   const roundedValue = Number(value.toFixed(decimalPlaces))
   if (Object.is(roundedValue, -0) || roundedValue === 0) return '0'
 
@@ -182,7 +211,7 @@ export function formatValueForUnit(value: number, unit: HeightUnit | PressureUni
 export function formatInputValue(value: number, unit?: HeightUnit | PressureUnit) {
   if (Object.is(value, -0) || value === 0) return '0'
   if (unit) {
-    const decimalPlaces = getUnitDecimalPlaces(unit)
+    const decimalPlaces = getUnitDecimalPlaces(unit, value)
     return Number(value.toFixed(decimalPlaces)).toString()
   }
   return Number(value.toPrecision(12)).toString()
