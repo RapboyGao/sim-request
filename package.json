@@ -19,6 +19,7 @@
     "@oxc-transform/binding-linux-x64-gnu": "0.117.0",
     "@oxc-transform/binding-linux-x64-musl": "0.117.0",
     "@supabase/supabase-js": "^2.103.0",
+    "@vite-pwa/nuxt": "^1.1.1",
     "@vueuse/core": "^14.4.0",
     "echarts": "^6.1.0",
     "mathjs": "^15.2.0",

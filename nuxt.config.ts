@@ -8,7 +8,7 @@ export default defineNuxtConfig({
     port: 1345,
   },
   css: ['~/assets/scss/main.scss', 'vuetify/styles'],
-  modules: ['@nuxtjs/i18n'],
+  modules: ['@nuxtjs/i18n', '@vite-pwa/nuxt'],
   build: {
     transpile: ['vuetify'],
   },
@@ -42,6 +42,57 @@ export default defineNuxtConfig({
       { code: 'ko', name: '한국어', file: 'ko.json', language: 'ko-KR' },
       { code: 'fr', name: 'Français', file: 'fr.json', language: 'fr-FR' },
     ],
+  },
+  pwa: {
+    registerType: 'autoUpdate',
+    includeAssets: [
+      'favicon.svg',
+      'apple-touch-icon.svg',
+      'favicon.png',
+      'apple-touch-icon.png',
+      'pwa-192x192.png',
+      'pwa-512x512.png',
+    ],
+    manifest: {
+      id: '/',
+      name: 'Observation 预约',
+      short_name: 'Observation',
+      description: 'Observation 预约系统，用于模拟机观摩预约、日历查看与管理。',
+      lang: 'zh-CN',
+      start_url: '/',
+      scope: '/',
+      display: 'standalone',
+      orientation: 'portrait-primary',
+      theme_color: '#0f766e',
+      background_color: '#f8fafc',
+      icons: [
+        {
+          src: '/pwa-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+          src: '/pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+        },
+        {
+          src: '/pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'maskable',
+        },
+      ],
+    },
+    workbox: {
+      cleanupOutdatedCaches: true,
+      navigateFallback: '/',
+      globPatterns: ['**/*.{js,css,html,png,svg,ico,woff2}'],
+    },
+    devOptions: {
+      enabled: true,
+      type: 'module',
+    },
   },
   nitro: {
     preset: 'netlify',
