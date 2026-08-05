@@ -37,6 +37,8 @@
             prepend-icon="mdi-calendar-month-outline" />
             <v-list-item :to="localePath('/rules')" :title="t('app.navRules')"
               prepend-icon="mdi-book-open-variant-outline" />
+            <v-list-item :to="localePath('/barometric')" :title="t('app.navBarometric')"
+              prepend-icon="mdi-weather-windy" />
             <v-list-item :to="localePath('/admin')" :title="t('app.navAdmin')"
               prepend-icon="mdi-shield-account-outline" />
           </v-list>
@@ -58,7 +60,8 @@
         <v-list-item :to="localePath('/calendar')" :title="t('app.navCalendar')"
         prepend-icon="mdi-calendar-month-outline" />
         <v-list-item :to="localePath('/rules')" :title="t('app.navRules')"
-          prepend-icon="mdi-book-open-variant-outline" />
+        prepend-icon="mdi-book-open-variant-outline" />
+        <v-list-item :to="localePath('/barometric')" :title="t('app.navBarometric')" prepend-icon="mdi-weather-windy" />
         <v-list-item :to="localePath('/admin')" :title="t('app.navAdmin')" prepend-icon="mdi-shield-account-outline" />
         <v-divider class="my-2" />
         <v-list-subheader>{{ t('app.navLanguage') }}</v-list-subheader>

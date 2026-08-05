@@ -3,6 +3,7 @@
     "title": "Observation Réservation",
     "navBooking": "Réserver",
     "navRules": "Règles",
+    "navBarometric": "Altitude / pression",
     "navCalendar": "Calendrier",
     "navAdmin": "Admin",
     "navLanguage": "Langue",
@@ -17,6 +18,7 @@
     "title": "Réservez par date et par créneaux de 2 heures",
     "summary": "Chaque créneau confirme jusqu’à 2 personnes. Les réservations supplémentaires vont sur liste d’attente. Les camarades de classe peuvent passer devant et sont prioritaires.",
     "date": "Date de réservation",
+    "dateInvalid": "Veuillez choisir une date comprise entre aujourd’hui et les 50 prochains jours.",
     "slots": "Créneaux",
     "slotHint": "Une réservation de 4 heures nécessite de sélectionner deux créneaux de 2 heures.",
     "name": "Nom",
@@ -42,6 +44,49 @@
     "priorityLabel": "Niveau de priorité",
     "goToPeople": "Aller à la vue par personne",
     "cancelRestoreHint": "Si vous ne pouvez pas venir à cause d’un vol ou d’une autre raison, n’oubliez pas d’annuler. Après annulation, la réservation peut être restaurée en conservant le classement initial."
+  },
+  "barometric": {
+    "eyebrow": "Calculateur atmosphérique",
+    "title": "Convertisseur altitude / pression",
+    "numericKeyboard": "Clavier numérique",
+    "formulaKeyboard": "Clavier de formules",
+    "qrEyebrow": "Partager cette page",
+    "qrTitle": "Scanner pour ouvrir cette page",
+    "qrHint": "Scannez le QR code ci-dessous avec l’appareil photo de votre téléphone.",
+    "qrAlt": "QR code de cette page",
+    "pointA": "Point de référence A",
+    "pointB": "Point de référence B",
+    "height": "Altitude",
+    "pressure": "Pression",
+    "unit": "Unité",
+    "expressionPlaceholder": "ex. 2 * 5000",
+    "expressionHint": "Les expressions mathématiques sont prises en charge. Utilisez un point pour les décimales.",
+    "invalidHeight": "Saisissez une altitude valide inférieure à 86 km.",
+    "invalidPressure": "Saisissez une pression valide dans la plage du modèle.",
+    "differenceTitle": "Différence entre les points",
+    "differenceFormula": "A − B",
+    "heightDifference": "Différence d'altitude",
+    "pressureDifference": "Différence de pression",
+    "units": {
+      "height": {
+        "ft": "ft — pieds",
+        "m": "m — mètres",
+        "km": "km — kilomètres",
+        "in": "in — pouces",
+        "mi": "mi — miles",
+        "nmi": "nmi — milles nautiques"
+      },
+      "pressure": {
+        "psi": "psi",
+        "inHg": "inHg",
+        "Pa": "Pa",
+        "hPa": "hPa",
+        "kPa": "kPa",
+        "bar": "bar",
+        "atm": "atm",
+        "mmHg": "mmHg"
+      }
+    }
   },
   "rules": {
     "eyebrow": "Observation Réservation",

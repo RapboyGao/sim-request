@@ -3,6 +3,7 @@
     "title": "Observation 예약",
     "navBooking": "예약",
     "navRules": "규칙",
+    "navBarometric": "고도 / 기압 변환",
     "navCalendar": "달력",
     "navAdmin": "관리",
     "navLanguage": "언어",
@@ -17,6 +18,7 @@
     "title": "날짜와 2시간 단위로 관람을 예약하세요",
     "summary": "각 시간대는 최대 2명까지 확정됩니다. 초과 인원은 대기자로 등록됩니다. 동급생은 우선권이 있으며 먼저 끼어들 수 있습니다.",
     "date": "예약 날짜",
+    "dateInvalid": "오늘부터 앞으로 50일 이내의 날짜를 선택하세요.",
     "slots": "시간대",
     "slotHint": "4시간 시뮬레이터 예약은 2시간 시간대 2개를 선택해야 합니다.",
     "name": "이름",
@@ -42,6 +44,49 @@
     "priorityLabel": "우선순위",
     "goToPeople": "인물별 보기로 이동",
     "cancelRestoreHint": "항공편이나 다른 사유로 올 수 없다면 꼭 취소해 주세요. 취소 후에도 원래 순위대로 복원할 수 있습니다."
+  },
+  "barometric": {
+    "eyebrow": "대기 계산기",
+    "title": "고도 및 기압 변환",
+    "numericKeyboard": "숫자 키보드",
+    "formulaKeyboard": "수식 키보드",
+    "qrEyebrow": "페이지 공유",
+    "qrTitle": "스캔하여 페이지 열기",
+    "qrHint": "휴대폰 카메라로 아래 QR 코드를 스캔하세요.",
+    "qrAlt": "현재 페이지 QR 코드",
+    "pointA": "기준 지점 A",
+    "pointB": "기준 지점 B",
+    "height": "고도",
+    "pressure": "기압",
+    "unit": "단위",
+    "expressionPlaceholder": "예: 2 * 5000",
+    "expressionHint": "수식을 지원합니다. 소수에는 마침표를 사용하세요.",
+    "invalidHeight": "86 km 미만의 올바른 고도를 입력하세요.",
+    "invalidPressure": "모델 범위 내의 올바른 기압을 입력하세요.",
+    "differenceTitle": "두 지점의 차이",
+    "differenceFormula": "A − B",
+    "heightDifference": "고도 차이",
+    "pressureDifference": "기압 차이",
+    "units": {
+      "height": {
+        "ft": "ft — 피트",
+        "m": "m — 미터",
+        "km": "km — 킬로미터",
+        "in": "in — 인치",
+        "mi": "mi — 마일",
+        "nmi": "nmi — 해리"
+      },
+      "pressure": {
+        "psi": "psi",
+        "inHg": "inHg",
+        "Pa": "Pa",
+        "hPa": "hPa",
+        "kPa": "kPa",
+        "bar": "bar",
+        "atm": "atm",
+        "mmHg": "mmHg"
+      }
+    }
   },
   "rules": {
     "eyebrow": "Observation 예약",

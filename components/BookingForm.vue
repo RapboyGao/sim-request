@@ -5,7 +5,13 @@
         <v-text-field :model-value="displayDate" :label="t('home.date')" readonly required
           prepend-inner-icon="mdi-calendar-month-outline" v-bind="props" />
       </template>
-      <v-date-picker :model-value="form.date" color="primary" @update:model-value="onDateSelected" />
+      <v-date-picker
+        :model-value="form.date"
+        :min="today"
+        :max="maxBookingDate"
+        color="primary"
+        @update:model-value="onDateSelected"
+      />
     </v-menu>
     <v-select v-model="form.slots" :items="slots" :label="t('home.slots')" multiple chips closable-chips
       prepend-inner-icon="mdi-clock-outline" required />
@@ -112,7 +118,8 @@ const route = useRoute()
 const { showBookingSuccessNotice } = useBookingSuccessNotice()
 const slots = buildSlots()
 
-const today = new Date().toISOString().slice(0, 10)
+const today = toDateInputValue(new Date())
+const maxBookingDate = toDateInputValue(addDays(new Date(), 50))
 const dateMenu = ref(false)
 const defaultSlot = slots[0] || ''
 const form = reactive({
@@ -152,6 +159,14 @@ const duplicateMessage = computed(() => {
 async function submitBooking() {
   message.text = ''
   duplicateSlots.value = []
+
+  if (!isBookingDateAllowed(form.date)) {
+    message.type = 'error'
+    message.text = t('home.dateInvalid')
+    form.date = today
+    return
+  }
+
   const name = form.name.trim()
   const phone = form.phone.replace(/\s+/g, '').trim()
 
@@ -201,13 +216,16 @@ async function submitBooking() {
 }
 
 function onDateSelected(value: unknown) {
-  form.date = normalizeDate(value) || form.date
-  dateMenu.value = false
+  const selectedDate = normalizeDate(value)
+  if (selectedDate && isBookingDateAllowed(selectedDate)) {
+    form.date = selectedDate
+    dateMenu.value = false
+  }
 }
 
 function applyRoutePrefill() {
   const queryDate = typeof route.query.date === 'string' ? normalizeDate(route.query.date) : ''
-  if (queryDate) {
+  if (queryDate && isBookingDateAllowed(queryDate)) {
     form.date = queryDate
   }
 
@@ -237,6 +255,16 @@ function toDateInputValue(value: Date) {
   const month = String(value.getMonth() + 1).padStart(2, '0')
   const day = String(value.getDate()).padStart(2, '0')
   return `${year}-${month}-${day}`
+}
+
+function addDays(value: Date, days: number) {
+  const result = new Date(value)
+  result.setDate(result.getDate() + days)
+  return result
+}
+
+function isBookingDateAllowed(value: string) {
+  return value >= today && value <= maxBookingDate
 }
 
 function formatDateLabel(value: string) {

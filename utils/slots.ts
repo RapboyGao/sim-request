@@ -19,12 +19,15 @@ export function formatMergedSlotLabels(date: string, slots: string[]) {
   if (sorted.length === 0) return []
 
   const labels: string[] = []
-  let startSlot = sorted[0]
-  let previousSlot = sorted[0]
+  const firstSlot = sorted[0]
+  if (!firstSlot) return []
+  let startSlot = firstSlot
+  let previousSlot = firstSlot
 
   for (let index = 1; index < sorted.length; index += 1) {
     const current = sorted[index]
-    if (!current || !isConsecutiveSlot(previousSlot, current)) {
+    if (!current) continue
+    if (!isConsecutiveSlot(previousSlot, current)) {
       labels.push(formatSlotRange(date, startSlot, previousSlot))
       startSlot = current
     }

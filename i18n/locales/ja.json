@@ -3,6 +3,7 @@
     "title": "Observation 予約",
     "navBooking": "予約",
     "navRules": "ルール",
+    "navBarometric": "高度 / 気圧換算",
     "navCalendar": "カレンダー",
     "navAdmin": "管理",
     "navLanguage": "言語",
@@ -17,6 +18,7 @@
     "title": "日付と2時間枠で見学枠を予約する",
     "summary": "各枠の確定は2人まで。超過分はキャンセル待ちになります。同級生は優先され、先に割り込むことができます。",
     "date": "予約日",
+    "dateInvalid": "今日から 50 日以内の日付を選択してください。",
     "slots": "時間枠",
     "slotHint": "4時間のシミュレータ予約には、2時間枠を2つ選択してください。",
     "name": "氏名",
@@ -42,6 +44,49 @@
     "priorityLabel": "優先度",
     "goToPeople": "人物別画面へ",
     "cancelRestoreHint": "便やその他の理由で来られない場合は、必ずキャンセルしてください。キャンセル後も元の順位のまま復元できます。"
+  },
+  "barometric": {
+    "eyebrow": "大気計算機",
+    "title": "高度と気圧の換算",
+    "numericKeyboard": "数字キーボード",
+    "formulaKeyboard": "数式キーボード",
+    "qrEyebrow": "ページを共有",
+    "qrTitle": "スキャンしてページを開く",
+    "qrHint": "スマートフォンのカメラで下の QR コードをスキャンしてください。",
+    "qrAlt": "このページの QR コード",
+    "pointA": "基準点 A",
+    "pointB": "基準点 B",
+    "height": "高度",
+    "pressure": "気圧",
+    "unit": "単位",
+    "expressionPlaceholder": "例: 2 * 5000",
+    "expressionHint": "数式に対応しています。小数にはドットを使用してください。",
+    "invalidHeight": "86 km 未満の有効な高度を入力してください。",
+    "invalidPressure": "モデル範囲内の有効な気圧を入力してください。",
+    "differenceTitle": "2点間の差",
+    "differenceFormula": "A − B",
+    "heightDifference": "高度差",
+    "pressureDifference": "気圧差",
+    "units": {
+      "height": {
+        "ft": "ft — フィート",
+        "m": "m — メートル",
+        "km": "km — キロメートル",
+        "in": "in — インチ",
+        "mi": "mi — マイル",
+        "nmi": "nmi — 海里"
+      },
+      "pressure": {
+        "psi": "psi",
+        "inHg": "inHg",
+        "Pa": "Pa",
+        "hPa": "hPa",
+        "kPa": "kPa",
+        "bar": "bar",
+        "atm": "atm",
+        "mmHg": "mmHg"
+      }
+    }
   },
   "rules": {
     "eyebrow": "Observation 予約",

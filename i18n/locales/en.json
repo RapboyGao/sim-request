@@ -3,6 +3,7 @@
     "title": "Observation Booking",
     "navBooking": "Book",
     "navRules": "Rules",
+    "navBarometric": "Altitude / pressure",
     "navCalendar": "Calendar",
     "navAdmin": "Admin",
     "navLanguage": "Language",
@@ -17,6 +18,7 @@
     "title": "Book a viewing slot by date and 2-hour time blocks",
     "summary": "Each slot confirms up to 2 people. Extra bookings go to the waitlist. Classmates can jump the queue and get higher priority.",
     "date": "Booking date",
+    "dateInvalid": "Please choose a date from today through the next 50 days.",
     "slots": "Time slots",
     "slotHint": "A 4-hour simulator booking requires selecting two 2-hour slots.",
     "name": "Name",
@@ -42,6 +44,49 @@
     "priorityLabel": "Priority level",
     "goToPeople": "Go to by-person view",
     "cancelRestoreHint": "If you cannot make it because of a flight or other reason, remember to cancel it. After cancellation, it can still be restored with the original ranking."
+  },
+  "barometric": {
+    "eyebrow": "Atmosphere calculator",
+    "title": "Altitude and pressure converter",
+    "numericKeyboard": "Number keyboard",
+    "formulaKeyboard": "Formula keyboard",
+    "qrEyebrow": "Share this page",
+    "qrTitle": "Scan to open this page",
+    "qrHint": "Use your phone camera to scan the QR code.",
+    "qrAlt": "QR code for this page",
+    "pointA": "Reference point A",
+    "pointB": "Reference point B",
+    "height": "Altitude",
+    "pressure": "Pressure",
+    "unit": "Unit",
+    "expressionPlaceholder": "e.g. 2 * 5000",
+    "expressionHint": "Math expressions are supported. Use a dot for decimal values.",
+    "invalidHeight": "Enter a valid height below 86 km.",
+    "invalidPressure": "Enter a valid pressure within the model range.",
+    "differenceTitle": "Difference between points",
+    "differenceFormula": "A − B",
+    "heightDifference": "Altitude difference",
+    "pressureDifference": "Pressure difference",
+    "units": {
+      "height": {
+        "ft": "ft — feet",
+        "m": "m — metres",
+        "km": "km — kilometres",
+        "in": "in — inches",
+        "mi": "mi — miles",
+        "nmi": "nmi — nautical miles"
+      },
+      "pressure": {
+        "psi": "psi",
+        "inHg": "inHg",
+        "Pa": "Pa",
+        "hPa": "hPa",
+        "kPa": "kPa",
+        "bar": "bar",
+        "atm": "atm",
+        "mmHg": "mmHg"
+      }
+    }
   },
   "rules": {
     "eyebrow": "Observation Booking",

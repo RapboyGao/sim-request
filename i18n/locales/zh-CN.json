@@ -3,6 +3,7 @@
     "title": "Observation 预约",
     "navBooking": "预约提交",
     "navRules": "预约规则",
+    "navBarometric": "高度 / 气压换算",
     "navCalendar": "预约日历",
     "navAdmin": "管理页",
     "navLanguage": "语言",
@@ -17,6 +18,7 @@
     "title": "按日期和 2 小时时段预约观摩名额",
     "summary": "每个时段最多 2 人确认，超出自动进入候补。填写姓名并标记是否为同学，同学有权插队，优先确认。",
     "date": "预约日期",
+    "dateInvalid": "请选择今天至未来 50 天内的日期。",
     "slots": "预约时段",
     "slotHint": "预约 4 小时模拟机需要选择两个 2 小时时段。",
     "name": "姓名",
@@ -42,6 +44,49 @@
     "priorityLabel": "优先级",
     "goToPeople": "前往按人查看",
     "cancelRestoreHint": "如果有航班或其他原因来不了，记得取消，取消后仍可按原排名恢复。"
+  },
+  "barometric": {
+    "eyebrow": "大气计算器",
+    "title": "高度与气压换算",
+    "numericKeyboard": "数字键盘",
+    "formulaKeyboard": "公式键盘",
+    "qrEyebrow": "分享页面",
+    "qrTitle": "扫码打开此页面",
+    "qrHint": "使用手机相机扫描下方二维码。",
+    "qrAlt": "当前页面二维码",
+    "pointA": "参考点 A",
+    "pointB": "参考点 B",
+    "height": "高度",
+    "pressure": "气压",
+    "unit": "单位",
+    "expressionPlaceholder": "例如 2 * 5000",
+    "expressionHint": "支持数学表达式；小数请使用英文句点。",
+    "invalidHeight": "请输入小于 86 千米的有效高度。",
+    "invalidPressure": "请输入模型范围内的有效气压。",
+    "differenceTitle": "两点之间的差值",
+    "differenceFormula": "A − B",
+    "heightDifference": "高度差",
+    "pressureDifference": "气压差",
+    "units": {
+      "height": {
+        "ft": "ft — 英尺",
+        "m": "m — 米",
+        "km": "km — 千米",
+        "in": "in — 英寸",
+        "mi": "mi — 英里",
+        "nmi": "nmi — 海里"
+      },
+      "pressure": {
+        "psi": "psi",
+        "inHg": "inHg",
+        "Pa": "Pa",
+        "hPa": "hPa",
+        "kPa": "kPa",
+        "bar": "bar",
+        "atm": "atm",
+        "mmHg": "mmHg"
+      }
+    }
   },
   "rules": {
     "eyebrow": "Observation 预约",
