@@ -10,7 +10,7 @@ import {
   pressureFromAltitude,
   type HeightUnit,
   type PressureUnit,
-} from '~/utils/barometric'
+} from '../utils/barometric'
 
 export type BarometricPointId = 'A' | 'B'
 
@@ -30,6 +30,10 @@ export type BarometricStoredState = {
   pointB: BarometricPointState
   heightDifferenceUnit: HeightUnit
   pressureDifferenceUnit: PressureUnit
+}
+
+export function copyPointState(point: BarometricPointState): BarometricPointState {
+  return { ...point }
 }
 
 const DEFAULT_STATE: BarometricStoredState = {
@@ -175,6 +179,17 @@ export function useBarometricConverter() {
     updatePoint(pointId, next)
   }
 
+  function copyPoint(sourcePointId: BarometricPointId, targetPointId: BarometricPointId) {
+    if (sourcePointId === targetPointId) return
+
+    const sourceKey = sourcePointId === 'A' ? 'pointA' : 'pointB'
+    const targetKey = targetPointId === 'A' ? 'pointA' : 'pointB'
+    storedState.value = {
+      ...storedState.value,
+      [targetKey]: copyPointState(storedState.value[sourceKey]),
+    }
+  }
+
   function commitInput(pointId: BarometricPointId, kind: 'height' | 'pressure') {
     const point = storedState.value[pointId === 'A' ? 'pointA' : 'pointB']
     const expressionKey = kind === 'height' ? 'heightExpression' : 'pressureExpression'
@@ -230,6 +245,7 @@ export function useBarometricConverter() {
     pressureDifference,
     updateInput,
     updateUnit,
+    copyPoint,
     commitInput,
     updateDifferenceUnit,
   }

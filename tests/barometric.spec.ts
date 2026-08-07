@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { copyPointState, type BarometricPointState } from '../composables/useBarometricConverter'
 import {
   altitudeFromPressure,
   convertHeightToMeters,
@@ -79,5 +80,21 @@ describe('units and expressions', () => {
         expect(Math.abs(displayedAltitude - altitude), `${altitude} m in ${unit}`).toBeLessThanOrEqual(0.03048 + 1e-9)
       }
     }
+  })
+
+  it('copies a complete point state without sharing the object', () => {
+    const source: BarometricPointState = {
+      heightExpression: 'invalid + formula',
+      heightUnit: 'm',
+      pressureExpression: '14.6959',
+      pressureUnit: 'psi',
+      lastInputKind: 'pressure',
+      canonicalHeightMeters: 10.25,
+      canonicalPressurePa: 101200.5,
+    }
+    const copied = copyPointState(source)
+
+    expect(copied).toEqual(source)
+    expect(copied).not.toBe(source)
   })
 })

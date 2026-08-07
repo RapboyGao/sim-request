@@ -61,6 +61,8 @@
     "qrAlt": "QR code de cette page",
     "pointA": "Point de référence A",
     "pointB": "Point de référence B",
+    "copyPointA": "Copier A",
+    "copyPointB": "Copier B",
     "height": "Altitude",
     "pressure": "Pression",
     "unit": "Unité",
@@ -82,14 +84,14 @@
         "nmi": "nmi — milles nautiques"
       },
       "pressure": {
-        "psi": "psi",
-        "inHg": "inHg",
-        "Pa": "Pa",
-        "hPa": "hPa",
-        "kPa": "kPa",
+        "psi": "psi — livres par pouce carré",
+        "inHg": "inHg — pouces de mercure",
+        "Pa": "Pa — pascals",
+        "hPa": "hPa — hectopascals",
+        "kPa": "kPa — kilopascals",
         "bar": "bar",
-        "atm": "atm",
-        "mmHg": "mmHg"
+        "atm": "atm — atmosphères standard",
+        "mmHg": "mmHg — millimètres de mercure"
       }
     }
   },
@@ -217,7 +219,7 @@
     "cancel": "Annuler",
     "confirmCancelPrefix": "Confirmer l’annulation de cette réservation :",
     "confirmRestorePrefix": "Confirmer la restauration de cette réservation :",
-    "statusConfirmed": "确认",
-    "statusWaitlist": "候补"
+    "statusConfirmed": "Réservation confirmée",
+    "statusWaitlist": "Liste d’attente"
   }
 }

@@ -61,6 +61,8 @@
     "qrAlt": "当前页面二维码",
     "pointA": "参考点 A",
     "pointB": "参考点 B",
+    "copyPointA": "复制 A",
+    "copyPointB": "复制 B",
     "height": "高度",
     "pressure": "气压",
     "unit": "单位",
@@ -82,14 +84,14 @@
         "nmi": "nmi — 海里"
       },
       "pressure": {
-        "psi": "psi",
-        "inHg": "inHg",
-        "Pa": "Pa",
-        "hPa": "hPa",
-        "kPa": "kPa",
-        "bar": "bar",
-        "atm": "atm",
-        "mmHg": "mmHg"
+        "psi": "psi — 磅力每平方英寸",
+        "inHg": "inHg — 英寸汞柱",
+        "Pa": "Pa — 帕斯卡",
+        "hPa": "hPa — 百帕",
+        "kPa": "kPa — 千帕",
+        "bar": "bar — 巴",
+        "atm": "atm — 标准大气压",
+        "mmHg": "mmHg — 毫米汞柱"
       }
     }
   },
@@ -220,7 +222,7 @@
     "cancel": "取消",
     "confirmCancelPrefix": "确认取消该预约记录：",
     "confirmRestorePrefix": "确认恢复该预约记录：",
-    "statusConfirmed": "确认",
+    "statusConfirmed": "预约成功",
     "statusWaitlist": "候补"
   }
 }

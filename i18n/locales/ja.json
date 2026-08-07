@@ -61,6 +61,8 @@
     "qrAlt": "このページの QR コード",
     "pointA": "基準点 A",
     "pointB": "基準点 B",
+    "copyPointA": "Aをコピー",
+    "copyPointB": "Bをコピー",
     "height": "高度",
     "pressure": "気圧",
     "unit": "単位",
@@ -82,14 +84,14 @@
         "nmi": "nmi — 海里"
       },
       "pressure": {
-        "psi": "psi",
-        "inHg": "inHg",
-        "Pa": "Pa",
-        "hPa": "hPa",
-        "kPa": "kPa",
-        "bar": "bar",
-        "atm": "atm",
-        "mmHg": "mmHg"
+        "psi": "psi — ポンド毎平方インチ",
+        "inHg": "inHg — 水銀柱インチ",
+        "Pa": "Pa — パスカル",
+        "hPa": "hPa — ヘクトパスカル",
+        "kPa": "kPa — キロパスカル",
+        "bar": "bar — バール",
+        "atm": "atm — 標準大気圧",
+        "mmHg": "mmHg — 水銀柱ミリメートル"
       }
     }
   },
@@ -221,7 +223,7 @@
     "cancel": "キャンセル",
     "confirmCancelPrefix": "この予約記録をキャンセルします：",
     "confirmRestorePrefix": "この予約記録を復元します：",
-    "statusConfirmed": "确认",
-    "statusWaitlist": "候补"
+    "statusConfirmed": "予約成功",
+    "statusWaitlist": "補欠"
   }
 }

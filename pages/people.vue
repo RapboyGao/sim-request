@@ -54,7 +54,15 @@
                   <div class="person-row-main">
                     <div class="person-row-title">
                       <span>{{ row.date }} {{ row.slot }}</span>
-                      <v-icon :icon="statusMeta(row.status).icon" size="16" :color="statusMeta(row.status).color" class="person-status-icon" />
+                      <v-chip
+                        size="x-small"
+                        variant="tonal"
+                        :color="statusMeta(row.status).color"
+                        :prepend-icon="statusMeta(row.status).icon"
+                        class="person-status-chip"
+                      >
+                        {{ statusMeta(row.status).label }}
+                      </v-chip>
                     </div>
                     <div class="person-row-subtitle">
                       <v-icon :icon="priorityMeta(row.priorityLevel).icon" size="14" :color="priorityMeta(row.priorityLevel).color" class="mr-1" />
@@ -335,8 +343,7 @@ function formatTime(value: string) {
   color: var(--text);
 }
 
-.person-status-icon {
-  margin-left: 8px;
+.person-status-chip {
   flex: 0 0 auto;
 }
 

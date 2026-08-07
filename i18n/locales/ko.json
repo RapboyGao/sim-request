@@ -61,6 +61,8 @@
     "qrAlt": "현재 페이지 QR 코드",
     "pointA": "기준 지점 A",
     "pointB": "기준 지점 B",
+    "copyPointA": "A 복사",
+    "copyPointB": "B 복사",
     "height": "고도",
     "pressure": "기압",
     "unit": "단위",
@@ -82,14 +84,14 @@
         "nmi": "nmi — 해리"
       },
       "pressure": {
-        "psi": "psi",
-        "inHg": "inHg",
-        "Pa": "Pa",
-        "hPa": "hPa",
-        "kPa": "kPa",
-        "bar": "bar",
-        "atm": "atm",
-        "mmHg": "mmHg"
+        "psi": "psi — 제곱인치당 파운드",
+        "inHg": "inHg — 수은주 인치",
+        "Pa": "Pa — 파스칼",
+        "hPa": "hPa — 헥토파스칼",
+        "kPa": "kPa — 킬로파스칼",
+        "bar": "bar — 바",
+        "atm": "atm — 표준 대기압",
+        "mmHg": "mmHg — 수은주 밀리미터"
       }
     }
   },
@@ -221,7 +223,7 @@
     "cancel": "취소",
     "confirmCancelPrefix": "이 예약 기록을 취소합니다:",
     "confirmRestorePrefix": "이 예약 기록을 복원합니다:",
-    "statusConfirmed": "确认",
-    "statusWaitlist": "候补"
+    "statusConfirmed": "예약 성공",
+    "statusWaitlist": "대기"
   }
 }

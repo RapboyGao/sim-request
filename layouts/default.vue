@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar color="surface" elevation="1" density="comfortable">
       <v-app-bar-nav-icon class="d-md-none" icon="mdi-menu" @click="drawer = !drawer" />
-      <v-app-bar-title class="font-weight-bold">{{ t('app.title') }}</v-app-bar-title>
+      <v-app-bar-title class="font-weight-bold">{{ pageTitle }}</v-app-bar-title>
       <v-spacer />
       <div class="d-none d-md-flex app-links">
         <v-btn icon variant="text" :aria-label="themeModeLabel()" @click="cycleThemeMode">
@@ -91,11 +91,32 @@
 
 <script setup lang="ts">
 const { themeMode, setThemeMode, themeModeIcon, themeModeColor, themeModeLabel } = useThemeMode()
-const { t, locales } = useI18n()
+const { t, locale, locales } = useI18n()
 const localePath = useLocalePath()
 const switchLocalePath = useSwitchLocalePath()
+const route = useRoute()
 const drawer = ref(false)
 const { active: routeLoading } = useRouteLoading()
+
+const pageTitleKeys: Record<string, string> = {
+  '/': 'app.navBooking',
+  '/people': 'app.navPeople',
+  '/calendar': 'app.navCalendar',
+  '/rules': 'app.navRules',
+  '/barometric': 'app.navBarometric',
+  '/admin': 'app.navAdmin',
+}
+
+const pageTitle = computed(() => {
+  const localePrefix = `/${locale.value}`
+  const path = route.path === localePrefix
+    ? '/'
+    : route.path.startsWith(`${localePrefix}/`)
+      ? route.path.slice(localePrefix.length)
+      : route.path
+
+  return t(pageTitleKeys[path] || 'app.title')
+})
 
 function cycleThemeMode() {
   const order = ['system', 'light', 'dark'] as const

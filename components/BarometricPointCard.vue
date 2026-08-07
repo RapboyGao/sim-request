@@ -4,9 +4,17 @@
       <div>
         <h2 class="text-h6 font-weight-bold">{{ title }}</h2>
       </div>
-      <v-avatar color="primary" variant="tonal" size="42">
-        <v-icon icon="mdi-map-marker-radius-outline" />
-      </v-avatar>
+      <div class="barometric-point-card__actions">
+        <v-btn
+          size="small"
+          variant="tonal"
+          color="primary"
+          prepend-icon="mdi-content-copy"
+          @click="emit('copy-point')"
+        >
+          {{ props.copyLabel }}
+        </v-btn>
+      </div>
     </div>
 
     <v-divider class="my-5" />
@@ -39,7 +47,11 @@
         item-title="title"
         item-value="value"
         @update:model-value="emit('update-unit', 'height', $event)"
-      />
+      >
+        <template #selection="{ item }">
+          <span class="unit-selection-title" :title="item.title">{{ item.value }}</span>
+        </template>
+      </v-select>
     </div>
 
     <div class="barometric-field-row">
@@ -70,7 +82,11 @@
         item-title="title"
         item-value="value"
         @update:model-value="emit('update-unit', 'pressure', $event)"
-      />
+      >
+        <template #selection="{ item }">
+          <span class="unit-selection-title" :title="item.title">{{ item.value }}</span>
+        </template>
+      </v-select>
     </div>
 
     <div class="text-caption text-medium-emphasis mt-1">
@@ -97,6 +113,7 @@ type ResolvedPoint = {
 
 const props = defineProps<{
   title: string
+  copyLabel: string
   pointState: BarometricPointState
   resolved: ResolvedPoint
   inputMode: 'decimal' | 'text'
@@ -106,6 +123,7 @@ const emit = defineEmits<{
   (event: 'update-input', kind: 'height' | 'pressure', expression: string): void
   (event: 'update-unit', kind: 'height' | 'pressure', unit: HeightUnit | PressureUnit): void
   (event: 'commit-input', kind: 'height' | 'pressure'): void
+  (event: 'copy-point'): void
 }>()
 
 const { t } = useI18n()
@@ -135,6 +153,12 @@ const pressureUnitItems = computed(() => PRESSURE_UNITS.map(value => ({
   gap: 1rem;
 }
 
+.barometric-point-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .barometric-field-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 132px;
@@ -145,6 +169,14 @@ const pressureUnitItems = computed(() => PRESSURE_UNITS.map(value => ({
 
 .barometric-unit-select :deep(.v-field__input) {
   padding-inline: 0.75rem;
+}
+
+.unit-selection-title {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 @media (max-width: 420px) {
