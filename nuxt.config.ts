@@ -87,6 +87,7 @@ export default defineNuxtConfig({
     workbox: {
       cleanupOutdatedCaches: true,
       navigateFallback: '/',
+      navigateFallbackDenylist: [/^\/api\//],
       globPatterns: ['**/*.{js,css,html,png,svg,ico,woff2}'],
     },
     devOptions: {
