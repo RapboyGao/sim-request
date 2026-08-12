@@ -34,6 +34,20 @@ export function checklistStats(checklist: Checklist, status: ChecklistStatus, no
   }
 }
 
+export type ChecklistCompletionStatus = 'complete' | 'partial' | 'idle'
+
+export function checklistCompletionStatus(checklist: Checklist, status: ChecklistStatus): ChecklistCompletionStatus {
+  const stats = checklistStats(checklist, status)
+  if (stats.complete) return 'complete'
+  if (stats.checked > 0) return 'partial'
+  return 'idle'
+}
+
+export function sortChecklistsByFavorite(checklists: Checklist[], favorites: string[]) {
+  const favoriteIds = new Set(favorites)
+  return [...checklists].sort((a, b) => Number(favoriteIds.has(b.id)) - Number(favoriteIds.has(a.id)))
+}
+
 export function sectionStats(section: ChecklistSection, status: ChecklistStatus, now = Date.now()) {
   const checked = section.items.filter((item) => Boolean(checkedAtFor(status, item.id))).length
   const expired = section.items.filter((item) => isItemExpired(item, checkedAtFor(status, item.id), now)).length
@@ -70,6 +84,15 @@ export function resetChecklistStatus(status: ChecklistStatus, checklist: Checkli
 export function removeChecklistStatus(status: ChecklistStatus, checklist: Checklist) {
   const next = { ...status }
   for (const item of checklistItems(checklist)) delete next[item.id]
+  return next
+}
+
+export function removeDeletedItemStatuses(status: ChecklistStatus, previous: Checklist, nextChecklist: Checklist) {
+  const next = { ...status }
+  const nextItemIds = new Set(checklistItems(nextChecklist).map((item) => item.id))
+  for (const item of checklistItems(previous)) {
+    if (!nextItemIds.has(item.id)) delete next[item.id]
+  }
   return next
 }
 

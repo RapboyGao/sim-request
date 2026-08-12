@@ -1,48 +1,59 @@
 <template>
-  <v-card class="checklists-card" hover rounded="xl" @click="$emit('open')">
-    <v-card-item>
-      <template #prepend>
-        <v-avatar :color="stats.complete ? 'success' : 'primary'" variant="tonal" size="44">
-          <v-icon :icon="stats.complete ? 'mdi-check-all' : 'mdi-format-list-checks'" />
-        </v-avatar>
+  <v-card
+    class="checklists-card"
+    hover
+    rounded="xl"
+    role="button"
+    tabindex="0"
+    @click="$emit('open')"
+    @keydown.enter="$emit('open')"
+    @keydown.space.prevent="$emit('open')"
+  >
+    <v-card-item class="py-4">
+      <v-card-title class="checklist-card-title text-wrap text-body-1 font-weight-bold">
+        <span
+          v-if="completionStatus !== 'idle'"
+          class="checklist-status-dot"
+          :class="`checklist-status-dot--${completionStatus}`"
+          :aria-label="completionStatus === 'complete' ? '已完成' : '部分完成'"
+          :title="completionStatus === 'complete' ? '已完成' : '部分完成'"
+        />
+        <span>{{ checklist.title }}</span>
+      </v-card-title>
+      <template #append>
+        <v-btn
+          :icon="favorite ? 'mdi-star' : 'mdi-star-outline'"
+          :color="favorite ? 'warning' : undefined"
+          variant="text"
+          size="small"
+          :aria-label="favorite ? '取消收藏' : '收藏检查单'"
+          :title="favorite ? '取消收藏' : '收藏检查单'"
+          @click.stop="$emit('toggle-favorite')"
+        />
       </template>
-      <v-card-title class="text-wrap">{{ checklist.title }}</v-card-title>
-      <v-card-subtitle v-if="checklist.source === 'custom'" class="d-flex align-center mt-1">
-        <v-icon icon="mdi-account-edit-outline" size="14" class="mr-1" /> 自定义
-      </v-card-subtitle>
     </v-card-item>
-
-    <v-card-text class="pt-2">
-      <p v-if="checklist.description" class="card-description">{{ checklist.description }}</p>
-      <div class="d-flex align-center justify-space-between text-body-2 mb-2">
-        <span>{{ stats.checked }} / {{ stats.total }}</span>
-        <span v-if="stats.expired" class="text-warning">
-          <v-icon icon="mdi-clock-alert-outline" size="16" class="mr-1" />{{ stats.expired }} 项过期
-        </span>
-        <span v-else-if="stats.complete" class="text-success">已完成</span>
-      </div>
-      <v-progress-linear :model-value="stats.progress * 100" :color="stats.complete ? 'success' : 'primary'" rounded height="8" />
-    </v-card-text>
   </v-card>
 </template>
 
 <script setup lang="ts">
 import type { Checklist, ChecklistStatus } from '~/types/checklist'
-import { checklistStats } from '~/utils/checklists'
+import { checklistCompletionStatus } from '~/utils/checklists'
 
 const props = defineProps<{
   checklist: Checklist
   status: ChecklistStatus
+  favorite?: boolean
 }>()
 
-defineEmits<{ open: [] }>()
+defineEmits<{ open: []; 'toggle-favorite': [] }>()
 
-const stats = computed(() => checklistStats(props.checklist, props.status))
+const completionStatus = computed(() => checklistCompletionStatus(props.checklist, props.status))
 </script>
 
 <style scoped>
 .checklists-card {
   height: 100%;
+  border: 1px solid var(--border) !important;
   transition: transform 160ms ease, box-shadow 160ms ease;
 }
 
@@ -50,9 +61,25 @@ const stats = computed(() => checklistStats(props.checklist, props.status))
   transform: translateY(-2px);
 }
 
-.card-description {
-  min-height: 2.8em;
-  color: var(--muted);
-  line-height: 1.45;
+.checklist-card-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.checklist-status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+}
+
+.checklist-status-dot--partial {
+  background: rgb(var(--v-theme-warning));
+}
+
+.checklist-status-dot--complete {
+  background: rgb(var(--v-theme-success));
 }
 </style>

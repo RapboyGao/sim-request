@@ -15,7 +15,7 @@
           <v-text-field v-model="section.title" label="分组名称" hide-details density="compact" />
           <v-btn icon="mdi-chevron-up" size="small" variant="text" :disabled="sectionIndex === 0" aria-label="分组上移" @click="moveSection(sectionIndex, -1)" />
           <v-btn icon="mdi-chevron-down" size="small" variant="text" :disabled="sectionIndex === working.sections.length - 1" aria-label="分组下移" @click="moveSection(sectionIndex, 1)" />
-          <v-btn icon="mdi-delete-outline" size="small" variant="text" color="error" aria-label="删除分组" @click="removeSection(sectionIndex)" />
+          <v-btn icon="mdi-delete-outline" size="small" variant="text" color="error" aria-label="删除分组" :disabled="working.sections.length <= 1" @click="removeSection(sectionIndex)" />
         </div>
 
         <div v-for="(item, itemIndex) in section.items" :key="item.id" class="editor-item">
@@ -37,12 +37,13 @@
 </template>
 
 <script setup lang="ts">
+import { toRaw } from 'vue'
 import type { Checklist, ChecklistSection } from '~/types/checklist'
 import { DEFAULT_EXPIRY_HOURS } from '~/utils/checklists'
 
 const props = defineProps<{ checklist: Checklist }>()
 const emit = defineEmits<{ save: [checklist: Checklist]; cancel: [] }>()
-const working = ref(structuredClone(props.checklist))
+const working = ref(structuredClone(toRaw(props.checklist)))
 const isNew = computed(() => !props.checklist.sections.some((section) => section.items.length > 0) && props.checklist.title === '新检查单')
 
 function id(prefix: string) {
@@ -85,7 +86,7 @@ function moveItem(section: ChecklistSection, index: number, direction: number) {
 
 function save() {
   if (!working.value.title.trim()) return
-  emit('save', structuredClone(working.value))
+  emit('save', structuredClone(toRaw(working.value)))
 }
 </script>
 

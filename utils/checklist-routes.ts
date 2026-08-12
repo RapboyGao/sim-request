@@ -22,3 +22,7 @@ export function checklistsHomeRoute(passwords: string) {
 export function customChecklistRoute(passwords: string, checklistId: string) {
   return `${checklistsHomeRoute(passwords)}custom/${encodeURIComponent(checklistId)}`
 }
+
+export function customChecklistEditRoute(passwords: string, checklistId: string) {
+  return `${customChecklistRoute(passwords, checklistId)}/edit`
+}

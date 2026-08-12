@@ -29,29 +29,35 @@
       </div>
     </v-card>
 
-    <div class="section-heading">
-      <div>
-        <h2 class="text-h6 font-weight-bold">检查单</h2>
-        <p class="text-body-2 text-medium-emphasis mb-0">{{ filteredChecklists.length }} 个可用检查单</p>
-      </div>
-    </div>
-
-    <v-row v-if="filteredChecklists.length" class="checklist-grid">
-      <v-col v-for="checklist in filteredChecklists" :key="checklist.id" cols="12" sm="6" lg="4">
-        <ChecklistCard :checklist="checklist" :status="status" @open="openChecklist(checklist.id)" />
-      </v-col>
-    </v-row>
+    <template v-if="filteredChecklists.length">
+      <section v-for="group in checklistGroups" :key="group.key" class="checklist-group">
+        <div class="section-heading">
+          <div>
+            <h2 class="text-h6 font-weight-bold">{{ group.title }}</h2>
+            <p class="text-body-2 text-medium-emphasis mb-0">{{ group.items.length }} 个检查单</p>
+          </div>
+        </div>
+        <v-row v-if="group.items.length" class="checklist-grid">
+          <v-col v-for="checklist in group.items" :key="checklist.id" cols="12" sm="6" lg="4">
+            <ChecklistCard
+              :checklist="checklist"
+              :status="status"
+              :favorite="favorites.includes(checklist.id)"
+              @open="openChecklist(checklist.id)"
+              @toggle-favorite="toggleFavorite(checklist.id)"
+            />
+          </v-col>
+        </v-row>
+        <v-card v-else class="empty-card pa-6 text-center" rounded="xl">
+          <div class="text-body-2">没有匹配的检查单</div>
+        </v-card>
+      </section>
+    </template>
     <v-card v-else class="empty-card pa-10 text-center" rounded="xl">
       <v-icon icon="mdi-text-search" size="44" color="primary" class="mb-3" />
       <div class="text-h6">没有匹配的检查单</div>
       <div class="text-body-2 text-medium-emphasis mt-1">试试其他关键词，或新建一个自定义检查单。</div>
     </v-card>
-
-    <v-dialog v-model="editorOpen" max-width="920" scrollable>
-      <v-card class="editor-dialog pa-5 pa-sm-7">
-        <ChecklistEditor v-if="editingChecklist" :checklist="editingChecklist" @save="saveChecklist" @cancel="editorOpen = false" />
-      </v-card>
-    </v-dialog>
 
     <v-snackbar v-model="snackbar.open" :color="snackbar.color" timeout="3200">
       {{ snackbar.message }}
@@ -61,17 +67,14 @@
 
 <script setup lang="ts">
 import ChecklistCard from '~/components/checklists/ChecklistCard.vue'
-import ChecklistEditor from '~/components/checklists/ChecklistEditor.vue'
-import type { Checklist } from '~/types/checklist'
-import { checklistRoute, customChecklistRoute } from '~/utils/checklist-routes'
+import { checklistRoute, customChecklistEditRoute, customChecklistRoute } from '~/utils/checklist-routes'
+import { sortChecklistsByFavorite } from '~/utils/checklists'
 
 definePageMeta({ layout: 'checklists' })
 
 const route = useRoute()
-const { allChecklists, customChecklists, status, addChecklist, updateChecklist, createBackup, importBackup: restoreBackup } = useChecklists()
+const { allChecklists, status, favorites, addChecklist, createBackup, importBackup: restoreBackup, toggleFavorite } = useChecklists()
 const search = ref('')
-const editorOpen = ref(false)
-const editingChecklist = ref<Checklist | null>(null)
 const fileInput = ref<HTMLInputElement | null>(null)
 const snackbar = reactive({ open: false, message: '', color: 'success' })
 
@@ -80,6 +83,19 @@ const filteredChecklists = computed(() => {
   if (!keyword) return allChecklists.value
   return allChecklists.value.filter((checklist) => `${checklist.title} ${checklist.description}`.toLowerCase().includes(keyword))
 })
+
+const checklistGroups = computed(() => [
+  {
+    key: 'builtin',
+    title: '内置检查单',
+    items: sortChecklistsByFavorite(filteredChecklists.value.filter((checklist) => checklist.source === 'builtin'), favorites.value),
+  },
+  {
+    key: 'custom',
+    title: '自定义检查单',
+    items: sortChecklistsByFavorite(filteredChecklists.value.filter((checklist) => checklist.source === 'custom'), favorites.value),
+  },
+])
 
 function openChecklist(id: string) {
   const target = allChecklists.value.find((item) => item.id === id)
@@ -91,17 +107,7 @@ function openChecklist(id: string) {
 
 function createNew() {
   const id = addChecklist()
-  const checklist = customChecklists.value.find((item) => item.id === id)
-  if (!checklist) return
-  editingChecklist.value = structuredClone(checklist)
-  editorOpen.value = true
-}
-
-function saveChecklist(checklist: Checklist) {
-  updateChecklist(checklist)
-  editorOpen.value = false
-  editingChecklist.value = null
-  showMessage('检查单已保存')
+  if (id) navigateTo(customChecklistEditRoute(String(route.params.passwords), id))
 }
 
 function exportBackup() {
@@ -155,10 +161,10 @@ useHead({ title: '检查单' })
 .checklists-toolbar { display: flex; align-items: center; gap: 18px; padding: 12px 16px; background: var(--surface); }
 .checklists-toolbar .v-input { flex: 1; }
 .toolbar-hint { flex: 0 0 auto; display: flex; align-items: center; color: var(--muted); font-size: .82rem; white-space: nowrap; }
+.checklist-group + .checklist-group { margin-top: 32px; }
 .section-heading { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
 .checklist-grid { margin-top: 0; }
 .empty-card { color: var(--muted); }
-.editor-dialog { background: var(--surface); }
 @media (max-width: 700px) {
   .checklists-hero { align-items: flex-start; flex-direction: column; }
   .hero-actions { width: 100%; }

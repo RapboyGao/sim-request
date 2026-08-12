@@ -3,6 +3,7 @@ import { builtinChecklists } from '~/data/checklists'
 import type { Checklist, ChecklistBackup, ChecklistStatus, StoredCustomChecklists } from '~/types/checklist'
 import {
   cloneChecklist,
+  removeDeletedItemStatuses,
   removeChecklistStatus,
   resetChecklistStatus,
   setSectionStatus,
@@ -13,6 +14,7 @@ import {
 
 const CUSTOM_STORAGE_KEY = 'private-checklists-v1'
 const STATUS_STORAGE_KEY = 'private-checklist-status-v1'
+const FAVORITES_STORAGE_KEY = 'private-checklist-favorites-v1'
 
 function copy<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T
@@ -25,16 +27,23 @@ function newId(prefix: string) {
   return `${prefix}-${uuid}`
 }
 
+function normalizeFavoriteIds(value: unknown) {
+  if (!Array.isArray(value)) return []
+  return [...new Set(value.filter((id): id is string => typeof id === 'string'))]
+}
+
 export function useChecklists() {
   const storedCustom = useStorage<StoredCustomChecklists>(CUSTOM_STORAGE_KEY, { version: 1, checklists: [] }, undefined, {
     mergeDefaults: true,
   })
   const storedStatus = useStorage<ChecklistStatus>(STATUS_STORAGE_KEY, {})
+  const storedFavorites = useStorage<string[]>(FAVORITES_STORAGE_KEY, [])
   const custom = useState<Checklist[]>('checklists-custom-checklists', () => {
     const valid = validateCustomChecklists(storedCustom.value)
     return valid ? copy(valid) : []
   })
   const status = useState<ChecklistStatus>('checklists-status', () => copy(storedStatus.value))
+  const favorites = useState<string[]>('checklists-favorites', () => normalizeFavoriteIds(storedFavorites.value))
 
   if (import.meta.client) {
     watch(custom, (value) => {
@@ -42,6 +51,9 @@ export function useChecklists() {
     }, { deep: true })
     watch(status, (value) => {
       storedStatus.value = copy(value)
+    }, { deep: true })
+    watch(favorites, (value) => {
+      storedFavorites.value = normalizeFavoriteIds(value)
     }, { deep: true })
   }
 
@@ -66,7 +78,10 @@ export function useChecklists() {
 
   function updateChecklist(next: Checklist) {
     if (next.source !== 'custom') return
+    const previous = custom.value.find((item) => item.id === next.id)
+    if (!previous) return
     custom.value = custom.value.map((item) => item.id === next.id ? copy(next) : item)
+    status.value = removeDeletedItemStatuses(status.value, previous, next)
   }
 
   function deleteChecklist(id: string) {
@@ -74,6 +89,7 @@ export function useChecklists() {
     if (!target) return
     custom.value = custom.value.filter((item) => item.id !== id)
     status.value = removeChecklistStatus(status.value, target)
+    favorites.value = favorites.value.filter((favoriteId) => favoriteId !== id)
   }
 
   function duplicateChecklist(id: string) {
@@ -99,6 +115,8 @@ export function useChecklists() {
 
   function replaceCustomChecklists(checklists: Checklist[], importedStatus: ChecklistStatus = {}) {
     custom.value = copy(checklists)
+    const validFavoriteIds = new Set([...builtinChecklists, ...checklists].map((checklist) => checklist.id))
+    favorites.value = favorites.value.filter((id) => validFavoriteIds.has(id))
     const builtinItemIds = new Set(builtinChecklists.flatMap((checklist) => checklist.sections.flatMap((section) => section.items.map((item) => item.id))))
     const nextStatus = Object.fromEntries(Object.entries(status.value).filter(([id]) => builtinItemIds.has(id))) as ChecklistStatus
     for (const checklist of checklists) {
@@ -107,6 +125,13 @@ export function useChecklists() {
       }
     }
     status.value = nextStatus
+  }
+
+  function toggleFavorite(id: string) {
+    if (!allChecklists.value.some((checklist) => checklist.id === id)) return
+    favorites.value = favorites.value.includes(id)
+      ? favorites.value.filter((favoriteId) => favoriteId !== id)
+      : [...favorites.value, id]
   }
 
   function createBackup(): ChecklistBackup {
@@ -132,10 +157,12 @@ export function useChecklists() {
     customChecklists: custom,
     allChecklists,
     status,
+    favorites,
     addChecklist,
     updateChecklist,
     deleteChecklist,
     duplicateChecklist,
+    toggleFavorite,
     toggleItem,
     setSection,
     resetChecklist,

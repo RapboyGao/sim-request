@@ -76,12 +76,6 @@
       <span>勾选状态会自动保存在本机</span>
     </div>
 
-    <v-dialog v-model="editorOpen" max-width="920" scrollable>
-      <v-card class="editor-dialog pa-5 pa-sm-7">
-        <ChecklistEditor :checklist="editingChecklist || checklist" @save="saveChecklist" @cancel="editorOpen = false" />
-      </v-card>
-    </v-dialog>
-
     <v-dialog v-model="resetDialog" max-width="420">
       <v-card>
         <v-card-title>重置检查单？</v-card-title>
@@ -120,23 +114,20 @@
 </template>
 
 <script setup lang="ts">
-import ChecklistEditor from '~/components/checklists/ChecklistEditor.vue'
 import ChecklistSection from '~/components/checklists/ChecklistSection.vue'
 import type { Checklist } from '~/types/checklist'
 import { useChecklistsPageActions } from '~/composables/useChecklistsPageActions'
 import { extractReadableChecklistNotes, type ReadableChecklistNote } from '~/utils/checklist-source'
 import { checklistStats, sectionStats as getSectionStats } from '~/utils/checklists'
-import { checklistsHomeRoute, customChecklistRoute } from '~/utils/checklist-routes'
+import { checklistsHomeRoute, customChecklistEditRoute, customChecklistRoute } from '~/utils/checklist-routes'
 
 const props = defineProps<{ checklistId: string }>()
 const route = useRoute()
 const router = useRouter()
-const { allChecklists, status, toggleItem: toggleStoredItem, setSection, resetChecklist, updateChecklist, duplicateChecklist, deleteChecklist } = useChecklists()
+const { allChecklists, status, toggleItem: toggleStoredItem, setSection, resetChecklist, duplicateChecklist, deleteChecklist } = useChecklists()
 const { register: registerPageActions } = useChecklistsPageActions()
-const editorOpen = ref(false)
 const resetDialog = ref(false)
 const deleteDialog = ref(false)
-const editingChecklist = ref<Checklist | null>(null)
 const snackbar = reactive({ open: false, message: '', color: 'success' })
 
 const checklist = computed(() => allChecklists.value.find((item) => item.id === props.checklistId))
@@ -176,15 +167,7 @@ function reset() {
 
 function openEditor() {
   if (!checklist.value || checklist.value.source !== 'custom') return
-  editingChecklist.value = structuredClone(checklist.value)
-  editorOpen.value = true
-}
-
-function saveChecklist(next: Checklist) {
-  updateChecklist(next)
-  editingChecklist.value = null
-  editorOpen.value = false
-  showMessage('检查单已保存')
+  router.push(customChecklistEditRoute(passwords.value, checklist.value.id))
 }
 
 function duplicate() {
@@ -274,7 +257,6 @@ useHead(() => ({ title: checklist.value?.title || '检查单' }))
 .note-paragraph { line-height: 1.6; margin: 0 0 8px; }
 .note-list { padding-left: 20px; margin: 0; display: grid; gap: 8px; line-height: 1.55; }
 .detail-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 22px; color: var(--muted); font-size: .8rem; }
-.editor-dialog { background: var(--surface); }
 .text-warning { color: rgb(var(--v-theme-secondary)); }
 @media (max-width: 650px) {
   .checklist-detail-layout { gap: 8px; }

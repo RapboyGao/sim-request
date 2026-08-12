@@ -1,14 +1,17 @@
 import { describe, expect, it } from 'vitest'
 import { builtinChecklists } from '../data/checklists'
-import { CHECKLIST_ROUTE_IDS, checklistRoute, checklistsHomeRoute, customChecklistRoute } from '../utils/checklist-routes'
+import { CHECKLIST_ROUTE_IDS, checklistRoute, checklistsHomeRoute, customChecklistEditRoute, customChecklistRoute } from '../utils/checklist-routes'
 import { extractReadableChecklistNotes } from '../utils/checklist-source'
 import type { ChecklistStatus } from '../types/checklist'
 import {
   checklistStats,
+  checklistCompletionStatus,
   isItemExpired,
+  removeDeletedItemStatuses,
   resetChecklistStatus,
   sectionStats,
   setSectionStatus,
+  sortChecklistsByFavorite,
   toggleStatus,
   validateBackup,
   validateCustomChecklists,
@@ -62,6 +65,7 @@ describe('checklists routes', () => {
     expect(checklistRoute('demo key', CHECKLIST_ROUTE_IDS[0]!)).toBe('/checklists/demo%20key/before-flight-day')
     expect(checklistsHomeRoute('demo')).toBe('/checklists/demo/')
     expect(customChecklistRoute('demo', 'custom-1')).toBe('/checklists/demo/custom/custom-1')
+    expect(customChecklistEditRoute('demo', 'custom-1')).toBe('/checklists/demo/custom/custom-1/edit')
   })
 })
 
@@ -85,6 +89,28 @@ describe('checklists status', () => {
     const checkedAt = '2026-08-12T00:00:00.000Z'
     expect(isItemExpired(item, checkedAt, Date.parse('2026-08-12T07:00:01.000Z'))).toBe(true)
     expect(isItemExpired({ ...item, expiresAfterHours: null }, checkedAt, Date.parse('2030-01-01T00:00:00.000Z'))).toBe(false)
+  })
+
+  it('maps checklist completion to card border states', () => {
+    const checklist = builtinChecklists[0]!
+    const firstItem = checklist.sections[0]!.items[0]!
+
+    expect(checklistCompletionStatus(checklist, {})).toBe('idle')
+    expect(checklistCompletionStatus(checklist, { [firstItem.id]: '2026-08-12T10:00:00.000Z' })).toBe('partial')
+
+    const completeStatus = Object.fromEntries(
+      checklist.sections.flatMap((section) => section.items.map((item) => [item.id, '2026-08-12T10:00:00.000Z'] as const)),
+    )
+    expect(checklistCompletionStatus(checklist, completeStatus)).toBe('complete')
+  })
+
+  it('places favorited checklists first without changing the remaining order', () => {
+    const checklists = [builtinChecklists[1]!, builtinChecklists[0]!, builtinChecklists[2]!]
+    expect(sortChecklistsByFavorite(checklists, ['before-flight-day']).map((item) => item.id)).toEqual([
+      'before-flight-day',
+      'before-sleep',
+      'before-flight-going',
+    ])
   })
 })
 
@@ -111,5 +137,43 @@ describe('checklists backup validation', () => {
     expect(validateCustomChecklists({ version: 2, checklists: [custom] })).toBeNull()
     expect(validateBackup({ version: 1, checklists: [{ ...custom, source: 'builtin' }], status: {} })).toBeNull()
     expect(validateBackup({ version: 1, checklists: [custom], status: { 'item-1': 42 } })).toBeNull()
+  })
+})
+
+describe('checklist editor data updates', () => {
+  const previous = {
+    id: 'custom-1',
+    title: 'Custom',
+    description: '',
+    source: 'custom' as const,
+    sections: [{
+      id: 'section-1',
+      title: 'Section',
+      items: [
+        { id: 'item-1', title: 'Keep', detail: '', expiresAfterHours: 6 },
+        { id: 'item-2', title: 'Delete', detail: '', expiresAfterHours: 6 },
+      ],
+    }],
+    notes: [],
+  }
+
+  it('clears status only for items removed during an edit', () => {
+    const next = {
+      ...previous,
+      sections: [{
+        ...previous.sections[0]!,
+        items: [previous.sections[0]!.items[0]!],
+      }],
+    }
+    const status = {
+      'item-1': '2026-08-12T10:00:00.000Z',
+      'item-2': '2026-08-12T10:00:00.000Z',
+      unrelated: '2026-08-12T10:00:00.000Z',
+    }
+
+    expect(removeDeletedItemStatuses(status, previous, next)).toEqual({
+      'item-1': '2026-08-12T10:00:00.000Z',
+      unrelated: '2026-08-12T10:00:00.000Z',
+    })
   })
 })
