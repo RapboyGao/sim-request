@@ -8,7 +8,7 @@
       </div>
       <div class="hero-actions">
         <v-btn color="primary" prepend-icon="mdi-plus" @click="createNew">新建检查单</v-btn>
-        <v-menu>
+        <v-menu content-class="checklists-menu-content">
           <template #activator="{ props }">
             <v-btn v-bind="props" variant="tonal" icon="mdi-dots-vertical" aria-label="更多操作" />
           </template>

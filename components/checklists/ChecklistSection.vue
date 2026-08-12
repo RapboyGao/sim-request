@@ -1,6 +1,6 @@
 <template>
   <section class="checklists-section">
-    <div class="section-rail" :class="sectionStats.complete ? 'section-rail--complete' : sectionStats.checked ? 'section-rail--partial' : ''" />
+    <div class="section-rail" :class="railClass" />
     <div class="section-content">
       <button class="section-header" type="button" @click="toggleSection">
         <div>
@@ -31,11 +31,13 @@
             <v-icon v-if="isChecked(item.id)" icon="mdi-check" size="18" />
           </span>
           <span class="check-item-copy">
-            <span class="check-item-title">{{ item.title }}</span>
-            <span v-if="item.detail" class="check-item-detail">{{ item.detail }}</span>
-            <span v-if="isChecked(item.id)" class="check-item-time">
-              {{ checkedTime(item.id) }}<span v-if="isExpired(item)" class="text-warning ml-2">已过期</span>
+            <span class="check-item-title-row">
+              <span class="check-item-title">{{ item.title }}</span>
+              <span v-if="isChecked(item.id)" class="check-item-time">
+                {{ checkedTime(item.id) }}<span v-if="isExpired(item)" class="text-warning ml-2">已过期</span>
+              </span>
             </span>
+            <span v-if="item.detail" class="check-item-detail">{{ item.detail }}</span>
           </span>
         </button>
       </div>
@@ -45,11 +47,13 @@
 
 <script setup lang="ts">
 import type { ChecklistItem, ChecklistSection, ChecklistStatus } from '~/types/checklist'
+import { formatTimeAgo, useNow } from '@vueuse/core'
 import { isItemExpired, sectionStats as getSectionStats } from '~/utils/checklists'
 
 const props = defineProps<{
   section: ChecklistSection
   status: ChecklistStatus
+  previousSectionsComplete: boolean
 }>()
 
 const emit = defineEmits<{
@@ -59,6 +63,11 @@ const emit = defineEmits<{
 
 const stats = computed(() => getSectionStats(props.section, props.status))
 const sectionStats = stats
+const now = useNow({ interval: 30_000 })
+const railClass = computed(() => {
+  if (!sectionStats.value.complete) return sectionStats.value.checked ? 'section-rail--partial' : ''
+  return props.previousSectionsComplete ? 'section-rail--complete' : 'section-rail--complete-blocked'
+})
 
 function isChecked(itemId: string) {
   return Boolean(props.status[itemId])
@@ -75,7 +84,24 @@ function toggleSection() {
 function checkedTime(itemId: string) {
   const value = props.status[itemId]
   if (!value) return ''
-  return new Intl.DateTimeFormat('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(value))
+  const timestamp = Date.parse(value)
+  if (!Number.isFinite(timestamp)) return ''
+  return formatTimeAgo(new Date(timestamp), {
+    showSecond: true,
+    messages: {
+      justNow: 'a few seconds ago',
+      past: '{0} ago',
+      future: 'in {0}',
+      second: 'a few seconds',
+      minute: 'a few minutes',
+      hour: 'a few hours',
+      day: 'a day',
+      week: 'a week',
+      month: 'a month',
+      year: 'a year',
+      invalid: '',
+    },
+  }, Math.max(now.value.getTime(), timestamp))
 }
 
 function isExpired(item: ChecklistItem) {
@@ -98,7 +124,8 @@ function isExpired(item: ChecklistItem) {
 }
 
 .section-rail--partial { background: rgb(var(--v-theme-secondary)); }
-.section-rail--complete { background: rgb(var(--v-theme-primary)); }
+.section-rail--complete { background: rgb(var(--v-theme-success)); }
+.section-rail--complete-blocked { background: rgb(var(--v-theme-primary)); }
 
 .section-content { min-width: 0; flex: 1; }
 
@@ -145,9 +172,11 @@ function isExpired(item: ChecklistItem) {
 .check-box { display: grid; place-items: center; width: 24px; height: 24px; flex: 0 0 24px; border: 2px solid var(--muted); border-radius: 7px; color: white; }
 .check-item--checked .check-box { border-color: rgb(var(--v-theme-primary)); background: rgb(var(--v-theme-primary)); }
 .check-item-copy { display: grid; gap: 3px; min-width: 0; }
+.check-item-title-row { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
 .check-item-title { font-weight: 600; line-height: 1.35; }
 .check-item--checked .check-item-title { color: var(--muted); text-decoration: line-through; }
 .check-item-detail, .check-item-time { color: var(--muted); font-size: .82rem; line-height: 1.4; }
+.check-item-time { flex: 0 0 auto; white-space: nowrap; }
 .text-warning { color: rgb(var(--v-theme-secondary)); }
 
 @media (max-width: 600px) {

@@ -2,56 +2,38 @@
   <v-app class="checklists-app" :class="isDark ? 'checklists-app--dark' : 'checklists-app--light'">
     <v-app-bar class="checklists-bar" flat density="comfortable">
       <v-btn v-if="!isHome" icon="mdi-arrow-left" variant="text" aria-label="返回检查单首页" @click="goHome" />
-      <v-btn class="d-sm-none" icon="mdi-menu" variant="text" aria-label="打开检查单菜单" @click="drawer = true" />
       <v-app-bar-title class="checklists-brand">
-        <v-icon icon="mdi-airplane-check" color="primary" class="mr-2" />
-        <span class="d-none d-sm-inline">Aviation Checklist</span>
-        <span class="d-sm-none">Checklist</span>
+        {{ activeChecklistTitle }}
       </v-app-bar-title>
       <v-spacer />
 
-      <v-menu class="d-none d-sm-flex">
+      <v-menu v-if="smAndUp" v-model="menuOpen" content-class="checklists-menu-content">
         <template #activator="{ props }">
-          <v-btn v-bind="props" variant="tonal" prepend-icon="mdi-format-list-bulleted" append-icon="mdi-chevron-down">
-            Menu
-          </v-btn>
+          <v-btn v-bind="props" icon="mdi-format-list-bulleted" variant="text" aria-label="打开检查单目录" title="检查单目录" />
         </template>
-        <v-list density="comfortable" min-width="280">
-          <v-list-subheader>内置检查单</v-list-subheader>
-          <v-list-item
-            v-for="item in builtinChecklists"
-            :key="item.id"
-            :to="checklistRoute(passwords, item.id)"
-            :active="activeChecklistId === item.id"
-            :title="item.title"
-            prepend-icon="mdi-format-list-checks"
-          />
-          <v-divider class="my-2" />
-          <v-list-item :to="checklistsHomeRoute(passwords)" title="检查单首页" prepend-icon="mdi-home-outline" />
-        </v-list>
+        <ChecklistNavigationList :passwords="passwords" :active-checklist-id="activeChecklistId" @select="menuOpen = false">
+          <ChecklistMenuActions :actions="pageActions" @select="menuOpen = false" />
+        </ChecklistNavigationList>
       </v-menu>
+      <v-btn
+        v-else
+        icon="mdi-format-list-bulleted"
+        variant="text"
+        aria-label="打开检查单目录"
+        title="检查单目录"
+        @click="drawer = true"
+      />
 
       <v-btn icon variant="text" :aria-label="themeLabel" @click="cycleMode">
         <v-icon :icon="themeIcon" :color="isDark ? 'indigo-lighten-2' : 'amber-darken-2'" />
       </v-btn>
-      <v-btn icon="mdi-home-outline" variant="text" aria-label="检查单首页" @click="goHome" />
+      <v-btn v-if="!isHome" icon="mdi-home-outline" variant="text" aria-label="检查单首页" @click="goHome" />
     </v-app-bar>
 
-    <v-navigation-drawer v-model="drawer" temporary location="start" class="checklists-drawer">
-      <v-list nav density="comfortable">
-        <v-list-item title="检查单首页" prepend-icon="mdi-home-outline" :to="checklistsHomeRoute(passwords)" @click="drawer = false" />
-        <v-divider class="my-2" />
-        <v-list-subheader>内置检查单</v-list-subheader>
-        <v-list-item
-          v-for="item in builtinChecklists"
-          :key="item.id"
-          :to="checklistRoute(passwords, item.id)"
-          :active="activeChecklistId === item.id"
-          :title="item.title"
-          prepend-icon="mdi-format-list-checks"
-          @click="drawer = false"
-        />
-      </v-list>
+    <v-navigation-drawer v-model="drawer" temporary location="start" class="checklists-drawer" :width="300">
+      <ChecklistNavigationList :passwords="passwords" :active-checklist-id="activeChecklistId" @select="drawer = false">
+        <ChecklistMenuActions :actions="pageActions" @select="drawer = false" />
+      </ChecklistNavigationList>
     </v-navigation-drawer>
 
     <v-main class="checklists-main">
@@ -61,17 +43,23 @@
 </template>
 
 <script setup lang="ts">
-import { useTheme } from 'vuetify'
-import { builtinChecklists } from '~/data/checklists'
+import { useDisplay, useTheme } from 'vuetify'
+import ChecklistNavigationList from '~/components/checklists/ChecklistNavigationList.vue'
+import ChecklistMenuActions from '~/components/checklists/ChecklistMenuActions.vue'
 import { resolveThemeName, useThemeMode } from '~/composables/useThemeMode'
-import { CHECKLIST_ROUTE_IDS, checklistRoute, checklistsHomeRoute } from '~/utils/checklist-routes'
+import { provideChecklistsPageActions } from '~/composables/useChecklistsPageActions'
+import { CHECKLIST_ROUTE_IDS, checklistsHomeRoute } from '~/utils/checklist-routes'
 
 const route = useRoute()
 const router = useRouter()
 const drawer = ref(false)
+const menuOpen = ref(false)
+const { smAndUp } = useDisplay()
+const { actions: pageActions } = provideChecklistsPageActions()
 const checklistsTheme = useChecklistsTheme()
 const vuetifyTheme = useTheme()
 const bookingTheme = useThemeMode()
+const { allChecklists } = useChecklists()
 const passwords = computed(() => String(route.params.passwords || ''))
 const homePath = computed(() => checklistsHomeRoute(passwords.value).replace(/\/$/, ''))
 const isHome = computed(() => route.path === homePath.value || route.path === `${homePath.value}/`)
@@ -82,6 +70,7 @@ const activeChecklistId = computed(() => {
   const path = route.path.replace(/\/$/, '')
   return CHECKLIST_ROUTE_IDS.find((id) => path.endsWith(`/${id}`)) || String(route.params.id || '')
 })
+const activeChecklistTitle = computed(() => allChecklists.value.find((item) => item.id === activeChecklistId.value)?.title || 'Aviation Checklist')
 
 function applyChecklistsTheme() {
   vuetifyTheme.global.name.value = isDark.value ? 'bookingDark' : 'bookingLight'
@@ -107,6 +96,10 @@ function goHome() {
 }
 
 watch([checklistsTheme.mode, checklistsTheme.isDark], applyChecklistsTheme, { immediate: true })
+watch(smAndUp, () => {
+  menuOpen.value = false
+  drawer.value = false
+})
 onBeforeUnmount(restoreBookingTheme)
 
 useHead({
@@ -177,12 +170,36 @@ useHead({
   color: var(--text);
 }
 
+.checklists-app :deep(.checklists-drawer .v-list-item-title),
+.checklists-app :deep(.checklists-drawer .v-list-subheader),
+.checklists-app :deep(.checklists-drawer .v-list-item__prepend > .v-icon) {
+  color: var(--text);
+  opacity: 1;
+}
+
+:global(.checklists-menu-content) {
+  background-color: rgb(var(--v-theme-surface)) !important;
+  color: rgb(var(--v-theme-on-surface)) !important;
+}
+
+:global(.checklists-menu-content .v-list-item-title),
+:global(.checklists-menu-content .v-list-subheader),
+:global(.checklists-menu-content .v-list-item__prepend > .v-icon),
+:global(.checklists-menu-content .v-list-item__append > .v-icon) {
+  color: rgb(var(--v-theme-on-surface)) !important;
+  opacity: 1 !important;
+}
+
+:global(.checklists-menu-content .v-list-item--active) {
+  color: rgb(var(--v-theme-primary)) !important;
+}
+
 .checklists-app :deep(.v-expansion-panel-text__wrapper),
 .checklists-app :deep(.v-expansion-panel-title) {
   color: var(--text);
 }
 
 .checklists-bar { border-bottom: 1px solid var(--border); background: color-mix(in srgb, var(--surface) 92%, transparent) !important; backdrop-filter: blur(14px); }
-.checklists-brand { display: flex; align-items: center; font-size: 1.02rem; font-weight: 750; letter-spacing: .02em; }
+.checklists-brand { display: flex; align-items: center; min-width: 0; overflow: hidden; font-size: 1.02rem; font-weight: 750; letter-spacing: .02em; text-overflow: ellipsis; white-space: nowrap; }
 .checklists-main { background: transparent; }
 </style>

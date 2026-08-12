@@ -4,30 +4,19 @@
       <div class="checklist-detail-content">
     <div class="detail-head mb-7">
       <div class="detail-title-wrap">
-        <div class="checklists-eyebrow"><v-icon icon="mdi-format-list-checks" size="18" /> CHECKLIST</div>
-        <h1 class="text-h4 text-md-h3 font-weight-bold mt-2">{{ checklist.title }}</h1>
+        <h1 class="text-h4 text-md-h3 font-weight-bold">{{ checklist.title }}</h1>
         <p v-if="checklist.description" class="detail-description">{{ checklist.description }}</p>
-        <div class="detail-stats">
-          <span><v-icon icon="mdi-check-circle-outline" size="16" /> {{ stats.checked }} / {{ stats.total }} 已完成</span>
-          <span v-if="stats.expired" class="text-warning"><v-icon icon="mdi-clock-alert-outline" size="16" /> {{ stats.expired }} 项已过期</span>
-        </div>
       </div>
       <div class="detail-actions">
-        <v-btn variant="tonal" prepend-icon="mdi-backup-restore" :disabled="stats.checked === 0" @click="resetDialog = true">重置</v-btn>
-        <v-menu>
-          <template #activator="{ props }">
-            <v-btn v-bind="props" variant="tonal" icon="mdi-dots-vertical" aria-label="检查单操作" />
-          </template>
-          <v-list density="comfortable" min-width="180">
-            <v-list-item v-if="checklist.source === 'custom'" prepend-icon="mdi-pencil-outline" title="编辑检查单" @click="openEditor" />
-            <v-list-item v-if="checklist.source === 'custom'" prepend-icon="mdi-content-copy" title="复制检查单" @click="duplicate" />
-            <v-list-item v-if="checklist.source === 'custom'" prepend-icon="mdi-delete-outline" title="删除检查单" @click="deleteDialog = true" />
-          </v-list>
-        </v-menu>
+        <v-btn
+          icon="mdi-backup-restore"
+          variant="tonal"
+          aria-label="重置检查单"
+          title="重置检查单"
+          @click="resetDialog = true"
+        />
       </div>
     </div>
-
-    <v-progress-linear :model-value="stats.progress * 100" :color="stats.complete ? 'success' : 'primary'" height="9" rounded class="mb-8" />
 
     <div v-if="sourceNotes.length" class="source-stack mb-8">
       <v-expansion-panels variant="accordion">
@@ -72,10 +61,11 @@
 
     <div class="sections-stack">
       <ChecklistSection
-        v-for="section in checklist.sections"
+        v-for="(section, sectionIndex) in checklist.sections"
         :key="section.id"
         :section="section"
         :status="status"
+        :previous-sections-complete="previousSectionsComplete(sectionIndex)"
         @toggle="toggleItem"
         @set-all="setAll"
       />
@@ -133,14 +123,16 @@
 import ChecklistEditor from '~/components/checklists/ChecklistEditor.vue'
 import ChecklistSection from '~/components/checklists/ChecklistSection.vue'
 import type { Checklist } from '~/types/checklist'
+import { useChecklistsPageActions } from '~/composables/useChecklistsPageActions'
 import { extractReadableChecklistNotes, type ReadableChecklistNote } from '~/utils/checklist-source'
-import { checklistStats } from '~/utils/checklists'
+import { checklistStats, sectionStats as getSectionStats } from '~/utils/checklists'
 import { checklistsHomeRoute, customChecklistRoute } from '~/utils/checklist-routes'
 
 const props = defineProps<{ checklistId: string }>()
 const route = useRoute()
 const router = useRouter()
 const { allChecklists, status, toggleItem: toggleStoredItem, setSection, resetChecklist, updateChecklist, duplicateChecklist, deleteChecklist } = useChecklists()
+const { register: registerPageActions } = useChecklistsPageActions()
 const editorOpen = ref(false)
 const resetDialog = ref(false)
 const deleteDialog = ref(false)
@@ -159,6 +151,13 @@ const railStatusLabel = computed(() => ({
   partial: '部分完成',
 }[railStatus.value]))
 const passwords = computed(() => String(route.params.passwords || ''))
+
+function previousSectionsComplete(sectionIndex: number) {
+  if (sectionIndex === 0) return true
+  return checklist.value?.sections
+    .slice(0, sectionIndex)
+    .every((section) => getSectionStats(section, status.value).complete) ?? false
+}
 
 function toggleItem(itemId: string) {
   toggleStoredItem(itemId)
@@ -199,6 +198,19 @@ function remove() {
   deleteChecklist(checklist.value.id)
   router.push(checklistsHomeRoute(passwords.value))
 }
+
+onMounted(() => {
+  registerPageActions({
+    reset: () => { resetDialog.value = true },
+    ...(checklist.value?.source === 'custom' ? {
+      edit: openEditor,
+      duplicate,
+      remove: () => { deleteDialog.value = true },
+    } : {}),
+  })
+})
+
+onBeforeUnmount(() => registerPageActions(null))
 
 function scrollTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -251,13 +263,10 @@ useHead(() => ({ title: checklist.value?.title || '检查单' }))
 .checklist-progress-track--partial { background: rgb(var(--v-theme-warning)); }
 .checklist-progress-track--complete { background: rgb(var(--v-theme-success)); }
 .checklist-progress-label { color: var(--muted); font-size: .72rem; font-weight: 750; }
-.detail-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
-.detail-title-wrap { min-width: 0; }
-.checklists-eyebrow { display: flex; align-items: center; gap: 7px; color: rgb(var(--v-theme-primary)); font-size: .74rem; font-weight: 800; letter-spacing: .14em; }
+.detail-head { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.detail-title-wrap { min-width: 0; flex: 1 1 auto; }
 .detail-description { max-width: 700px; color: var(--muted); line-height: 1.6; margin: 10px 0 0; }
-.detail-stats { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 14px; color: var(--muted); font-size: .86rem; }
-.detail-stats span { display: inline-flex; align-items: center; gap: 5px; }
-.detail-actions { display: flex; gap: 10px; flex: 0 0 auto; }
+.detail-actions { display: flex; align-items: center; flex: 0 0 auto; }
 .sections-stack { display: grid; gap: 2px; }
 .notes-stack :deep(.v-expansion-panel) { background: var(--surface-elevated); border: 1px solid var(--border); }
 .source-stack :deep(.v-expansion-panel) { background: var(--surface-elevated); border: 1px solid var(--border); }
@@ -271,9 +280,8 @@ useHead(() => ({ title: checklist.value?.title || '检查单' }))
   .checklist-detail-layout { gap: 8px; }
   .checklist-progress-rail { flex-basis: 20px; }
   .checklist-progress-track { width: 2px; min-height: 180px; }
-  .detail-head { align-items: flex-start; flex-direction: column; }
-  .detail-actions { width: 100%; }
-  .detail-actions .v-btn:first-child { flex: 1; }
+  .detail-head { gap: 12px; }
+  .detail-actions { align-self: center; }
   .detail-footer { align-items: flex-start; flex-direction: column; gap: 5px; }
 }
 </style>
