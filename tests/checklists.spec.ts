@@ -33,7 +33,43 @@ describe('checklists data', () => {
     expect(builtinChecklists.every((item) => item.sections.length > 0)).toBe(true)
     expect(builtinChecklists.every((item) => typeof item.sourceMarkdown === 'string' && item.sourceMarkdown.length > 0)).toBe(true)
     expect(builtinChecklists.find((item) => item.id === 'before-flight-day')?.sourceMarkdown).toContain('Before Flight Recommendations')
-    expect(builtinChecklists.find((item) => item.id === 'b737-deicing-zh')?.sourceMarkdown).toContain('标准除冰程序')
+    expect(builtinChecklists.find((item) => item.id === 'b737-deicing-zh')?.sourceMarkdown).toContain('保持 APU 发电机接通。')
+  })
+
+  it('contains the revised bilingual deicing procedures', () => {
+    const english = builtinChecklists.find((item) => item.id === 'b737-deicing-en')!
+    const chinese = builtinChecklists.find((item) => item.id === 'b737-deicing-zh')!
+
+    const englishNotes = extractReadableChecklistNotes(english.sourceMarkdown || '')
+    const chineseNotes = extractReadableChecklistNotes(chinese.sourceMarkdown || '')
+
+    expect(english.sections.map((section) => section.title)).toEqual([
+      '1. Before Taxi Procedure',
+      '2. Approaching De-icing Pad',
+      '3a. At De-icing Pad - Engine-Off Deicing',
+      '3b. At De-icing Pad - Engine-Idle Deicing',
+      '4a. After Engine-Off Deicing',
+      '4b. After Engine-Idle Deicing',
+    ])
+    expect(chinese.sections.map((section) => section.title)).toEqual([
+      '1. 滑行前程序',
+      '2. 即将到达除冰位',
+      '3a. 如关车除冰',
+      '3b. 如慢车除冰',
+      '4a. 发动机关车除冰后',
+      '4b. 发动机慢车除冰后',
+    ])
+    expect(englishNotes).toHaveLength(1)
+    expect(chineseNotes).toHaveLength(1)
+    expect(englishNotes[0]?.title).toBe('APU Note')
+    expect(chineseNotes[0]?.title).toBe('APU 说明')
+    expect(englishNotes[0]?.content).toContain('Keep APU generator ON.')
+    expect(chineseNotes[0]?.content).toContain('保持 APU 发电机接通。')
+    expect(englishNotes[0]?.content).not.toContain('Engine start levers ...... CUTOFF')
+    expect(chineseNotes[0]?.content).not.toContain('发动机起动手柄 ...... CUTOFF')
+    expect(chinese.sections[0]?.items.map((item) => item.title)).toContain('发电机 ...... ON')
+    expect(chinese.sections[5]?.items.map((item) => item.title)).toContain('滑行前检查单 ...... 完成')
+    expect(english.sections[2]?.items.map((item) => item.title)).toContain('Engine start levers ...... CUTOFF')
   })
 
   it('calculates checklist and section progress', () => {
