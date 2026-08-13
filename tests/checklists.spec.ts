@@ -6,13 +6,17 @@ import type { ChecklistStatus } from '../types/checklist'
 import {
   checklistStats,
   checklistCompletionStatus,
+  exclusiveSectionGroups,
   isItemExpired,
+  normalizeChecklist,
   removeDeletedItemStatuses,
   resetChecklistStatus,
   sectionStats,
   setSectionStatus,
+  setChecklistSectionStatus,
   sortChecklistsByFavorite,
   toggleStatus,
+  toggleChecklistItemStatus,
   validateBackup,
   validateCustomChecklists,
 } from '../utils/checklists'
@@ -79,6 +83,66 @@ describe('checklists data', () => {
 
     expect(sectionStats(section, status)).toMatchObject({ checked: 1, total: 6 })
     expect(checklistStats(checklist, status).checked).toBe(1)
+  })
+
+  it('supports adjacent exclusive sections as one completion unit', () => {
+    const checklist = {
+      id: 'exclusive',
+      title: 'Exclusive',
+      description: '',
+      source: 'custom' as const,
+      sections: [
+        { id: 'normal', title: 'Normal', detail: '', completion: 'all' as const, items: [{ id: 'normal-item', title: 'Normal item', detail: '', expiresAfterHours: 6 }] },
+        { id: 'choice-a', title: 'Choice A', detail: 'A detail', completion: 'exclusive' as const, items: [{ id: 'choice-a-item', title: 'A', detail: 'A item detail', expiresAfterHours: 6 }] },
+        { id: 'choice-b', title: 'Choice B', detail: '', completion: 'exclusive' as const, items: [{ id: 'choice-b-item', title: 'B', detail: '', expiresAfterHours: 6 }] },
+        { id: 'after', title: 'After', detail: '', completion: 'all' as const, items: [{ id: 'after-item', title: 'After item', detail: '', expiresAfterHours: 6 }] },
+      ],
+      notes: [],
+    }
+
+    expect(exclusiveSectionGroups(checklist)).toHaveLength(1)
+    expect(exclusiveSectionGroups(checklist)[0]).toHaveLength(2)
+    expect(checklistStats(checklist, { 'normal-item': 'now', 'choice-a-item': 'now', 'after-item': 'now' }).complete).toBe(true)
+    expect(checklistStats(checklist, { 'normal-item': 'now', 'after-item': 'now' }).complete).toBe(false)
+  })
+
+  it('does not join non-adjacent exclusive sections into one group', () => {
+    const checklist = {
+      id: 'non-adjacent', title: 'Non-adjacent', description: '', source: 'custom' as const,
+      sections: [
+        { id: 'a', title: 'A', detail: '', completion: 'exclusive' as const, items: [{ id: 'a-item', title: 'A', detail: '', expiresAfterHours: 6 }] },
+        { id: 'middle', title: 'Middle', detail: '', completion: 'all' as const, items: [{ id: 'middle-item', title: 'Middle', detail: '', expiresAfterHours: 6 }] },
+        { id: 'b', title: 'B', detail: '', completion: 'exclusive' as const, items: [{ id: 'b-item', title: 'B', detail: '', expiresAfterHours: 6 }] },
+      ], notes: [],
+    }
+    expect(exclusiveSectionGroups(checklist)).toHaveLength(2)
+    expect(checklistStats(checklist, { 'a-item': 'now', 'middle-item': 'now' }).complete).toBe(false)
+  })
+
+  it('strictly clears other adjacent exclusive sections when selecting one', () => {
+    const checklist = {
+      id: 'exclusive', title: 'Exclusive', description: '', source: 'custom' as const,
+      sections: [
+        { id: 'a', title: 'A', detail: '', completion: 'exclusive' as const, items: [{ id: 'a-item', title: 'A', detail: '', expiresAfterHours: 6 }] },
+        { id: 'b', title: 'B', detail: '', completion: 'exclusive' as const, items: [{ id: 'b-item', title: 'B', detail: '', expiresAfterHours: 6 }] },
+        { id: 'c', title: 'C', detail: '', completion: 'exclusive' as const, items: [{ id: 'c-item', title: 'C', detail: '', expiresAfterHours: 6 }] },
+      ], notes: [],
+    }
+    const initial = { 'a-item': 'old', 'b-item': 'old', 'unrelated': 'keep' }
+    expect(toggleChecklistItemStatus(initial, checklist, 'c-item', new Date('2026-08-12T10:00:00.000Z'))).toMatchObject({
+      'a-item': null, 'b-item': null, 'unrelated': 'keep',
+    })
+    expect(setChecklistSectionStatus(initial, checklist, checklist.sections[0]!, true)).toMatchObject({ 'b-item': null, 'c-item': null })
+  })
+
+  it('normalizes legacy sections and items with missing detail fields', () => {
+    const legacy = {
+      id: 'legacy', title: 'Legacy', description: '', source: 'custom' as const,
+      sections: [{ id: 'section', title: 'Section', items: [{ id: 'item', title: 'Item', expiresAfterHours: null }] }], notes: [],
+    } as unknown as import('../types/checklist').Checklist
+    const normalized = normalizeChecklist(legacy)
+    expect(normalized.sections[0]).toMatchObject({ detail: '', completion: 'all' })
+    expect(normalized.sections[0]?.items[0]).toMatchObject({ detail: '' })
   })
 
   it('extracts readable notes without exposing source-file code', () => {
@@ -159,6 +223,8 @@ describe('checklists backup validation', () => {
     sections: [{
       id: 'section-1',
       title: 'Section',
+      detail: '',
+      completion: 'all' as const,
       items: [{ id: 'item-1', title: 'Item', detail: '', expiresAfterHours: 6 }],
     }],
     notes: [],
@@ -185,6 +251,8 @@ describe('checklist editor data updates', () => {
     sections: [{
       id: 'section-1',
       title: 'Section',
+      detail: '',
+      completion: 'all' as const,
       items: [
         { id: 'item-1', title: 'Keep', detail: '', expiresAfterHours: 6 },
         { id: 'item-2', title: 'Delete', detail: '', expiresAfterHours: 6 },

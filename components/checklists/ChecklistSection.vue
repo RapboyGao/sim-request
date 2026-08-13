@@ -4,7 +4,12 @@
     <div class="section-content">
       <button class="section-header" type="button" @click="toggleSection">
         <div>
-          <div class="section-title">{{ section.title }}</div>
+          <div class="section-title-row">
+            <div class="section-title">{{ section.title }}</div>
+            <span v-if="section.completion === 'exclusive'" class="section-rule">任选其一</span>
+          </div>
+          <div v-if="section.detail" class="section-detail">{{ section.detail }}</div>
+          <div v-if="section.completion === 'exclusive'" class="section-exclusive-detail">本组互斥：完成其中一个分组即可</div>
           <div class="section-meta">
             <span>{{ sectionStats.checked }} / {{ sectionStats.total }}</span>
             <span v-if="sectionStats.expired" class="text-warning">{{ sectionStats.expired }} 项过期</span>
@@ -144,7 +149,11 @@ function isExpired(item: ChecklistItem) {
   cursor: pointer;
 }
 
+.section-title-row { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
 .section-title { font-weight: 750; font-size: 1.04rem; }
+.section-rule { color: rgb(var(--v-theme-primary)); font-size: .72rem; font-weight: 750; border: 1px solid color-mix(in srgb, rgb(var(--v-theme-primary)) 45%, var(--border)); border-radius: 999px; padding: 2px 8px; }
+.section-detail { color: var(--muted); font-size: .82rem; line-height: 1.45; margin-top: 5px; max-width: 720px; }
+.section-exclusive-detail { color: rgb(var(--v-theme-primary)); font-size: .78rem; line-height: 1.4; margin-top: 5px; }
 .section-meta { display: flex; gap: 12px; color: var(--muted); font-size: .82rem; margin-top: 4px; }
 .section-header-actions { display: flex; align-items: center; gap: 10px; color: var(--muted); }
 .progress-number { font-size: .68rem; font-weight: 700; }

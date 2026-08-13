@@ -3,10 +3,13 @@ import { builtinChecklists } from '~/data/checklists'
 import type { Checklist, ChecklistBackup, ChecklistStatus, StoredCustomChecklists } from '~/types/checklist'
 import {
   cloneChecklist,
+  normalizeChecklist,
   removeDeletedItemStatuses,
   removeChecklistStatus,
   resetChecklistStatus,
   setSectionStatus,
+  setChecklistSectionStatus,
+  toggleChecklistItemStatus,
   toggleStatus,
   validateBackup,
   validateCustomChecklists,
@@ -40,7 +43,7 @@ export function useChecklists() {
   const storedFavorites = useStorage<string[]>(FAVORITES_STORAGE_KEY, [])
   const custom = useState<Checklist[]>('checklists-custom-checklists', () => {
     const valid = validateCustomChecklists(storedCustom.value)
-    return valid ? copy(valid) : []
+    return valid ? copy(valid.map(normalizeChecklist)) : []
   })
   const status = useState<ChecklistStatus>('checklists-status', () => copy(storedStatus.value))
   const favorites = useState<string[]>('checklists-favorites', () => normalizeFavoriteIds(storedFavorites.value))
@@ -69,6 +72,8 @@ export function useChecklists() {
       sections: [{
         id: `${id}-section-1`,
         title: '未命名分组',
+        detail: '',
+        completion: 'all',
         items: [],
       }],
       notes: [],
@@ -80,7 +85,7 @@ export function useChecklists() {
     if (next.source !== 'custom') return
     const previous = custom.value.find((item) => item.id === next.id)
     if (!previous) return
-    custom.value = custom.value.map((item) => item.id === next.id ? copy(next) : item)
+    custom.value = custom.value.map((item) => item.id === next.id ? copy(normalizeChecklist(next)) : item)
     status.value = removeDeletedItemStatuses(status.value, previous, next)
   }
 
@@ -101,25 +106,29 @@ export function useChecklists() {
     return copyId
   }
 
-  function toggleItem(itemId: string) {
-    status.value = toggleStatus(status.value, itemId)
+  function toggleItem(itemId: string, checklist?: Checklist) {
+    status.value = checklist
+      ? toggleChecklistItemStatus(status.value, checklist, itemId)
+      : toggleStatus(status.value, itemId)
   }
 
   function resetChecklist(checklist: Checklist) {
     status.value = resetChecklistStatus(status.value, checklist)
   }
 
-  function setSection(section: Checklist['sections'][number], checked: boolean) {
-    status.value = setSectionStatus(status.value, section, checked)
+  function setSection(section: Checklist['sections'][number], checked: boolean, checklist?: Checklist) {
+    status.value = checklist
+      ? setChecklistSectionStatus(status.value, checklist, section, checked)
+      : setSectionStatus(status.value, section, checked)
   }
 
   function replaceCustomChecklists(checklists: Checklist[], importedStatus: ChecklistStatus = {}) {
-    custom.value = copy(checklists)
+    custom.value = copy(checklists.map(normalizeChecklist))
     const validFavoriteIds = new Set([...builtinChecklists, ...checklists].map((checklist) => checklist.id))
     favorites.value = favorites.value.filter((id) => validFavoriteIds.has(id))
     const builtinItemIds = new Set(builtinChecklists.flatMap((checklist) => checklist.sections.flatMap((section) => section.items.map((item) => item.id))))
     const nextStatus = Object.fromEntries(Object.entries(status.value).filter(([id]) => builtinItemIds.has(id))) as ChecklistStatus
-    for (const checklist of checklists) {
+    for (const checklist of custom.value) {
       for (const section of checklist.sections) {
         for (const item of section.items) nextStatus[item.id] = importedStatus[item.id] || null
       }

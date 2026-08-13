@@ -118,10 +118,10 @@ import ChecklistSection from '~/components/checklists/ChecklistSection.vue'
 import type { Checklist } from '~/types/checklist'
 import { useChecklistsPageActions } from '~/composables/useChecklistsPageActions'
 import { extractReadableChecklistNotes, type ReadableChecklistNote } from '~/utils/checklist-source'
-import { checklistStats, sectionStats as getSectionStats } from '~/utils/checklists'
+import { checklistStats, exclusiveSectionGroups, sectionStats as getSectionStats } from '~/utils/checklists'
 import { checklistsHomeRoute, customChecklistEditRoute, customChecklistRoute } from '~/utils/checklist-routes'
 
-const props = defineProps<{ checklistId: string }>()
+const props = defineProps<{ checklistId?: string; checklist?: Checklist }>()
 const route = useRoute()
 const router = useRouter()
 const { allChecklists, status, toggleItem: toggleStoredItem, setSection, resetChecklist, duplicateChecklist, deleteChecklist } = useChecklists()
@@ -130,7 +130,7 @@ const resetDialog = ref(false)
 const deleteDialog = ref(false)
 const snackbar = reactive({ open: false, message: '', color: 'success' })
 
-const checklist = computed(() => allChecklists.value.find((item) => item.id === props.checklistId))
+const checklist = computed(() => props.checklist || allChecklists.value.find((item) => item.id === props.checklistId))
 const sourceNotes = computed(() => checklist.value?.sourceMarkdown ? extractReadableChecklistNotes(checklist.value.sourceMarkdown) : [])
 const stats = computed(() => checklist.value ? checklistStats(checklist.value, status.value) : { checked: 0, total: 0, expired: 0, progress: 0, complete: false })
 const railStatus = computed(() => {
@@ -145,17 +145,31 @@ const passwords = computed(() => String(route.params.passwords || ''))
 
 function previousSectionsComplete(sectionIndex: number) {
   if (sectionIndex === 0) return true
-  return checklist.value?.sections
-    .slice(0, sectionIndex)
-    .every((section) => getSectionStats(section, status.value).complete) ?? false
+  const currentChecklist = checklist.value
+  if (!currentChecklist) return false
+
+  const groups = exclusiveSectionGroups(currentChecklist)
+  const handledGroups = new Set<Checklist['sections']>()
+  for (const section of currentChecklist.sections.slice(0, sectionIndex)) {
+    if (section.completion !== 'exclusive') {
+      if (!getSectionStats(section, status.value).complete) return false
+      continue
+    }
+
+    const group = groups.find((candidate) => candidate.includes(section))
+    if (!group || handledGroups.has(group)) continue
+    if (!group.some((candidate) => getSectionStats(candidate, status.value).complete)) return false
+    handledGroups.add(group)
+  }
+  return true
 }
 
 function toggleItem(itemId: string) {
-  toggleStoredItem(itemId)
+  if (checklist.value) toggleStoredItem(itemId, checklist.value)
 }
 
 function setAll(section: Checklist['sections'][number], checked: boolean) {
-  setSection(section, checked)
+  if (checklist.value) setSection(section, checked, checklist.value)
 }
 
 function reset() {

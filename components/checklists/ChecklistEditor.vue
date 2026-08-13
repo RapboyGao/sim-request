@@ -1,7 +1,8 @@
 <template>
   <v-form @submit.prevent="save">
-    <v-card-title class="px-0 pt-0">{{ isNew ? '新建检查单' : '编辑检查单' }}</v-card-title>
-    <v-card-text class="px-0">
+  <v-card-title class="px-0 pt-0">{{ isNew ? '新建检查单' : '编辑检查单' }}</v-card-title>
+  <v-card-text class="px-0">
+      <v-alert v-if="errorMessage" type="error" variant="tonal" class="mb-4">{{ errorMessage }}</v-alert>
       <v-text-field v-model="working.title" label="检查单名称" autofocus :rules="[requiredRule]" />
       <v-textarea v-model="working.description" label="说明 / 提示" rows="2" auto-grow />
 
@@ -17,6 +18,16 @@
           <v-btn icon="mdi-chevron-down" size="small" variant="text" :disabled="sectionIndex === working.sections.length - 1" aria-label="分组下移" @click="moveSection(sectionIndex, 1)" />
           <v-btn icon="mdi-delete-outline" size="small" variant="text" color="error" aria-label="删除分组" :disabled="working.sections.length <= 1" @click="removeSection(sectionIndex)" />
         </div>
+        <v-textarea v-model="section.detail" label="分组详细说明" rows="2" auto-grow hide-details />
+        <v-select
+          v-model="section.completion"
+          label="完成规则"
+          :items="completionOptions"
+          item-title="title"
+          item-value="value"
+          hide-details
+          density="compact"
+        />
 
         <div v-for="(item, itemIndex) in section.items" :key="item.id" class="editor-item">
           <v-text-field v-model="item.title" label="条目" hide-details density="compact" class="flex-grow-1" />
@@ -44,6 +55,7 @@ import { DEFAULT_EXPIRY_HOURS } from '~/utils/checklists'
 const props = defineProps<{ checklist: Checklist }>()
 const emit = defineEmits<{ save: [checklist: Checklist]; cancel: [] }>()
 const working = ref(structuredClone(toRaw(props.checklist)))
+const errorMessage = ref('')
 const isNew = computed(() => !props.checklist.sections.some((section) => section.items.length > 0) && props.checklist.title === '新检查单')
 
 function id(prefix: string) {
@@ -55,7 +67,7 @@ function requiredRule(value: string) {
 }
 
 function addSection() {
-  working.value.sections.push({ id: id('section'), title: '新分组', items: [] })
+  working.value.sections.push({ id: id('section'), title: '新分组', detail: '', completion: 'all', items: [] })
 }
 
 function removeSection(index: number) {
@@ -74,6 +86,11 @@ function addItem(section: ChecklistSection) {
   section.items.push({ id: id('item'), title: '新条目', detail: '', expiresAfterHours: DEFAULT_EXPIRY_HOURS })
 }
 
+const completionOptions = [
+  { title: '全部条目完成', value: 'all' },
+  { title: '互斥任选其一', value: 'exclusive' },
+]
+
 function removeItem(section: ChecklistSection, index: number) {
   section.items.splice(index, 1)
 }
@@ -85,7 +102,31 @@ function moveItem(section: ChecklistSection, index: number, direction: number) {
 }
 
 function save() {
-  if (!working.value.title.trim()) return
+  errorMessage.value = ''
+  if (!working.value.title.trim()) {
+    errorMessage.value = '请输入检查单名称'
+    return
+  }
+  const invalidSection = working.value.sections.find((section) => !section.title.trim())
+  if (invalidSection) {
+    errorMessage.value = '每个 Section 都需要填写名称'
+    return
+  }
+  const invalidItem = working.value.sections.flatMap((section) => section.items).find((item) => !item.title.trim())
+  if (invalidItem) {
+    errorMessage.value = '每个 Item 都需要填写标题'
+    return
+  }
+  working.value.title = working.value.title.trim()
+  working.value.sections.forEach((section) => {
+    section.title = section.title.trim()
+    section.detail = section.detail || ''
+    section.completion = section.completion || 'all'
+    section.items.forEach((item) => {
+      item.title = item.title.trim()
+      item.detail = item.detail || ''
+    })
+  })
   emit('save', structuredClone(toRaw(working.value)))
 }
 </script>

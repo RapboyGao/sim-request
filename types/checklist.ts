@@ -7,9 +7,13 @@ export type ChecklistItem = {
   expiresAfterHours: number | null
 }
 
+export type ChecklistSectionCompletion = 'all' | 'exclusive'
+
 export type ChecklistSection = {
   id: string
   title: string
+  detail: string
+  completion: ChecklistSectionCompletion
   items: ChecklistItem[]
 }
 
