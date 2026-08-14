@@ -119,13 +119,13 @@
     },
     "unit": "单位",
     "units": { "kt": "kt — 节", "km/h": "km/h — 千米/时", "mph": "mph — 英里/时", "m/s": "m/s — 米/秒" },
-    "temperatureHint": "该高度的 ISA 标准温度：{temperature} °C。SAT 和 ISA 偏差会根据最后编辑的字段互相换算。",
+    "temperatureHint": "该高度的 ISA 标准温度：{temperature} °C",
     "errors": {
       "invalid-input": "请输入有效的高度、温度、速度和方向。",
       "unsupported-supersonic": "当前仅支持亚音速计算（Mach < 1）。",
       "track-unachievable": "当前 TAS 与风场无法保持指定航迹。"
     },
-    "resultEyebrow": "计算结果",
+    "resultEyebrow": "空地速与温度",
     "resultTitle": "空地速与温度",
     "results": {
       "gs": "地速 GS",

@@ -2,21 +2,6 @@
   <v-container class="py-8 airspeed-page">
     <v-row justify="center">
       <v-col cols="12" xl="11">
-        <v-card class="pa-5 pa-sm-7 airspeed-hero mb-6" variant="flat">
-          <div class="airspeed-hero__content">
-            <div>
-              <div class="eyebrow">
-                <v-icon icon="mdi-airplane-takeoff" size="18" class="mr-1" />
-                {{ t("airspeed.eyebrow") }}
-              </div>
-              <h1 class="text-h4 text-sm-h3 font-weight-bold mt-2 mb-3">
-                {{ t("airspeed.title") }}
-              </h1>
-              <p class="text-body-2 text-medium-emphasis mb-0">{{ t("airspeed.summary") }}</p>
-            </div>
-          </div>
-        </v-card>
-
         <v-card class="pa-5 pa-sm-6 airspeed-card" variant="flat">
           <div class="eyebrow">
             <v-icon icon="mdi-tune-variant" size="18" class="mr-1" />
@@ -25,31 +10,46 @@
           <h2 class="text-h6 font-weight-bold mt-1 mb-4">{{ t("airspeed.inputTitle") }}</h2>
 
           <v-row>
+            <v-col cols="12" md="8">
+              <v-text-field
+                :model-value="state.expressions.altitude"
+                :label="t('airspeed.fields.altitude')"
+                type="text"
+                inputmode="text"
+                step="any"
+                prepend-inner-icon="mdi-arrow-up-down"
+                @update:model-value="updateAltitudeValue"
+              />
+            </v-col>
+            <v-col cols="12" md="4">
+              <v-select
+                :model-value="state.altitudeUnit"
+                :items="heightUnitItems"
+                :label="t('airspeed.unit')"
+                item-title="title"
+                item-value="value"
+                class="unit-select"
+                @update:model-value="updateAltitudeUnit"
+              >
+                <template #selection="{ item }">
+                  <span class="unit-selection-title" :title="item.title">{{ item.value }}</span>
+                </template>
+              </v-select>
+            </v-col>
+          </v-row>
+
+          <v-row>
             <v-col cols="12" md="6">
-              <div class="field-with-unit">
-                <v-text-field
-                  :model-value="state.expressions.altitude"
-                  :label="t('airspeed.fields.altitude')"
-                  type="text"
-                  inputmode="text"
-                  step="any"
-                  prepend-inner-icon="mdi-arrow-up-down"
-                  @update:model-value="updateAltitudeValue"
-                />
-                <v-select
-                  :model-value="state.altitudeUnit"
-                  :items="heightUnitItems"
-                  :label="t('airspeed.unit')"
-                  item-title="title"
-                  item-value="value"
-                  class="unit-select"
-                  @update:model-value="updateAltitudeUnit"
-                >
-                  <template #selection="{ item }">
-                    <span class="unit-selection-title" :title="item.title">{{ item.value }}</span>
-                  </template>
-                </v-select>
-              </div>
+              <v-text-field
+                :model-value="state.expressions.isaDeviation"
+                :label="t('airspeed.fields.isaDeviation')"
+                suffix="°C"
+                type="text"
+                inputmode="text"
+                step="any"
+                prepend-inner-icon="mdi-thermometer-plus"
+                @update:model-value="updateIsaValue"
+              />
             </v-col>
             <v-col cols="12" md="6">
               <v-text-field
@@ -63,19 +63,10 @@
                 @update:model-value="updateSatValue"
               />
             </v-col>
+          </v-row>
+
+          <v-row>
             <v-col cols="12" md="6">
-              <v-text-field
-                :model-value="state.expressions.isaDeviation"
-                :label="t('airspeed.fields.isaDeviation')"
-                suffix="°C"
-                type="text"
-                inputmode="text"
-                step="any"
-                prepend-inner-icon="mdi-thermometer-plus"
-                @update:model-value="updateIsaValue"
-              />
-            </v-col>
-            <v-col cols="12" md="4">
               <v-text-field
                 :model-value="state.expressions.windFrom"
                 :label="t('airspeed.fields.windFrom')"
@@ -89,7 +80,7 @@
                 @update:model-value="updateWindFromValue"
               />
             </v-col>
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="6">
               <v-text-field
                 :model-value="state.expressions.windSpeed"
                 :label="t('airspeed.fields.windSpeed')"
@@ -102,7 +93,10 @@
                 @update:model-value="updateWindSpeedValue"
               />
             </v-col>
-            <v-col cols="12" md="4">
+          </v-row>
+
+          <v-row>
+            <v-col cols="12" md="6">
               <v-text-field
                 :model-value="state.expressions.track"
                 :label="t('airspeed.fields.track')"
@@ -147,7 +141,7 @@
           </div>
           <v-row>
             <v-col v-for="item in speedInputItems" :key="item.value" cols="12" sm="6" md="3">
-              <div class="speed-input" :class="{ 'speed-input--active': state.mode === item.value }">
+              <div class="speed-input">
                 <v-text-field
                   :model-value="speedInputValue(item.value)"
                   :label="item.title"
@@ -173,7 +167,6 @@
             <v-icon icon="mdi-chart-box-outline" size="18" class="mr-1" />
             {{ t("airspeed.resultEyebrow") }}
           </div>
-          <h2 class="text-h6 font-weight-bold mt-1 mb-4">{{ t("airspeed.resultTitle") }}</h2>
           <div class="result-tile result-tile--tat">
             <div class="result-tile__label">{{ t("airspeed.results.tat") }}</div>
             <div class="result-tile__value">{{ result ? formatTemperature(result.tatCelsius) : "—" }} <span class="result-tile__unit">°C</span></div>
@@ -282,7 +275,7 @@ const {
 
 useHead({ title: t('app.navAirspeed') })
 
-const speedInputItems = computed(() => (['gs', 'tas', 'mach', 'cas'] as AirspeedMode[]).map(value => ({
+const speedInputItems = computed(() => (['cas', 'mach', 'tas', 'gs'] as AirspeedMode[]).map(value => ({
   value,
   title: t(`airspeed.modes.${value}`),
 })))
@@ -390,16 +383,50 @@ function buildChartOption(): EChartsOption {
     { name: t('airspeed.vectors.gs'), color: '#2563eb', from: { east: 0, north: 0 }, to: ground, label: `${t('airspeed.vectors.gs')} ${formatSpeed(result.value.gsKnots)} ${state.value.speedUnit}` },
   ]
   const coordinates = vectors.flatMap(vector => [vector.from, vector.to])
-  const range = Math.max(1, ...coordinates.flatMap(point => [Math.abs(point.east), Math.abs(point.north)])) * 1.2
+  const rawBounds = {
+    eastMin: Math.min(0, ...coordinates.map(point => point.east)),
+    eastMax: Math.max(0, ...coordinates.map(point => point.east)),
+    northMin: Math.min(0, ...coordinates.map(point => point.north)),
+    northMax: Math.max(0, ...coordinates.map(point => point.north)),
+  }
+  const baseSpan = Math.max(
+    rawBounds.eastMax - rawBounds.eastMin,
+    rawBounds.northMax - rawBounds.northMin,
+    1,
+  )
+  const padding = baseSpan * 0.08
+
+  const initialBounds = {
+    eastMin: rawBounds.eastMin - padding,
+    eastMax: rawBounds.eastMax + padding,
+    northMin: rawBounds.northMin - padding,
+    northMax: rawBounds.northMax + padding,
+  }
+  const targetSpan = Math.max(
+    initialBounds.eastMax - initialBounds.eastMin,
+    initialBounds.northMax - initialBounds.northMin,
+  )
+
+  function expandBounds(min: number, max: number, rawMin: number, rawMax: number) {
+    const extra = targetSpan - (max - min)
+    if (rawMin >= 0) return { min, max: max + extra }
+    if (rawMax <= 0) return { min: min - extra, max }
+    return { min: min - extra / 2, max: max + extra / 2 }
+  }
+
+  const eastBounds = expandBounds(initialBounds.eastMin, initialBounds.eastMax, rawBounds.eastMin, rawBounds.eastMax)
+  const northBounds = expandBounds(initialBounds.northMin, initialBounds.northMax, rawBounds.northMin, rawBounds.northMax)
   const width = chartContainer.value?.clientWidth || 520
-  const chartSize = Math.max(220, Math.min(width, 420))
+  const height = chartContainer.value?.clientHeight || width
+  const chartSize = Math.max(220, Math.min(width, height))
   const chartLeft = Math.max(0, (width - chartSize) / 2)
+  const chartTop = Math.max(0, (height - chartSize) / 2)
 
   return {
     animation: false,
-    grid: { left: chartLeft, top: 8, width: chartSize, height: chartSize, containLabel: false },
-    xAxis: { type: 'value', min: -range, max: range, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { show: false }, splitLine: { show: true, lineStyle: { color: 'rgba(100, 116, 139, 0.18)' } } },
-    yAxis: { type: 'value', min: -range, max: range, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { show: false }, splitLine: { show: true, lineStyle: { color: 'rgba(100, 116, 139, 0.18)' } } },
+    grid: { left: chartLeft, top: chartTop, width: chartSize, height: chartSize, containLabel: false },
+    xAxis: { type: 'value', min: eastBounds.min, max: eastBounds.max, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { show: false }, splitLine: { show: true, lineStyle: { color: 'rgba(100, 116, 139, 0.18)' } } },
+    yAxis: { type: 'value', min: northBounds.min, max: northBounds.max, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { show: false }, splitLine: { show: true, lineStyle: { color: 'rgba(100, 116, 139, 0.18)' } } },
     series: [{
       type: 'custom',
       coordinateSystem: 'cartesian2d',
@@ -468,20 +495,17 @@ watch(() => route.fullPath, generateQRCode)
 <style scoped>
 .airspeed-page { min-height: 100vh; }
 
-.airspeed-hero,
 .qr-card {
   border: 1px solid var(--border);
   background: linear-gradient(135deg, var(--bg-accent-start), var(--bg-accent-soft-2));
   box-shadow: 0 10px 30px var(--shadow);
 }
 
-.airspeed-hero__content { display: flex; justify-content: space-between; gap: 1.5rem; }
 .airspeed-card { border: 1px solid var(--border); background: var(--surface-elevated); }
-.field-with-unit { display: grid; grid-template-columns: minmax(0, 1fr) 126px; gap: 0.75rem; }
+.unit-select { width: 108px; max-width: 108px; }
 .unit-select :deep(.v-field__input) { padding-inline: 0.75rem; }
-.speed-unit-select { width: 150px; }
-.speed-input { padding: 0.55rem 0.55rem 0; border: 1px solid transparent; border-radius: 14px; transition: border-color 0.2s, background-color 0.2s; }
-.speed-input--active { border-color: rgb(var(--v-theme-primary)); background: var(--bg-accent-soft); }
+.speed-unit-select { flex: 0 0 108px; width: 108px; max-width: 108px; }
+.speed-input { padding: 0.55rem 0.55rem 0; }
 .unit-selection-title { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .result-tile { height: 100%; padding: 1rem; border: 1px solid var(--border); border-radius: 14px; background: var(--surface-elevated); }
 .result-tile__label { color: var(--muted); font-size: 0.85rem; }
@@ -492,16 +516,14 @@ watch(() => route.fullPath, generateQRCode)
 .vector-legend { display: flex; flex-wrap: wrap; gap: 0.8rem; color: var(--muted); font-size: 0.8rem; }
 .vector-legend__item { display: inline-flex; align-items: center; gap: 0.35rem; }
 .vector-legend__swatch { width: 0.7rem; height: 0.7rem; border-radius: 50%; }
-.airspeed-chart { width: 100%; height: 420px; }
+.airspeed-chart { width: 100%; height: auto; min-height: 320px; aspect-ratio: 1 / 1; }
 .airspeed-chart--hidden { display: none; }
 .chart-empty { display: grid; min-height: 260px; place-items: center; align-content: center; gap: 0.75rem; color: var(--muted); }
 .qr-card__content { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
 .qr-frame { display: grid; flex: 0 0 auto; width: 236px; height: 236px; place-items: center; border-radius: 18px; background: white; }
 
 @media (max-width: 600px) {
-  .field-with-unit { grid-template-columns: 1fr; gap: 0; }
-  .speed-unit-select { width: 100%; }
-  .airspeed-chart { height: 330px; }
+  .airspeed-chart { min-height: 300px; }
   .qr-card__content { align-items: flex-start; flex-direction: column; }
 }
 </style>

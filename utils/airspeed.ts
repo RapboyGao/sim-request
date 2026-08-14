@@ -196,7 +196,7 @@ function convertSpeedToKnots(value: number, unit: AirspeedUnit) {
 
 export class AirspeedCalculator {
   private _altitudeMeters: number
-  private _satCelsius: number
+  private _isaDeviationCelsius: number
   private _windFromDegrees: number
   private _windSpeedKnots: number
   private _trackDegrees: number
@@ -205,7 +205,7 @@ export class AirspeedCalculator {
 
   constructor(conditions: AirspeedConditions, groundspeedKnots = 0) {
     this._altitudeMeters = conditions.altitudeMeters
-    this._satCelsius = conditions.satCelsius
+    this._isaDeviationCelsius = 0
     this._windFromDegrees = conditions.windFromDegrees
     this._windSpeedKnots = conditions.windSpeedKnots
     this._trackDegrees = conditions.trackDegrees
@@ -213,6 +213,8 @@ export class AirspeedCalculator {
     this._groundspeedKnots = groundspeedKnots
 
     this.validateConditions()
+    // SAT is a compatibility input; ISA deviation is the canonical state.
+    this.satCelsius = conditions.satCelsius
     this.groundspeedKnots = groundspeedKnots
   }
 
@@ -227,19 +229,20 @@ export class AirspeedCalculator {
     this._altitudeMeters = value
   }
 
-  get satCelsius() { return this._satCelsius }
+  get satCelsius() {
+    return standardTemperatureCelsius(this._altitudeMeters) + this._isaDeviationCelsius
+  }
   set satCelsius(value: number) {
     assertFinite(value, 'Static air temperature must be a finite number.')
     staticTemperatureK(value)
-    this._satCelsius = value
+    this._isaDeviationCelsius = value - standardTemperatureCelsius(this._altitudeMeters)
   }
 
-  get isaDeviationCelsius() {
-    return this._satCelsius - standardTemperatureCelsius(this._altitudeMeters)
-  }
+  get isaDeviationCelsius() { return this._isaDeviationCelsius }
   set isaDeviationCelsius(value: number) {
     assertFinite(value, 'ISA deviation must be a finite number.')
-    this.satCelsius = standardTemperatureCelsius(this._altitudeMeters) + value
+    staticTemperatureK(standardTemperatureCelsius(this._altitudeMeters) + value)
+    this._isaDeviationCelsius = value
   }
 
   get windFromDegrees() { return this._windFromDegrees }
@@ -293,14 +296,14 @@ export class AirspeedCalculator {
     const atmosphere = standardAtmosphereFromAltitude(this._altitudeMeters)
     const mach = machFromCas(casKnots, atmosphere.pressurePa)
     this.assertSubsonic(mach)
-    this.setGroundspeedFromTas(tasFromMach(mach, staticTemperatureK(this._satCelsius)))
+    this.setGroundspeedFromTas(tasFromMach(mach, staticTemperatureK(this.satCelsius)))
   }
 
   get mach() { return this.snapshot.mach }
   set mach(value: number) {
     assertNonNegative(value, 'Mach cannot be negative.')
     this.assertSubsonic(value)
-    this.setGroundspeedFromTas(tasFromMach(value, staticTemperatureK(this._satCelsius)))
+    this.setGroundspeedFromTas(tasFromMach(value, staticTemperatureK(this.satCelsius)))
   }
 
   get tatCelsius() { return this.snapshot.tatCelsius }
@@ -313,7 +316,7 @@ export class AirspeedCalculator {
 
   get snapshot(): AirspeedSnapshot {
     const atmosphere = standardAtmosphereFromAltitude(this._altitudeMeters)
-    const temperatureK = staticTemperatureK(this._satCelsius)
+    const temperatureK = staticTemperatureK(this.satCelsius)
     const windVector = this.windVector
     const groundVector = this.groundVector
     const airVector = this.airVector
@@ -351,7 +354,6 @@ export class AirspeedCalculator {
 
   private validateConditions() {
     this.altitudeMeters = this._altitudeMeters
-    this.satCelsius = this._satCelsius
     this.windFromDegrees = this._windFromDegrees
     this.windSpeedKnots = this._windSpeedKnots
     this.trackDegrees = this._trackDegrees

@@ -127,7 +127,7 @@ function formatNumericExpression(value: number) {
 }
 
 function createCalculator(state: AirspeedStoredState) {
-  return new AirspeedCalculator({
+  const calculator = new AirspeedCalculator({
     altitudeMeters: state.altitudeMeters,
     satCelsius: state.satCelsius,
     windFromDegrees: state.windFromDegrees,
@@ -135,6 +135,8 @@ function createCalculator(state: AirspeedStoredState) {
     trackDegrees: state.trackDegrees,
     speedUnit: state.speedUnit,
   }, state.groundspeedKnots)
+  calculator.isaDeviationCelsius = state.isaDeviationCelsius
+  return calculator
 }
 
 export function useAirspeedConverter() {
@@ -266,9 +268,12 @@ export function useAirspeedConverter() {
 
     try {
       calculator.value.altitudeMeters = convertHeightToMeters(parsed, storedState.value.altitudeUnit)
-      const expressions = { ...storedState.value.expressions, altitude: raw }
-      if (storedState.value.temperatureSource === 'sat') expressions.isaDeviation = formatNumericExpression(calculator.value.isaDeviationCelsius)
-      else expressions.sat = formatNumericExpression(calculator.value.satCelsius)
+      const expressions = {
+        ...storedState.value.expressions,
+        altitude: raw,
+        sat: formatNumericExpression(calculator.value.satCelsius),
+        isaDeviation: formatNumericExpression(calculator.value.isaDeviationCelsius),
+      }
       sync(expressions)
     } catch (value) {
       keepExpression({ altitude: raw }, value)
@@ -312,7 +317,6 @@ export function useAirspeedConverter() {
     try {
       calculator.value.satCelsius = parsed
       sync({ ...storedState.value.expressions, sat: raw, isaDeviation: formatNumericExpression(calculator.value.isaDeviationCelsius) })
-      storedState.value = { ...storedState.value, temperatureSource: 'sat' }
     } catch (value) {
       keepExpression({ sat: raw }, value)
     }
@@ -329,7 +333,6 @@ export function useAirspeedConverter() {
     try {
       calculator.value.isaDeviationCelsius = parsed
       sync({ ...storedState.value.expressions, isaDeviation: raw, sat: formatNumericExpression(calculator.value.satCelsius) })
-      storedState.value = { ...storedState.value, temperatureSource: 'isaDeviation' }
     } catch (value) {
       keepExpression({ isaDeviation: raw }, value)
     }

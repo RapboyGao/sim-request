@@ -119,13 +119,13 @@
     },
     "unit": "Unit",
     "units": { "kt": "kt — knots", "km/h": "km/h", "mph": "mph", "m/s": "m/s" },
-    "temperatureHint": "ISA standard temperature at this altitude: {temperature} °C. SAT and ISA deviation follow the last edited field.",
+    "temperatureHint": "ISA standard temperature at this altitude: {temperature} °C",
     "errors": {
       "invalid-input": "Enter valid altitude, temperature, speed, and direction values.",
       "unsupported-supersonic": "Only subsonic calculations are supported (Mach < 1).",
       "track-unachievable": "The selected TAS and wind cannot maintain the requested track."
     },
-    "resultEyebrow": "Calculated results",
+    "resultEyebrow": "Air and ground speed & temperature",
     "resultTitle": "Air and ground speed",
     "results": {
       "gs": "Ground speed GS",

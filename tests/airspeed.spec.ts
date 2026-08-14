@@ -98,6 +98,43 @@ describe('airspeed conversion', () => {
     expect(calculator.groundspeedKnots).toBe(initialGroundspeed)
   })
 
+  it('stores ISA deviation as the canonical temperature state', () => {
+    const expectedDeviation = 5.2 - standardIsaTemperature(3048)
+    const calculator = new AirspeedCalculator({
+      altitudeMeters: 3048,
+      satCelsius: 5.2,
+      windFromDegrees: 0,
+      windSpeedKnots: 0,
+      trackDegrees: 90,
+      speedUnit: 'kt',
+    })
+
+    expect(calculator.isaDeviationCelsius).toBeCloseTo(expectedDeviation, 8)
+    expect(calculator.satCelsius).toBeCloseTo(5.2, 8)
+
+    calculator.altitudeMeters = 0
+
+    expect(calculator.isaDeviationCelsius).toBeCloseTo(expectedDeviation, 8)
+    expect(calculator.satCelsius).toBeCloseTo(15 + expectedDeviation, 8)
+  })
+
+  it('updates ISA deviation when SAT is edited', () => {
+    const expectedDeviation = 5.2 - standardIsaTemperature(3048)
+    const calculator = new AirspeedCalculator({
+      altitudeMeters: 3048,
+      satCelsius: -4.8,
+      windFromDegrees: 0,
+      windSpeedKnots: 0,
+      trackDegrees: 90,
+      speedUnit: 'kt',
+    })
+
+    calculator.satCelsius = 5.2
+
+    expect(calculator.isaDeviationCelsius).toBeCloseTo(expectedDeviation, 8)
+    expect(calculator.satCelsius).toBeCloseTo(5.2, 8)
+  })
+
   it('accepts negative temperatures and arithmetic expressions', () => {
     expect(evaluateNumericExpression('-5')).toBe(-5)
     expect(evaluateNumericExpression('15 - 20')).toBe(-5)
