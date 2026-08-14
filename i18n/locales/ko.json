@@ -4,6 +4,7 @@
     "navBooking": "예약",
     "navRules": "규칙",
     "navBarometric": "고도 / 기압 변환",
+    "navAirspeed": "공중·지상속도 변환",
     "navCalendar": "달력",
     "navAdmin": "관리",
     "navLanguage": "언어",
@@ -94,6 +95,33 @@
         "mmHg": "mmHg — 수은주 밀리미터"
       }
     }
+  },
+  "airspeed": {
+    "eyebrow": "비행 속도 계산기",
+    "title": "GS / TAS / Mach / CAS 변환",
+    "summary": "네 가지 속도 중 하나를 입력하면 고도, 온도와 바람을 사용해 나머지를 계산합니다.",
+    "inputEyebrow": "비행 조건",
+    "inputTitle": "대기 및 바람 입력",
+    "speedEyebrow": "속도 변환",
+    "speedTitle": "GS / TAS / Mach / CAS 상호 변환",
+    "modes": { "gs": "지상속도 GS", "tas": "진대기속도 TAS", "mach": "마하수", "cas": "보정대기속도 CAS" },
+    "fields": { "gs": "지상속도 GS 입력", "tas": "진대기속도 TAS 입력", "mach": "마하수 입력", "cas": "보정대기속도 CAS 입력", "altitude": "고도", "sat": "정온 SAT", "isaDeviation": "ISA 편차", "windFrom": "풍향(불어오는 방향)", "windSpeed": "풍속", "track": "항적" },
+    "unit": "단위",
+    "units": { "kt": "kt — 노트", "km/h": "km/h", "mph": "mph", "m/s": "m/s" },
+    "temperatureHint": "이 고도의 ISA 표준 온도: {temperature} °C. SAT와 ISA 편차는 마지막으로 편집한 항목을 기준으로 환산합니다.",
+    "errors": { "invalid-input": "유효한 고도, 온도, 속도와 방향을 입력하세요.", "unsupported-supersonic": "아음속 계산만 지원합니다(Mach < 1).", "track-unachievable": "현재 TAS와 바람으로는 지정한 항적을 유지할 수 없습니다." },
+    "resultEyebrow": "계산 결과",
+    "resultTitle": "공중속도와 지상속도",
+    "results": { "gs": "지상속도 GS", "tas": "진대기속도 TAS", "mach": "마하수", "cas": "보정대기속도 CAS", "tat": "총 공기 온도 TAT", "heading": "계산된 기수방향", "headwind": "맞바람 / 순풍", "crosswind": "측풍" },
+    "vectors": { "tas": "진대기속도", "wind": "풍속", "gs": "지상속도" },
+    "chartEyebrow": "바람 삼각형",
+    "chartTitle": "풍속, 진대기속도와 지상속도",
+    "chartHint": "진대기속도 벡터 + 바람 벡터 = 지상속도 벡터입니다. 풍향은 불어오는 방향으로 입력하고 그림에는 향하는 방향으로 표시합니다.",
+    "chartUnavailable": "현재 입력으로는 유효한 바람 삼각형을 그릴 수 없습니다.",
+    "qrEyebrow": "페이지 공유",
+    "qrTitle": "스캔하여 페이지 열기",
+    "qrHint": "휴대폰 카메라로 QR 코드를 스캔하세요.",
+    "qrAlt": "현재 페이지 QR 코드"
   },
   "rules": {
     "eyebrow": "Observation 예약",

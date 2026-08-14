@@ -4,6 +4,7 @@
     "navBooking": "Réserver",
     "navRules": "Règles",
     "navBarometric": "Altitude / pression",
+    "navAirspeed": "Convertisseur de vitesses",
     "navCalendar": "Calendrier",
     "navAdmin": "Admin",
     "navLanguage": "Langue",
@@ -94,6 +95,33 @@
         "mmHg": "mmHg — millimètres de mercure"
       }
     }
+  },
+  "airspeed": {
+    "eyebrow": "Calculateur de vitesse de vol",
+    "title": "Convertisseur GS / TAS / Mach / CAS",
+    "summary": "Saisissez une vitesse et calculez les autres selon l’altitude, la température et le vent.",
+    "inputEyebrow": "Conditions de vol",
+    "inputTitle": "Atmosphère et vent",
+    "speedEyebrow": "Conversion des vitesses",
+    "speedTitle": "Conversion GS / TAS / Mach / CAS",
+    "modes": { "gs": "Vitesse sol GS", "tas": "Vitesse vraie TAS", "mach": "Nombre de Mach", "cas": "Vitesse calibrée CAS" },
+    "fields": { "gs": "Vitesse sol GS", "tas": "Vitesse vraie TAS", "mach": "Nombre de Mach", "cas": "Vitesse calibrée CAS", "altitude": "Altitude", "sat": "Température statique SAT", "isaDeviation": "Écart ISA", "windFrom": "Direction du vent (provenance)", "windSpeed": "Vitesse du vent", "track": "Route sol" },
+    "unit": "Unité",
+    "units": { "kt": "kt — nœuds", "km/h": "km/h", "mph": "mph", "m/s": "m/s" },
+    "temperatureHint": "Température ISA à cette altitude : {temperature} °C. SAT et écart ISA suivent le dernier champ modifié.",
+    "errors": { "invalid-input": "Saisissez une altitude, une température, une vitesse et une direction valides.", "unsupported-supersonic": "Seuls les calculs subsoniques sont pris en charge (Mach < 1).", "track-unachievable": "Le TAS et le vent sélectionnés ne permettent pas de maintenir cette route." },
+    "resultEyebrow": "Résultats calculés",
+    "resultTitle": "Vitesses air et sol",
+    "results": { "gs": "Vitesse sol GS", "tas": "Vitesse vraie TAS", "mach": "Nombre de Mach", "cas": "Vitesse calibrée CAS", "tat": "Température totale TAT", "heading": "Cap calculé", "headwind": "Vent de face / arrière", "crosswind": "Vent traversier" },
+    "vectors": { "tas": "Vitesse vraie", "wind": "Vent", "gs": "Vitesse sol" },
+    "chartEyebrow": "Triangle des vents",
+    "chartTitle": "Vent, vitesse vraie et vitesse sol",
+    "chartHint": "Le vecteur TAS + le vecteur vent = le vecteur GS. Le vent est saisi selon sa provenance et dessiné vers sa destination.",
+    "chartUnavailable": "Aucun triangle des vents valide ne peut être affiché avec ces valeurs.",
+    "qrEyebrow": "Partager cette page",
+    "qrTitle": "Scanner pour ouvrir cette page",
+    "qrHint": "Scannez le QR code avec l’appareil photo de votre téléphone.",
+    "qrAlt": "QR code de cette page"
   },
   "rules": {
     "eyebrow": "Observation Réservation",

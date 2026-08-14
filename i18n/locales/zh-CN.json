@@ -4,6 +4,7 @@
     "navBooking": "预约提交",
     "navRules": "预约规则",
     "navBarometric": "高度 / 气压换算",
+    "navAirspeed": "空地速换算",
     "navCalendar": "预约日历",
     "navAdmin": "管理页",
     "navLanguage": "语言",
@@ -94,6 +95,57 @@
         "mmHg": "mmHg — 毫米汞柱"
       }
     }
+  },
+  "airspeed": {
+    "eyebrow": "飞行速度计算器",
+    "title": "GS / TAS / Mach / CAS 互换",
+    "summary": "输入任意一种速度，结合高度、温度和风场计算其余速度。",
+    "inputEyebrow": "飞行条件",
+    "inputTitle": "输入大气条件与风",
+    "speedEyebrow": "速度换算",
+    "speedTitle": "GS / TAS / Mach / CAS 互相换算",
+    "modes": { "gs": "地速 GS", "tas": "真空速 TAS", "mach": "马赫数 Mach", "cas": "校准空速 CAS" },
+    "fields": {
+      "gs": "输入地速 GS",
+      "tas": "输入真空速 TAS",
+      "mach": "输入马赫数 Mach",
+      "cas": "输入校准空速 CAS",
+      "altitude": "高度",
+      "sat": "静温 SAT",
+      "isaDeviation": "ISA 偏差",
+      "windFrom": "风向（来向）",
+      "windSpeed": "风速",
+      "track": "航迹"
+    },
+    "unit": "单位",
+    "units": { "kt": "kt — 节", "km/h": "km/h — 千米/时", "mph": "mph — 英里/时", "m/s": "m/s — 米/秒" },
+    "temperatureHint": "该高度的 ISA 标准温度：{temperature} °C。SAT 和 ISA 偏差会根据最后编辑的字段互相换算。",
+    "errors": {
+      "invalid-input": "请输入有效的高度、温度、速度和方向。",
+      "unsupported-supersonic": "当前仅支持亚音速计算（Mach < 1）。",
+      "track-unachievable": "当前 TAS 与风场无法保持指定航迹。"
+    },
+    "resultEyebrow": "计算结果",
+    "resultTitle": "空地速与温度",
+    "results": {
+      "gs": "地速 GS",
+      "tas": "真空速 TAS",
+      "mach": "马赫数 Mach",
+      "cas": "校准空速 CAS",
+      "tat": "总空气温度 TAT",
+      "heading": "计算航向",
+      "headwind": "顺 / 逆风分量",
+      "crosswind": "侧风分量"
+    },
+    "vectors": { "tas": "真空速", "wind": "风速", "gs": "地速" },
+    "chartEyebrow": "风三角",
+    "chartTitle": "风速、真空速与地速",
+    "chartHint": "真空速向量 + 风速向量 = 地速向量；风向按来向输入，图中按去向绘制。",
+    "chartUnavailable": "当前输入无法绘制有效风三角。",
+    "qrEyebrow": "分享页面",
+    "qrTitle": "扫码打开此页面",
+    "qrHint": "使用手机相机扫描下方二维码。",
+    "qrAlt": "当前页面二维码"
   },
   "rules": {
     "eyebrow": "Observation 预约",

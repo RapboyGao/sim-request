@@ -4,6 +4,7 @@
     "navBooking": "予約",
     "navRules": "ルール",
     "navBarometric": "高度 / 気圧換算",
+    "navAirspeed": "空地速度換算",
     "navCalendar": "カレンダー",
     "navAdmin": "管理",
     "navLanguage": "言語",
@@ -94,6 +95,33 @@
         "mmHg": "mmHg — 水銀柱ミリメートル"
       }
     }
+  },
+  "airspeed": {
+    "eyebrow": "飛行速度計算機",
+    "title": "GS / TAS / Mach / CAS 換算",
+    "summary": "いずれか1つの速度を入力し、高度・温度・風から残りを計算します。",
+    "inputEyebrow": "飛行条件",
+    "inputTitle": "大気と風の条件",
+    "speedEyebrow": "速度換算",
+    "speedTitle": "GS / TAS / Mach / CAS 相互換算",
+    "modes": { "gs": "対地速度 GS", "tas": "真速度 TAS", "mach": "マッハ数", "cas": "較正対気速度 CAS" },
+    "fields": { "gs": "対地速度 GS", "tas": "真速度 TAS", "mach": "マッハ数", "cas": "較正対気速度 CAS", "altitude": "高度", "sat": "静温 SAT", "isaDeviation": "ISA 偏差", "windFrom": "風向（吹いてくる方向）", "windSpeed": "風速", "track": "航跡" },
+    "unit": "単位",
+    "units": { "kt": "kt — ノット", "km/h": "km/h", "mph": "mph", "m/s": "m/s" },
+    "temperatureHint": "この高度の ISA 標準温度：{temperature} °C。SAT と ISA 偏差は最後に編集した項目を基準に換算します。",
+    "errors": { "invalid-input": "有効な高度、温度、速度、方向を入力してください。", "unsupported-supersonic": "亜音速計算のみ対応しています（Mach < 1）。", "track-unachievable": "現在の TAS と風では指定した航跡を維持できません。" },
+    "resultEyebrow": "計算結果",
+    "resultTitle": "空中速度と対地速度",
+    "results": { "gs": "対地速度 GS", "tas": "真速度 TAS", "mach": "マッハ数", "cas": "較正対気速度 CAS", "tat": "全温 TAT", "heading": "計算上の機首方位", "headwind": "向かい風 / 追い風", "crosswind": "横風" },
+    "vectors": { "tas": "真速度", "wind": "風速", "gs": "対地速度" },
+    "chartEyebrow": "風の三角形",
+    "chartTitle": "風速・真速度・対地速度",
+    "chartHint": "真速度ベクトル + 風ベクトル = 対地速度ベクトル。風向は来る方向で入力し、図では向かう方向に描画します。",
+    "chartUnavailable": "現在の入力では有効な風の三角形を描画できません。",
+    "qrEyebrow": "ページを共有",
+    "qrTitle": "スキャンしてページを開く",
+    "qrHint": "スマートフォンのカメラで QR コードをスキャンしてください。",
+    "qrAlt": "このページの QR コード"
   },
   "rules": {
     "eyebrow": "Observation 予約",

@@ -110,6 +110,7 @@
 </template>
 
 <script setup lang="ts">
+import { useStorage } from '@vueuse/core'
 import { buildSlots } from '~/utils/slots'
 import { isValidChinaMainlandPhone } from '~/utils/booking-name'
 
@@ -125,8 +126,8 @@ const defaultSlot = slots[0] || ''
 const form = reactive({
   date: today,
   slots: defaultSlot ? [defaultSlot] : [],
-  name: '',
-  phone: '',
+  name: useStorage('booking-form-name', ''),
+  phone: useStorage('booking-form-phone', ''),
   priorityLevel: 'normal' as 'normal' | 'classmate',
 })
 
@@ -200,8 +201,6 @@ async function submitBooking() {
       },
     })
     const bookingId = response.bookings?.[0]?.id || ''
-    form.name = ''
-    form.phone = ''
     form.priorityLevel = 'normal'
     form.slots = defaultSlot ? [defaultSlot] : []
     showBookingSuccessNotice(bookingId)

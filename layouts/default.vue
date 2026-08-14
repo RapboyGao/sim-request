@@ -39,6 +39,8 @@
               prepend-icon="mdi-book-open-variant-outline" />
             <v-list-item :to="localePath('/barometric')" :title="t('app.navBarometric')"
               prepend-icon="mdi-weather-windy" />
+            <v-list-item :to="localePath('/airspeed')" :title="t('app.navAirspeed')"
+              prepend-icon="mdi-airplane-takeoff" />
             <v-list-item :to="localePath('/admin')" :title="t('app.navAdmin')"
               prepend-icon="mdi-shield-account-outline" />
           </v-list>
@@ -62,6 +64,7 @@
         <v-list-item :to="localePath('/rules')" :title="t('app.navRules')"
         prepend-icon="mdi-book-open-variant-outline" />
         <v-list-item :to="localePath('/barometric')" :title="t('app.navBarometric')" prepend-icon="mdi-weather-windy" />
+        <v-list-item :to="localePath('/airspeed')" :title="t('app.navAirspeed')" prepend-icon="mdi-airplane-takeoff" />
         <v-list-item :to="localePath('/admin')" :title="t('app.navAdmin')" prepend-icon="mdi-shield-account-outline" />
         <v-divider class="my-2" />
         <v-list-subheader>{{ t('app.navLanguage') }}</v-list-subheader>
@@ -104,6 +107,7 @@ const pageTitleKeys: Record<string, string> = {
   '/calendar': 'app.navCalendar',
   '/rules': 'app.navRules',
   '/barometric': 'app.navBarometric',
+  '/airspeed': 'app.navAirspeed',
   '/admin': 'app.navAdmin',
 }
 
