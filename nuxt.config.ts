@@ -29,6 +29,7 @@ export default defineNuxtConfig({
     public: {
       supabaseUrl: process.env.SUPABASE_URL || '',
       supabasePublishableKey: process.env.SUPABASE_PUBLISHABLE_KEY || '',
+      checklistsPassword: process.env.NUXT_PUBLIC_CHECKLISTS_PASSWORD || process.env.CHECKLISTS_PASSWORD || '13515',
     },
   },
   i18n: {

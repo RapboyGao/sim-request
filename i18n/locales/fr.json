@@ -5,6 +5,7 @@
     "navRules": "Règles",
     "navBarometric": "Altitude / pression",
     "navAirspeed": "Convertisseur de vitesses",
+    "navDeicing": "Procédures de dégivrage",
     "navCalendar": "Calendrier",
     "navAdmin": "Admin",
     "navLanguage": "Langue",
@@ -95,6 +96,22 @@
         "mmHg": "mmHg — millimètres de mercure"
       }
     }
+  },
+  "deicing": {
+    "eyebrow": "Checklist de dégivrage du 737",
+    "progress": "Progression",
+    "reset": "Réinitialiser",
+    "copy": "Copier la note",
+    "copied": "Note copiée",
+    "copyUnavailable": "La copie n’est pas disponible dans ce navigateur",
+    "checkSection": "Terminer la section",
+    "uncheckSection": "Décocher la section",
+    "publicHint": "L’état est conservé uniquement sur cette page",
+    "resetConfirm": "Tous les éléments cochés sur cette page seront effacés.",
+    "cancel": "Annuler",
+    "exclusiveGroupName": "Choisir un groupe",
+    "exclusiveDisabled": "Une autre section est sélectionnée",
+    "exclusiveCount": "éléments · 1 choix"
   },
   "airspeed": {
     "eyebrow": "Calculateur de vitesse de vol",

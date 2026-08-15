@@ -15,9 +15,9 @@ import {
   validateCustomChecklists,
 } from '~/utils/checklists'
 
-const CUSTOM_STORAGE_KEY = 'private-checklists-v1'
-const STATUS_STORAGE_KEY = 'private-checklist-status-v1'
-const FAVORITES_STORAGE_KEY = 'private-checklist-favorites-v1'
+const CUSTOM_STORAGE_KEY = 'private-checklists-v2'
+const STATUS_STORAGE_KEY = 'private-checklist-status-v2'
+const FAVORITES_STORAGE_KEY = 'private-checklist-favorites-v2'
 
 function copy<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T
@@ -36,7 +36,7 @@ function normalizeFavoriteIds(value: unknown) {
 }
 
 export function useChecklists() {
-  const storedCustom = useStorage<StoredCustomChecklists>(CUSTOM_STORAGE_KEY, { version: 1, checklists: [] }, undefined, {
+  const storedCustom = useStorage<StoredCustomChecklists>(CUSTOM_STORAGE_KEY, { version: 2, checklists: [] }, undefined, {
     mergeDefaults: true,
   })
   const storedStatus = useStorage<ChecklistStatus>(STATUS_STORAGE_KEY, {})
@@ -50,7 +50,7 @@ export function useChecklists() {
 
   if (import.meta.client) {
     watch(custom, (value) => {
-      storedCustom.value = { version: 1, checklists: copy(value) }
+      storedCustom.value = { version: 2, checklists: copy(value) }
     }, { deep: true })
     watch(status, (value) => {
       storedStatus.value = copy(value)
@@ -72,7 +72,7 @@ export function useChecklists() {
       sections: [{
         id: `${id}-section-1`,
         title: '未命名分组',
-        detail: '',
+        description: '',
         completion: 'all',
         items: [],
       }],
@@ -147,7 +147,7 @@ export function useChecklists() {
     const customIds = new Set(custom.value.flatMap((checklist) => checklist.sections.flatMap((section) => section.items.map((item) => item.id))))
     const customStatus = Object.fromEntries(Object.entries(status.value).filter(([id]) => customIds.has(id)))
     return {
-      version: 1,
+      version: 2,
       exportedAt: new Date().toISOString(),
       checklists: copy(custom.value),
       status: customStatus,

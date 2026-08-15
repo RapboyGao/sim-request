@@ -41,6 +41,8 @@
               prepend-icon="mdi-weather-windy" />
             <v-list-item :to="localePath('/airspeed')" :title="t('app.navAirspeed')"
               prepend-icon="mdi-airplane-takeoff" />
+            <v-list-item :to="localePath('/deicing')" :title="t('app.navDeicing')"
+              prepend-icon="mdi-snowflake-melt" />
             <v-list-item :to="localePath('/admin')" :title="t('app.navAdmin')"
               prepend-icon="mdi-shield-account-outline" />
           </v-list>
@@ -65,6 +67,7 @@
         prepend-icon="mdi-book-open-variant-outline" />
         <v-list-item :to="localePath('/barometric')" :title="t('app.navBarometric')" prepend-icon="mdi-weather-windy" />
         <v-list-item :to="localePath('/airspeed')" :title="t('app.navAirspeed')" prepend-icon="mdi-airplane-takeoff" />
+        <v-list-item :to="localePath('/deicing')" :title="t('app.navDeicing')" prepend-icon="mdi-snowflake-melt" />
         <v-list-item :to="localePath('/admin')" :title="t('app.navAdmin')" prepend-icon="mdi-shield-account-outline" />
         <v-divider class="my-2" />
         <v-list-subheader>{{ t('app.navLanguage') }}</v-list-subheader>
@@ -108,6 +111,7 @@ const pageTitleKeys: Record<string, string> = {
   '/rules': 'app.navRules',
   '/barometric': 'app.navBarometric',
   '/airspeed': 'app.navAirspeed',
+  '/deicing': 'app.navDeicing',
   '/admin': 'app.navAdmin',
 }
 

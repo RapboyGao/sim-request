@@ -1,30 +1,87 @@
-import sourceMarkdown from '../checklists-source/b737-deicing-en.md?raw'
-import { createBuiltinChecklist } from './_factory'
+import { b737DeicingEnSource as sourceMarkdown } from "../checklist-source-documents";
+import { createBuiltinChecklist } from "./_factory";
 
-export const b737DeicingEnChecklist = createBuiltinChecklist('b737-deicing-en', '737 Deicing Procedures (English)', 'Applicable for engine-off or engine-idle deicing after taxiing to a de-icing pad.', [
-  ['1. Before Taxi Procedure', [
-    'GENERATOR ...... ON', 'GEN OFF BUS lights ...... Verify OFF', 'If engine shutdown is possible: APU generator ...... ON',
-    'Probe heat ...... ON', 'Engine start switches ...... CONT', 'Engine anti-ice ...... As required',
-    'Isolation valve ...... AUTO', 'All bleeds ...... OFF', 'If engine-idle deicing is confirmed: APU ...... OFF',
-    'Ground personnel / equipment ...... Clear', 'Recall ...... Check', 'ENG/SYS ...... Check and clear',
-  ]],
-  ['2. Approaching De-icing Pad', ['All bleeds ...... OFF']],
-  ['3a. At De-icing Pad - Engine-Off Deicing', [
-    'All bleeds ...... OFF', 'APU generator ...... ON', 'Engine start switches ...... OFF',
-    'Engine start levers ...... CUTOFF', '(Ready for deicing)', 'Engine anti-ice ...... OFF', 'Isolation valve ...... OPEN',
-  ]],
-  ['3b. At De-icing Pad - Engine-Idle Deicing', ['All bleeds ...... OFF', '(Ready for deicing)', 'Engine generators ...... ON', 'APU ...... OFF']],
-  ['4a. After Engine-Off Deicing', [
-    'Timer ...... 60 seconds', 'Anti-collision light ...... ON', 'Before start checklist ...... Complete',
-    'After at least 60 seconds', 'Engine bleeds ...... ON', 'APU bleed ...... ON', 'DUAL BLEED light ...... Illuminated',
-    'Packs ...... OFF', 'Ground personnel / equipment ...... Clear', 'Engines ...... Start',
-    'Before taxi procedure and checklist (including Flaps 40 - UP - Takeoff flaps) ...... Complete',
-  ]],
-  ['4b. After Engine-Idle Deicing', [
-    'Ground personnel / equipment ...... Clear', 'Timing ...... 60 seconds', 'Anti-collision light ...... ON',
-    'Flaps ...... 40°', 'Engine anti-ice ...... As required', 'Flight controls ...... Check',
-    'After the Flaps 40 green light', 'Flaps ...... UP', 'After at least 60 seconds', 'Engine bleeds ...... ON',
-    'Packs ...... AUTO', 'After the flaps-up light is out', 'Flaps ...... Takeoff flaps', 'Recall ...... Check',
-    'Weather radar ...... Set', 'ENG/SYS ...... Check and clear', 'Before taxi checklist ...... Complete',
-  ]],
-], sourceMarkdown)
+const item = (id: string, title: string, isEmphasized = false) => ({ id: `b737-deicing.${id}`, title, isEmphasized });
+
+export const b737DeicingEnChecklist = createBuiltinChecklist(
+  "b737-deicing-en",
+  "737 Deicing Procedures (English)",
+  "Applicable for engine-off or engine-idle deicing after taxiing to a de-icing pad.",
+  [
+    {
+      id: "b737-deicing.before-taxi",
+      title: "1. Before Taxi Procedure",
+      items: [
+        item("before-taxi.generator", "GENERATOR ...... ON"),
+        item("before-taxi.gen-off-bus", "GEN OFF BUS lights ...... Verify OFF"),
+        item("before-taxi.apu-generator", "If engine shutdown is possible: APU generator ...... ON"),
+        item("before-taxi.probe-heat", "Probe heat ...... ON"),
+        item("before-taxi.start-switches", "Engine start switches ...... CONT"),
+        item("before-taxi.engine-anti-ice", "Engine anti-ice ...... As required"),
+        item("before-taxi.isolation-valve", "Isolation valve ...... AUTO"),
+        item("before-taxi.all-bleeds", "All bleeds ...... OFF"),
+        item("before-taxi.apu-idle", "If engine-idle deicing is confirmed: APU ...... OFF"),
+        item("before-taxi.ground-clear", "Ground personnel / equipment ...... Clear"),
+        item("before-taxi.recall", "Recall ...... Check"),
+        item("before-taxi.eng-sys", "ENG/SYS ...... Check and clear"),
+      ],
+    },
+    { id: "b737-deicing.approaching-pad", title: "2. Approaching De-icing Pad", items: [item("approaching-pad.all-bleeds", "All bleeds ...... OFF")] },
+    {
+      id: "b737-deicing.engine-off",
+      title: "3a. At De-icing Pad - Engine-Off Deicing",
+      completion: "exclusive",
+      items: [
+        item("engine-off.all-bleeds", "All bleeds ...... OFF"),
+        item("engine-off.apu-generator", "APU generator ...... ON"),
+        item("engine-off.start-switches", "Engine start switches ...... OFF"),
+        item("engine-off.start-levers", "Engine start levers ...... CUTOFF"),
+        item("engine-off.ready", "(Ready for deicing)", true),
+        item("engine-off.engine-anti-ice", "Engine anti-ice ...... OFF"),
+        item("engine-off.isolation-valve", "Isolation valve ...... OPEN"),
+        item("engine-off.after-deicing", "After deicing", true),
+        item("engine-off.timer", "Timer ...... 60 seconds"),
+        item("engine-off.anti-collision", "Anti-collision light ...... ON"),
+        item("engine-off.before-start", "Before start checklist ...... Complete"),
+        item("engine-off.after-sixty", "After at least 60 seconds", true),
+        item("engine-off.engine-bleeds", "Engine bleeds ...... ON"),
+        item("engine-off.apu-bleed", "APU bleed ...... ON"),
+        item("engine-off.dual-bleed", "DUAL BLEED light ...... Illuminated"),
+        item("engine-off.packs", "Packs ...... OFF"),
+        item("engine-off.ground-clear", "Ground personnel / equipment ...... Clear"),
+        item("engine-off.engines", "Engines ...... Start"),
+        item("engine-off.before-taxi-complete", "Before taxi procedure and checklist (including Flaps 40 - UP - Takeoff flaps) ...... Complete"),
+      ],
+    },
+    {
+      id: "b737-deicing.engine-idle",
+      title: "3b. At De-icing Pad - Engine-Idle Deicing",
+      completion: "exclusive",
+      items: [
+        item("engine-idle.all-bleeds", "All bleeds ...... OFF"),
+        item("engine-idle.ready", "(Ready for deicing)", true),
+        item("engine-idle.engine-generators", "Engine generators ...... ON"),
+        item("engine-idle.apu", "APU ...... OFF"),
+        item("engine-idle.after-deicing", "After deicing", true),
+        item("engine-idle.ground-clear", "Ground personnel / equipment ...... Clear"),
+        item("engine-idle.timing", "Timing ...... 60 seconds"),
+        item("engine-idle.anti-collision", "Anti-collision light ...... ON"),
+        item("engine-idle.flaps-forty", "Flaps ...... 40°"),
+        item("engine-idle.engine-anti-ice", "Engine anti-ice ...... As required"),
+        item("engine-idle.flight-controls", "Flight controls ...... Check"),
+        item("engine-idle.flaps-forty-light", "After the Flaps 40 green light", true),
+        item("engine-idle.flaps-up", "Flaps ...... UP"),
+        item("engine-idle.after-sixty", "After at least 60 seconds", true),
+        item("engine-idle.engine-bleeds", "Engine bleeds ...... ON"),
+        item("engine-idle.packs", "Packs ...... AUTO"),
+        item("engine-idle.flaps-up-light", "After the flaps-up light is out", true),
+        item("engine-idle.takeoff-flaps", "Flaps ...... Takeoff flaps"),
+        item("engine-idle.recall", "Recall ...... Check"),
+        item("engine-idle.weather-radar", "Weather radar ...... Set"),
+        item("engine-idle.eng-sys", "ENG/SYS ...... Check and clear"),
+        item("engine-idle.before-taxi-complete", "Before taxi checklist ...... Complete"),
+      ],
+    },
+  ],
+  sourceMarkdown,
+);

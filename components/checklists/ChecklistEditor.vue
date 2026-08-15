@@ -18,7 +18,16 @@
           <v-btn icon="mdi-chevron-down" size="small" variant="text" :disabled="sectionIndex === working.sections.length - 1" aria-label="分组下移" @click="moveSection(sectionIndex, 1)" />
           <v-btn icon="mdi-delete-outline" size="small" variant="text" color="error" aria-label="删除分组" :disabled="working.sections.length <= 1" @click="removeSection(sectionIndex)" />
         </div>
-        <v-textarea v-model="section.detail" label="分组详细说明" rows="2" auto-grow hide-details />
+        <v-textarea v-model="section.description" label="分组描述" rows="2" auto-grow hide-details />
+        <v-text-field
+          v-if="section.completion === 'exclusive' && isExclusiveGroupStart(section)"
+          :model-value="exclusiveName(section)"
+          label="互斥组名称"
+          placeholder="选一组完成"
+          hide-details
+          density="compact"
+          @update:model-value="updateExclusiveGroupName(section, String($event || ''))"
+        />
         <v-select
           v-model="section.completion"
           label="完成规则"
@@ -31,7 +40,8 @@
 
         <div v-for="(item, itemIndex) in section.items" :key="item.id" class="editor-item">
           <v-text-field v-model="item.title" label="条目" hide-details density="compact" class="flex-grow-1" />
-          <v-text-field v-model="item.detail" label="提示" hide-details density="compact" class="flex-grow-1" />
+          <v-text-field v-model="item.description" label="条目描述" hide-details density="compact" class="flex-grow-1" />
+          <v-checkbox v-model="item.isEmphasized" label="强调显示" hide-details density="compact" class="emphasis-input" />
           <v-text-field v-model.number="item.expiresAfterHours" label="时效（小时）" type="number" min="0" hide-details density="compact" class="expiry-input" />
           <v-btn icon="mdi-chevron-up" size="small" variant="text" :disabled="itemIndex === 0" aria-label="条目上移" @click="moveItem(section, itemIndex, -1)" />
           <v-btn icon="mdi-chevron-down" size="small" variant="text" :disabled="itemIndex === section.items.length - 1" aria-label="条目下移" @click="moveItem(section, itemIndex, 1)" />
@@ -50,16 +60,20 @@
 <script setup lang="ts">
 import { toRaw } from 'vue'
 import type { Checklist, ChecklistSection } from '~/types/checklist'
-import { DEFAULT_EXPIRY_HOURS } from '~/utils/checklists'
+import { DEFAULT_EXPIRY_HOURS, exclusiveGroupName, exclusiveSectionGroups } from '~/utils/checklists'
 
 const props = defineProps<{ checklist: Checklist }>()
 const emit = defineEmits<{ save: [checklist: Checklist]; cancel: [] }>()
 const working = ref(structuredClone(toRaw(props.checklist)))
 const errorMessage = ref('')
 const isNew = computed(() => !props.checklist.sections.some((section) => section.items.length > 0) && props.checklist.title === '新检查单')
+const exclusiveGroups = computed(() => exclusiveSectionGroups(working.value))
 
 function id(prefix: string) {
-  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+  const uuid = import.meta.client && typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+  return `${prefix}-${uuid}`
 }
 
 function requiredRule(value: string) {
@@ -67,7 +81,25 @@ function requiredRule(value: string) {
 }
 
 function addSection() {
-  working.value.sections.push({ id: id('section'), title: '新分组', detail: '', completion: 'all', items: [] })
+  working.value.sections.push({ id: id('section'), title: '新分组', description: '', completion: 'all', exclusiveGroupName: '', items: [] })
+}
+
+function groupForSection(section: ChecklistSection) {
+  return exclusiveGroups.value.find((group) => group.includes(section))
+}
+
+function isExclusiveGroupStart(section: ChecklistSection) {
+  return groupForSection(section)?.[0] === section
+}
+
+function exclusiveName(section: ChecklistSection) {
+  return exclusiveGroupName(groupForSection(section) || [])
+}
+
+function updateExclusiveGroupName(section: ChecklistSection, value: string) {
+  const group = groupForSection(section)
+  if (!group) return
+  group.forEach((item) => { item.exclusiveGroupName = value })
 }
 
 function removeSection(index: number) {
@@ -83,7 +115,7 @@ function moveSection(index: number, direction: number) {
 }
 
 function addItem(section: ChecklistSection) {
-  section.items.push({ id: id('item'), title: '新条目', detail: '', expiresAfterHours: DEFAULT_EXPIRY_HOURS })
+  section.items.push({ id: id('item'), title: '新条目', description: '', isEmphasized: false, expiresAfterHours: DEFAULT_EXPIRY_HOURS })
 }
 
 const completionOptions = [
@@ -117,14 +149,27 @@ function save() {
     errorMessage.value = '每个 Item 都需要填写标题'
     return
   }
+  const invalidExpiry = working.value.sections.flatMap((section) => section.items).find((item) => item.expiresAfterHours !== null && (!Number.isFinite(item.expiresAfterHours) || item.expiresAfterHours < 0))
+  if (invalidExpiry) {
+    errorMessage.value = '条目时效必须是非负数字或关闭时效'
+    return
+  }
+  const itemIds = working.value.sections.flatMap((section) => section.items.map((item) => item.id))
+  if (itemIds.some((itemId) => !itemId) || new Set(itemIds).size !== itemIds.length) {
+    errorMessage.value = '每个 Item 都需要唯一 ID'
+    return
+  }
   working.value.title = working.value.title.trim()
   working.value.sections.forEach((section) => {
     section.title = section.title.trim()
-    section.detail = section.detail || ''
+    section.description = section.description || ''
     section.completion = section.completion || 'all'
+    section.exclusiveGroupName = section.exclusiveGroupName?.trim() || ''
     section.items.forEach((item) => {
       item.title = item.title.trim()
-      item.detail = item.detail || ''
+      item.description = item.description || ''
+      item.isEmphasized = item.isEmphasized === true
+      item.expiresAfterHours = item.expiresAfterHours === null ? null : Number(item.expiresAfterHours)
     })
   })
   emit('save', structuredClone(toRaw(working.value)))
@@ -136,6 +181,7 @@ function save() {
 .editor-section { display: grid; gap: 10px; padding: 14px; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface-elevated); }
 .editor-item { display: flex; align-items: center; gap: 6px; }
 .expiry-input { max-width: 105px; }
+.emphasis-input { min-width: 110px; }
 @media (max-width: 700px) {
   .editor-item { flex-wrap: wrap; }
   .editor-item > :first-child, .editor-item > :nth-child(2) { min-width: calc(50% - 4px); }

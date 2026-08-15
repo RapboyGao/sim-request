@@ -1,3 +1,5 @@
+export const DEFAULT_CHECKLIST_PASSWORD = '13515'
+
 export const CHECKLIST_ROUTE_IDS = [
   'before-flight-day',
   'before-sleep',
@@ -15,7 +17,7 @@ export function checklistRoute(passwords: string, checklistId: BuiltinChecklistR
   return `/checklists/${encodeURIComponent(passwords)}/${encodeURIComponent(checklistId)}`
 }
 
-export function checklistsHomeRoute(passwords: string) {
+export function checklistsHomeRoute(passwords = DEFAULT_CHECKLIST_PASSWORD) {
   return `/checklists/${encodeURIComponent(passwords)}/`
 }
 

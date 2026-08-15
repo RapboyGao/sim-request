@@ -5,6 +5,7 @@
     "navRules": "ルール",
     "navBarometric": "高度 / 気圧換算",
     "navAirspeed": "空地速度換算",
+    "navDeicing": "除氷手順",
     "navCalendar": "カレンダー",
     "navAdmin": "管理",
     "navLanguage": "言語",
@@ -95,6 +96,22 @@
         "mmHg": "mmHg — 水銀柱ミリメートル"
       }
     }
+  },
+  "deicing": {
+    "eyebrow": "737 除氷チェックリスト",
+    "progress": "進捗",
+    "reset": "リセット",
+    "copy": "注意事項をコピー",
+    "copied": "注意事項をコピーしました",
+    "copyUnavailable": "このブラウザではコピーできません",
+    "checkSection": "セクションを完了",
+    "uncheckSection": "セクションを解除",
+    "publicHint": "状態はこのページ内にのみ保持されます",
+    "resetConfirm": "このページのチェック状態をすべて解除します。",
+    "cancel": "キャンセル",
+    "exclusiveGroupName": "1つのグループを選択",
+    "exclusiveDisabled": "別のセクションが選択されています",
+    "exclusiveCount": "項目から1つ"
   },
   "airspeed": {
     "eyebrow": "飛行速度計算機",

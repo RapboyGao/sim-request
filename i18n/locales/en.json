@@ -5,6 +5,7 @@
     "navRules": "Rules",
     "navBarometric": "Altitude / pressure",
     "navAirspeed": "Airspeed converter",
+    "navDeicing": "Deicing procedures",
     "navCalendar": "Calendar",
     "navAdmin": "Admin",
     "navLanguage": "Language",
@@ -95,6 +96,22 @@
         "mmHg": "mmHg — millimetres of mercury"
       }
     }
+  },
+  "deicing": {
+    "eyebrow": "737 deicing checklist",
+    "progress": "Progress",
+    "reset": "Reset",
+    "copy": "Copy note",
+    "copied": "Note copied",
+    "copyUnavailable": "Copy is not available in this browser",
+    "checkSection": "Complete section",
+    "uncheckSection": "Uncheck section",
+    "publicHint": "State is kept on this page only",
+    "resetConfirm": "All checked items on this page will be cleared.",
+    "cancel": "Cancel",
+    "exclusiveGroupName": "Choose one group",
+    "exclusiveDisabled": "Another section is selected",
+    "exclusiveCount": "sections · choose 1"
   },
   "airspeed": {
     "eyebrow": "Flight speed calculator",

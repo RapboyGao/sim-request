@@ -1,13 +1,28 @@
-import type { Checklist, ChecklistNote, ChecklistSection } from '../../types/checklist'
+import type { Checklist, ChecklistItem, ChecklistNote, ChecklistSection, ChecklistSectionCompletion } from '../../types/checklist'
 import { DEFAULT_EXPIRY_HOURS } from '../../utils/checklists'
 
-type GroupInput = [string, string[]]
+export type BuiltinItemInput = {
+  id: string
+  title: string
+  description?: string
+  isEmphasized?: boolean
+  expiresAfterHours?: number | null
+}
+
+export type BuiltinSectionInput = {
+  id: string
+  title: string
+  description?: string
+  completion?: ChecklistSectionCompletion
+  exclusiveGroupName?: string
+  items: BuiltinItemInput[]
+}
 
 export function createBuiltinChecklist(
   id: string,
   title: string,
   description: string,
-  groups: GroupInput[],
+  sections: BuiltinSectionInput[],
   sourceMarkdown: string,
   notes: ChecklistNote[] = [],
 ): Checklist {
@@ -16,22 +31,20 @@ export function createBuiltinChecklist(
     title,
     description,
     source: 'builtin',
-    sections: groups.map(([sectionTitle, items], sectionIndex) => {
-      const sectionId = `${id}-section-${sectionIndex + 1}`
-      const section: ChecklistSection = {
-        id: sectionId,
-        title: sectionTitle,
-        detail: '',
-        completion: 'all',
-        items: items.map((itemTitle, itemIndex) => ({
-          id: `${sectionId}-item-${itemIndex + 1}`,
-          title: itemTitle,
-          detail: '',
-          expiresAfterHours: DEFAULT_EXPIRY_HOURS,
-        })),
-      }
-      return section
-    }),
+    sections: sections.map((input): ChecklistSection => ({
+      id: input.id,
+      title: input.title,
+      description: input.description || '',
+      completion: input.completion || 'all',
+      exclusiveGroupName: input.exclusiveGroupName || '',
+      items: input.items.map((item): ChecklistItem => ({
+        id: item.id,
+        title: item.title,
+        description: item.description || '',
+        isEmphasized: item.isEmphasized === true,
+        expiresAfterHours: item.expiresAfterHours === undefined ? DEFAULT_EXPIRY_HOURS : item.expiresAfterHours,
+      })),
+    })),
     notes,
     sourceMarkdown,
   }

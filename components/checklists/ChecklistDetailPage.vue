@@ -59,17 +59,13 @@
       </v-expansion-panels>
     </div>
 
-    <div class="sections-stack">
-      <ChecklistSection
-        v-for="(section, sectionIndex) in checklist.sections"
-        :key="section.id"
-        :section="section"
-        :status="status"
-        :previous-sections-complete="previousSectionsComplete(sectionIndex)"
-        @toggle="toggleItem"
-        @set-all="setAll"
-      />
-    </div>
+    <ChecklistSections
+      :checklist="checklist"
+      :status="status"
+      class="sections-stack"
+      @toggle="toggleItem"
+      @set-all="setAll"
+    />
 
     <div class="detail-footer">
       <v-btn variant="text" prepend-icon="mdi-arrow-up" @click="scrollTop">回到顶部</v-btn>
@@ -114,11 +110,11 @@
 </template>
 
 <script setup lang="ts">
-import ChecklistSection from '~/components/checklists/ChecklistSection.vue'
+import ChecklistSections from '~/components/checklists/ChecklistSections.vue'
 import type { Checklist } from '~/types/checklist'
 import { useChecklistsPageActions } from '~/composables/useChecklistsPageActions'
 import { extractReadableChecklistNotes, type ReadableChecklistNote } from '~/utils/checklist-source'
-import { checklistStats, exclusiveSectionGroups, sectionStats as getSectionStats } from '~/utils/checklists'
+import { checklistStats } from '~/utils/checklists'
 import { checklistsHomeRoute, customChecklistEditRoute, customChecklistRoute } from '~/utils/checklist-routes'
 
 const props = defineProps<{ checklistId?: string; checklist?: Checklist }>()
@@ -142,27 +138,6 @@ const railStatusLabel = computed(() => ({
   partial: '部分完成',
 }[railStatus.value]))
 const passwords = computed(() => String(route.params.passwords || ''))
-
-function previousSectionsComplete(sectionIndex: number) {
-  if (sectionIndex === 0) return true
-  const currentChecklist = checklist.value
-  if (!currentChecklist) return false
-
-  const groups = exclusiveSectionGroups(currentChecklist)
-  const handledGroups = new Set<Checklist['sections']>()
-  for (const section of currentChecklist.sections.slice(0, sectionIndex)) {
-    if (section.completion !== 'exclusive') {
-      if (!getSectionStats(section, status.value).complete) return false
-      continue
-    }
-
-    const group = groups.find((candidate) => candidate.includes(section))
-    if (!group || handledGroups.has(group)) continue
-    if (!group.some((candidate) => getSectionStats(candidate, status.value).complete)) return false
-    handledGroups.add(group)
-  }
-  return true
-}
 
 function toggleItem(itemId: string) {
   if (checklist.value) toggleStoredItem(itemId, checklist.value)

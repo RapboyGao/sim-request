@@ -2,17 +2,18 @@
   <section class="checklists-section">
     <div class="section-rail" :class="railClass" />
     <div class="section-content">
-      <button class="section-header" type="button" @click="toggleSection">
+      <button class="section-header" :class="{ 'section-header--disabled': disabled }" type="button" :disabled="disabled" @click="toggleSection">
         <div>
           <div class="section-title-row">
             <div class="section-title">{{ section.title }}</div>
-            <span v-if="section.completion === 'exclusive'" class="section-rule">任选其一</span>
           </div>
-          <div v-if="section.detail" class="section-detail">{{ section.detail }}</div>
-          <div v-if="section.completion === 'exclusive'" class="section-exclusive-detail">本组互斥：完成其中一个分组即可</div>
+          <div v-if="section.description" class="section-description">{{ section.description }}</div>
           <div class="section-meta">
             <span>{{ sectionStats.checked }} / {{ sectionStats.total }}</span>
             <span v-if="sectionStats.expired" class="text-warning">{{ sectionStats.expired }} 项过期</span>
+          </div>
+          <div v-if="disabled && disabledHint" class="section-disabled-detail">
+            <v-icon icon="mdi-lock-outline" size="14" class="mr-1" />{{ disabledHint }}
           </div>
         </div>
         <div class="section-header-actions">
@@ -28,8 +29,9 @@
           v-for="item in section.items"
           :key="item.id"
           class="check-item"
-          :class="{ 'check-item--checked': isChecked(item.id) }"
+          :class="{ 'check-item--checked': isChecked(item.id), 'check-item--disabled': disabled, 'check-item--emphasized': item.isEmphasized }"
           type="button"
+          :disabled="disabled"
           @click="toggleItem(item.id)"
         >
           <span class="check-box">
@@ -41,8 +43,11 @@
               <span v-if="isChecked(item.id)" class="check-item-time">
                 {{ checkedTime(item.id) }}<span v-if="isExpired(item)" class="text-warning ml-2">已过期</span>
               </span>
+              <span v-if="item.isEmphasized" class="check-item-marker" aria-label="重点" title="重点">
+                <v-icon icon="mdi-bookmark-outline" size="16" />
+              </span>
             </span>
-            <span v-if="item.detail" class="check-item-detail">{{ item.detail }}</span>
+            <span v-if="item.description" class="check-item-description">{{ item.description }}</span>
           </span>
         </button>
       </div>
@@ -59,6 +64,8 @@ const props = defineProps<{
   section: ChecklistSection
   status: ChecklistStatus
   previousSectionsComplete: boolean
+  disabled?: boolean
+  disabledHint?: string
 }>()
 
 const emit = defineEmits<{
@@ -79,10 +86,12 @@ function isChecked(itemId: string) {
 }
 
 function toggleItem(itemId: string) {
+  if (props.disabled) return
   emit('toggle', itemId)
 }
 
 function toggleSection() {
+  if (props.disabled) return
   emit('setAll', props.section, !sectionStats.value.complete)
 }
 
@@ -148,13 +157,13 @@ function isExpired(item: ChecklistItem) {
   text-align: left;
   cursor: pointer;
 }
+.section-header--disabled { opacity: .58; cursor: not-allowed; }
 
 .section-title-row { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
 .section-title { font-weight: 750; font-size: 1.04rem; }
-.section-rule { color: rgb(var(--v-theme-primary)); font-size: .72rem; font-weight: 750; border: 1px solid color-mix(in srgb, rgb(var(--v-theme-primary)) 45%, var(--border)); border-radius: 999px; padding: 2px 8px; }
-.section-detail { color: var(--muted); font-size: .82rem; line-height: 1.45; margin-top: 5px; max-width: 720px; }
-.section-exclusive-detail { color: rgb(var(--v-theme-primary)); font-size: .78rem; line-height: 1.4; margin-top: 5px; }
+.section-description { color: var(--muted); font-size: .82rem; line-height: 1.45; margin-top: 5px; max-width: 720px; }
 .section-meta { display: flex; gap: 12px; color: var(--muted); font-size: .82rem; margin-top: 4px; }
+.section-disabled-detail { display: flex; align-items: center; color: var(--muted); font-size: .78rem; margin-top: 6px; }
 .section-header-actions { display: flex; align-items: center; gap: 10px; color: var(--muted); }
 .progress-number { font-size: .68rem; font-weight: 700; }
 .rotate-180 { transform: rotate(180deg); }
@@ -177,14 +186,18 @@ function isExpired(item: ChecklistItem) {
 }
 
 .check-item:hover { border-color: color-mix(in srgb, rgb(var(--v-theme-primary)) 40%, var(--border)); transform: translateX(2px); }
+.check-item:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+.check-item:disabled:hover { border-color: var(--soft-border); }
 .check-item--checked { background: color-mix(in srgb, rgb(var(--v-theme-primary)) 9%, var(--surface-elevated)); }
+.check-item--emphasized .check-item-title { font-weight: 800; }
 .check-box { display: grid; place-items: center; width: 24px; height: 24px; flex: 0 0 24px; border: 2px solid var(--muted); border-radius: 7px; color: white; }
 .check-item--checked .check-box { border-color: rgb(var(--v-theme-primary)); background: rgb(var(--v-theme-primary)); }
 .check-item-copy { display: grid; gap: 3px; min-width: 0; }
 .check-item-title-row { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
 .check-item-title { font-weight: 600; line-height: 1.35; }
+.check-item-marker { flex: 0 0 auto; margin-left: auto; color: rgb(var(--v-theme-primary)); opacity: .78; }
 .check-item--checked .check-item-title { color: var(--muted); text-decoration: line-through; }
-.check-item-detail, .check-item-time { color: var(--muted); font-size: .82rem; line-height: 1.4; }
+.check-item-description, .check-item-time { color: var(--muted); font-size: .82rem; line-height: 1.4; }
 .check-item-time { flex: 0 0 auto; white-space: nowrap; }
 .text-warning { color: rgb(var(--v-theme-secondary)); }
 

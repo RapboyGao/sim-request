@@ -11,30 +11,69 @@ export function checklistItems(checklist: Checklist): ChecklistItem[] {
 }
 
 export function normalizeChecklist(checklist: Checklist): Checklist {
-  return {
-    ...checklist,
+  const normalized: Checklist = {
+    id: checklist.id,
+    title: checklist.title,
+    description: checklist.description,
+    source: checklist.source,
     sections: checklist.sections.map((section) => ({
-      ...section,
-      detail: section.detail || '',
-      completion: section.completion || 'all',
-      items: section.items.map((item) => ({ ...item, detail: item.detail || '' })),
+      id: section.id,
+      title: section.title,
+      description: section.description,
+      completion: section.completion,
+      ...(section.exclusiveGroupName === undefined ? {} : { exclusiveGroupName: section.exclusiveGroupName }),
+      items: section.items.map((item) => ({
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        isEmphasized: item.isEmphasized,
+        expiresAfterHours: item.expiresAfterHours,
+      })),
     })),
+    notes: checklist.notes,
+    ...(checklist.sourceMarkdown ? { sourceMarkdown: checklist.sourceMarkdown } : {}),
   }
+
+  for (const group of exclusiveSectionGroups(normalized)) {
+    const name = group.find((section) => section.exclusiveGroupName?.trim())?.exclusiveGroupName?.trim() || ''
+    for (const section of group) section.exclusiveGroupName = name
+  }
+  return normalized
 }
 
 export function exclusiveSectionGroups(checklist: Checklist): ChecklistSection[][] {
   const groups: ChecklistSection[][] = []
   let current: ChecklistSection[] = []
+  let currentPhase: string | null = null
   for (const section of checklist.sections) {
     if (section.completion === 'exclusive') {
+      // Numbered aviation branches such as 3a/3b and 4a/4b are separate
+      // choice groups even though their sections are adjacent in the source.
+      const phase = section.title.match(/^\s*(\d+)[a-z]?\s*[.)\-:]?\s/i)?.[1] || null
+      if (current.length && phase && currentPhase && phase !== currentPhase) {
+        groups.push(current)
+        current = []
+      }
       current.push(section)
+      currentPhase = phase || currentPhase
       continue
     }
     if (current.length) groups.push(current)
     current = []
+    currentPhase = null
   }
   if (current.length) groups.push(current)
   return groups
+}
+
+export function exclusiveGroupName(group: ChecklistSection[], fallback = '') {
+  return group.find((section) => section.exclusiveGroupName?.trim())?.exclusiveGroupName?.trim() || fallback
+}
+
+export function exclusiveSectionDisabled(checklist: Checklist, status: ChecklistStatus, section: ChecklistSection) {
+  const group = exclusiveSectionGroups(checklist).find((candidate) => candidate.includes(section))
+  if (!group || section.items.some((item) => Boolean(status[item.id]))) return false
+  return group.some((candidate) => candidate !== section && candidate.items.some((item) => Boolean(status[item.id])))
 }
 
 function sectionGroupForItem(checklist: Checklist, itemId: string) {
@@ -184,16 +223,18 @@ export function cloneChecklist(checklist: Checklist, id: string, title = checkli
 export function validateCustomChecklists(value: unknown): Checklist[] | null {
   if (!value || typeof value !== 'object') return null
   const candidate = value as { version?: unknown; checklists?: unknown }
-  if (candidate.version !== 1 || !Array.isArray(candidate.checklists)) return null
+  if (candidate.version !== 2 || !Array.isArray(candidate.checklists)) return null
   if (!candidate.checklists.every((checklist) => isValidChecklist(checklist, 'custom'))) return null
+  if (!(candidate.checklists as Checklist[]).every(hasUniqueItemIds)) return null
   return (candidate.checklists as Checklist[]).map(normalizeChecklist)
 }
 
 export function validateBackup(value: unknown): { checklists: Checklist[]; status: ChecklistStatus } | null {
   if (!value || typeof value !== 'object') return null
   const candidate = value as { version?: unknown; checklists?: unknown; status?: unknown }
-  if (candidate.version !== 1 || !Array.isArray(candidate.checklists) || !isStatus(candidate.status)) return null
+  if (candidate.version !== 2 || !Array.isArray(candidate.checklists) || !isStatus(candidate.status)) return null
   if (!candidate.checklists.every((checklist) => isValidChecklist(checklist, 'custom'))) return null
+  if (!(candidate.checklists as Checklist[]).every(hasUniqueItemIds)) return null
   return {
     checklists: (candidate.checklists as Checklist[]).map(normalizeChecklist),
     status: candidate.status as ChecklistStatus,
@@ -216,9 +257,11 @@ function isValidSection(value: unknown) {
   if (!value || typeof value !== 'object') return false
   const section = value as Partial<ChecklistSection>
   return typeof section.id === 'string'
+    && section.id.trim().length > 0
     && typeof section.title === 'string'
-    && (section.detail === undefined || typeof section.detail === 'string')
-    && (section.completion === undefined || section.completion === 'all' || section.completion === 'exclusive')
+    && typeof section.description === 'string'
+    && (section.completion === 'all' || section.completion === 'exclusive')
+    && (section.exclusiveGroupName === undefined || typeof section.exclusiveGroupName === 'string')
     && Array.isArray(section.items)
     && section.items.every(isValidItem)
 }
@@ -227,9 +270,16 @@ function isValidItem(value: unknown) {
   if (!value || typeof value !== 'object') return false
   const item = value as Partial<ChecklistItem>
   return typeof item.id === 'string'
+    && item.id.trim().length > 0
     && typeof item.title === 'string'
-    && (item.detail === undefined || typeof item.detail === 'string')
-    && (item.expiresAfterHours === null || typeof item.expiresAfterHours === 'number')
+    && typeof item.description === 'string'
+    && typeof item.isEmphasized === 'boolean'
+    && (item.expiresAfterHours === null || (typeof item.expiresAfterHours === 'number' && Number.isFinite(item.expiresAfterHours)))
+}
+
+function hasUniqueItemIds(checklist: Checklist) {
+  const ids = checklist.sections.flatMap((section) => section.items.map((item) => item.id))
+  return ids.every((id, index) => id.trim().length > 0 && ids.indexOf(id) === index)
 }
 
 function isStatus(value: unknown): value is ChecklistStatus {

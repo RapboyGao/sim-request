@@ -5,6 +5,7 @@
     "navRules": "预约规则",
     "navBarometric": "高度 / 气压换算",
     "navAirspeed": "空地速换算",
+    "navDeicing": "除冰程序",
     "navCalendar": "预约日历",
     "navAdmin": "管理页",
     "navLanguage": "语言",
@@ -95,6 +96,22 @@
         "mmHg": "mmHg — 毫米汞柱"
       }
     }
+  },
+  "deicing": {
+    "eyebrow": "737 除冰检查单",
+    "progress": "完成进度",
+    "reset": "重置",
+    "copy": "复制说明",
+    "copied": "说明已复制",
+    "copyUnavailable": "当前浏览器不支持复制",
+    "checkSection": "完成本组",
+    "uncheckSection": "取消本组",
+    "publicHint": "状态仅保存在当前页面",
+    "resetConfirm": "当前页面的所有勾选状态都会被清除。",
+    "cancel": "取消",
+    "exclusiveGroupName": "选一组完成",
+    "exclusiveDisabled": "已选择另一分组",
+    "exclusiveCount": "项选 1"
   },
   "airspeed": {
     "eyebrow": "飞行速度计算器",
