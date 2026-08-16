@@ -61,12 +61,13 @@
 <script setup lang="ts">
 import ChecklistSections from '~/components/checklists/ChecklistSections.vue'
 import { publicDeicingChecklist } from '~/data/public-deicing'
+import { publicBuiltinChecklists } from '~/data/public-checklists'
 import type { Checklist } from '~/types/checklist'
 import { checklistStats } from '~/utils/checklists'
 
 const { t, locale } = useI18n()
 const content = computed(() => publicDeicingChecklist(locale.value))
-const publicBuiltins = computed(() => [content.value.checklist])
+const publicBuiltins = computed(() => publicBuiltinChecklists(locale.value))
 const { status, toggleItem: toggleStoredItem, setSection: setStoredSection, resetChecklist } = useChecklists({ scope: 'public', builtins: publicBuiltins })
 const resetDialog = ref(false)
 const stats = computed(() => checklistStats(content.value.checklist, status.value))

@@ -4,7 +4,7 @@
       <section v-for="group in checklistGroups" :key="group.key" class="checklist-group">
         <div class="section-heading">
           <div><h2 class="text-h6 font-weight-bold">{{ group.title }}</h2><p class="text-body-2 text-medium-emphasis mb-0">{{ group.items.length }} 个检查单</p></div>
-          <div v-if="group.key === 'builtin'" class="group-actions">
+          <div v-if="group.key === 'custom'" class="group-actions">
             <v-btn color="primary" prepend-icon="mdi-plus" @click="createNew">新建检查单</v-btn>
             <v-menu content-class="checklists-menu-content">
               <template #activator="{ props }"><v-btn v-bind="props" variant="tonal" icon="mdi-dots-vertical" aria-label="更多操作" /></template>

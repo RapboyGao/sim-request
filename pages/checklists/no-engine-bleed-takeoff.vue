@@ -1,7 +1,7 @@
-<template><ChecklistHomePage scope="public" :builtins="builtins" /></template>
+<template><ChecklistDetailPage checklist-id="no-engine-bleed-takeoff" scope="public" :builtins="builtins" /></template>
 
 <script setup lang="ts">
-import ChecklistHomePage from '~/components/checklists/ChecklistHomePage.vue'
+import ChecklistDetailPage from '~/components/checklists/ChecklistDetailPage.vue'
 import { publicBuiltinChecklists } from '~/data/public-checklists'
 import type { Checklist } from '~/types/checklist'
 

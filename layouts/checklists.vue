@@ -50,7 +50,7 @@ import { resolveThemeName, useThemeMode } from '~/composables/useThemeMode'
 import { provideChecklistsPageActions } from '~/composables/useChecklistsPageActions'
 import { CHECKLIST_ROUTE_IDS, privateChecklistsHomeRoute, publicChecklistsHomeRoute } from '~/utils/checklist-routes'
 import { builtinChecklists as privateBuiltins } from '~/data/checklists'
-import { publicDeicingChecklist } from '~/data/public-deicing'
+import { publicBuiltinChecklists } from '~/data/public-checklists'
 import type { Checklist } from '~/types/checklist'
 
 const route = useRoute()
@@ -61,13 +61,13 @@ const { smAndUp } = useDisplay()
 const { actions: pageActions } = provideChecklistsPageActions()
 const scope = computed(() => route.path.startsWith('/private-checklists/') ? 'private' : 'public')
 const { locale } = useI18n()
-const builtinChecklists = computed<Checklist[]>(() => scope.value === 'private' ? [...privateBuiltins] : [publicDeicingChecklist(locale.value).checklist])
+const builtinChecklists = computed<Checklist[]>(() => scope.value === 'private' ? [...privateBuiltins] : publicBuiltinChecklists(locale.value))
 const privateChecklistsTheme = useChecklistsTheme('private')
 const publicChecklistsTheme = useChecklistsTheme('public')
 const vuetifyTheme = useTheme()
 const bookingTheme = useThemeMode()
 const privateChecklistStore = useChecklists({ scope: 'private', builtins: computed(() => [...privateBuiltins]) })
-const publicChecklistStore = useChecklists({ scope: 'public', builtins: computed(() => [publicDeicingChecklist(locale.value).checklist]) })
+const publicChecklistStore = useChecklists({ scope: 'public', builtins: computed(() => publicBuiltinChecklists(locale.value)) })
 const allChecklists = computed(() => scope.value === 'private' ? privateChecklistStore.allChecklists.value : publicChecklistStore.allChecklists.value)
 const passwords = computed(() => String(route.params.passwords || ''))
 const homePath = computed(() => (scope.value === 'public' ? publicChecklistsHomeRoute() : privateChecklistsHomeRoute(passwords.value)).replace(/\/$/, ''))
@@ -80,6 +80,7 @@ const themeLabel = computed(() => themeMode.value === 'dark' ? '深色模式' : 
 const activeChecklistId = computed(() => {
   const path = route.path.replace(/\/$/, '')
   if (scope.value === 'public' && path.endsWith('/deicing')) return 'deicing'
+  if (scope.value === 'public' && path.endsWith('/no-engine-bleed-takeoff')) return 'no-engine-bleed-takeoff'
   return CHECKLIST_ROUTE_IDS.find((id) => path.endsWith(`/${id}`)) || String(route.params.id || '')
 })
 const activeChecklistTitle = computed(() => allChecklists.value.find((item) => item.id === activeChecklistId.value)?.title || (scope.value === 'public' ? '公开检查单' : 'Private Checklist'))

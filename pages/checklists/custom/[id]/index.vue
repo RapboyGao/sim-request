@@ -2,10 +2,10 @@
 
 <script setup lang="ts">
 import ChecklistDetailPage from '~/components/checklists/ChecklistDetailPage.vue'
-import { publicDeicingChecklist } from '~/data/public-deicing'
+import { publicBuiltinChecklists } from '~/data/public-checklists'
 import type { Checklist } from '~/types/checklist'
 definePageMeta({ layout: 'checklists' })
 const route = useRoute()
 const { locale } = useI18n()
-const builtins = computed<Checklist[]>(() => [publicDeicingChecklist(locale.value).checklist])
+const builtins = computed<Checklist[]>(() => publicBuiltinChecklists(locale.value))
 </script>
