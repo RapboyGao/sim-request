@@ -237,7 +237,7 @@ useHead(() => ({ title: checklist.value?.title || '检查单' }))
 .checklist-progress-label { color: var(--muted); font-size: .72rem; font-weight: 750; }
 .detail-head { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .detail-title-wrap { min-width: 0; flex: 1 1 auto; }
-.detail-description { max-width: 700px; color: var(--muted); line-height: 1.6; margin: 10px 0 0; }
+.detail-description { max-width: 700px; color: var(--muted); line-height: 1.6; margin: 10px 0 0; white-space: pre-line; }
 .detail-actions { display: flex; align-items: center; flex: 0 0 auto; }
 .sections-stack { display: grid; gap: 2px; }
 .notes-stack :deep(.v-expansion-panel) { background: var(--surface-elevated); border: 1px solid var(--border); }

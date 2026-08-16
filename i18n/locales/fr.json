@@ -106,7 +106,6 @@
     "copyUnavailable": "La copie n’est pas disponible dans ce navigateur",
     "checkSection": "Terminer la section",
     "uncheckSection": "Décocher la section",
-    "publicHint": "L’état est conservé uniquement sur cette page",
     "resetConfirm": "Tous les éléments cochés sur cette page seront effacés.",
     "cancel": "Annuler",
     "exclusiveGroupName": "Choisir un groupe",

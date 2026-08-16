@@ -7,8 +7,6 @@ export const CHECKLIST_ROUTE_IDS = [
   'first-leg',
   'next-legs',
   'leaving-aircraft',
-  'b737-deicing-en',
-  'b737-deicing-zh',
 ] as const
 
 export type BuiltinChecklistRouteId = typeof CHECKLIST_ROUTE_IDS[number]

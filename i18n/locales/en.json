@@ -106,7 +106,6 @@
     "copyUnavailable": "Copy is not available in this browser",
     "checkSection": "Complete section",
     "uncheckSection": "Uncheck section",
-    "publicHint": "State is kept on this page only",
     "resetConfirm": "All checked items on this page will be cleared.",
     "cancel": "Cancel",
     "exclusiveGroupName": "Choose one group",

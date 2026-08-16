@@ -106,7 +106,6 @@
     "copyUnavailable": "이 브라우저에서는 복사할 수 없습니다",
     "checkSection": "섹션 완료",
     "uncheckSection": "섹션 선택 해제",
-    "publicHint": "상태는 현재 페이지에만 유지됩니다",
     "resetConfirm": "이 페이지의 모든 체크 상태를 지웁니다.",
     "cancel": "취소",
     "exclusiveGroupName": "한 그룹을 선택하세요",

@@ -8,9 +8,8 @@
             <div class="section-title">{{ section.title }}</div>
           </div>
           <div v-if="section.description" class="section-description">{{ section.description }}</div>
-          <div class="section-meta">
-            <span>{{ sectionStats.checked }} / {{ sectionStats.total }}</span>
-            <span v-if="sectionStats.expired" class="text-warning">{{ sectionStats.expired }} 项过期</span>
+          <div v-if="sectionStats.expired" class="section-meta">
+            <span class="text-warning">{{ sectionStats.expired }} 项过期</span>
           </div>
           <div v-if="disabled && disabledHint" class="section-disabled-detail">
             <v-icon icon="mdi-lock-outline" size="14" class="mr-1" />{{ disabledHint }}
@@ -20,7 +19,7 @@
           <v-progress-circular :model-value="sectionStats.progress * 100" :color="sectionStats.complete ? 'success' : 'primary'" size="34" width="4">
             <span class="progress-number">{{ Math.round(sectionStats.progress * 100) }}</span>
           </v-progress-circular>
-          <v-icon :icon="sectionStats.complete ? 'mdi-checkbox-marked-circle-outline' : 'mdi-chevron-down'" :class="{ 'rotate-180': !sectionStats.complete }" />
+          <v-icon v-if="sectionStats.complete" icon="mdi-checkbox-marked-circle-outline" />
         </div>
       </button>
 
@@ -88,11 +87,13 @@ function isChecked(itemId: string) {
 function toggleItem(itemId: string) {
   if (props.disabled) return
   emit('toggle', itemId)
+  now.value = new Date()
 }
 
 function toggleSection() {
   if (props.disabled) return
   emit('setAll', props.section, !sectionStats.value.complete)
+  now.value = new Date()
 }
 
 function checkedTime(itemId: string) {
@@ -161,12 +162,11 @@ function isExpired(item: ChecklistItem) {
 
 .section-title-row { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
 .section-title { font-weight: 750; font-size: 1.04rem; }
-.section-description { color: var(--muted); font-size: .82rem; line-height: 1.45; margin-top: 5px; max-width: 720px; }
+.section-description { color: var(--muted); font-size: .82rem; line-height: 1.45; margin-top: 5px; max-width: 720px; white-space: pre-line; }
 .section-meta { display: flex; gap: 12px; color: var(--muted); font-size: .82rem; margin-top: 4px; }
 .section-disabled-detail { display: flex; align-items: center; color: var(--muted); font-size: .78rem; margin-top: 6px; }
 .section-header-actions { display: flex; align-items: center; gap: 10px; color: var(--muted); }
 .progress-number { font-size: .68rem; font-weight: 700; }
-.rotate-180 { transform: rotate(180deg); }
 
 .section-items { display: grid; gap: 8px; padding: 10px 0 20px; }
 
@@ -198,6 +198,7 @@ function isExpired(item: ChecklistItem) {
 .check-item-marker { flex: 0 0 auto; margin-left: auto; color: rgb(var(--v-theme-primary)); opacity: .78; }
 .check-item--checked .check-item-title { color: var(--muted); text-decoration: line-through; }
 .check-item-description, .check-item-time { color: var(--muted); font-size: .82rem; line-height: 1.4; }
+.check-item-description { white-space: pre-line; }
 .check-item-time { flex: 0 0 auto; white-space: nowrap; }
 .text-warning { color: rgb(var(--v-theme-secondary)); }
 

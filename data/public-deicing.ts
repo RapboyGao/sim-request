@@ -1,8 +1,152 @@
-import { b737DeicingEnChecklist } from "./checklist-pages/b737-deicing-en";
-import { b737DeicingZhChecklist } from "./checklist-pages/b737-deicing-zh";
+import { b737DeicingEnSource, b737DeicingZhSource } from './checklist-source-documents'
+import { createBuiltinChecklist } from './checklist-pages/_factory'
 import type { Checklist } from "~/types/checklist";
 
-type PublicDeicingSection = { title: string; items: string[] };
+const item = (id: string, title: string, isEmphasized = false, description = '') => ({
+  id: `b737-deicing.${id}`,
+  title,
+  description,
+  isEmphasized,
+})
+
+export const b737DeicingEnChecklist = createBuiltinChecklist(
+  'b737-deicing-en',
+  '737 Deicing Procedures (English)',
+  'Applicable for engine-off or engine-idle deicing after taxiing to a de-icing pad.',
+  [
+    {
+      id: 'b737-deicing.before-taxi',
+      title: '1. Before Taxi Procedure',
+      description: 'CAUTION: When engine-off deicing is required, or when unsure whether to shut down for deicing:\n\n- Keep APU generator ON.\n- Keep APU ON.',
+      items: [
+        item('before-taxi.generator', 'GENERATOR ...... ON'),
+        item('before-taxi.gen-off-bus', 'GEN OFF BUS lights ...... Verify OFF', false, 'This step ensures the engine generators are free of faults.'),
+        item('before-taxi.apu-generator', 'If engine shutdown is possible: APU generator ...... ON'),
+        item('before-taxi.probe-heat', 'Probe heat ...... ON'),
+        item('before-taxi.start-switches', 'Engine start switches ...... CONT'),
+        item('before-taxi.engine-anti-ice', 'Engine anti-ice ...... As required'),
+        item('before-taxi.isolation-valve', 'Isolation valve ...... AUTO'),
+        item('before-taxi.all-bleeds', 'All bleeds ...... OFF'),
+        item('before-taxi.apu-idle', 'If engine-idle deicing is confirmed: APU ...... OFF'),
+        item('before-taxi.ground-clear', 'Ground personnel / equipment ...... Clear'),
+        item('before-taxi.recall', 'Recall ...... Check'),
+        item('before-taxi.eng-sys', 'ENG/SYS ...... Check and clear'),
+      ],
+    },
+    { id: 'b737-deicing.approaching-pad', title: '2. Approaching De-icing Pad', items: [item('approaching-pad.all-bleeds', 'All bleeds ...... OFF')] },
+    {
+      id: 'b737-deicing.engine-off',
+      title: '3a. At De-icing Pad - Engine-Off Deicing',
+      completion: 'exclusive',
+      items: [
+        item('engine-off.all-bleeds', 'All bleeds ...... OFF'),
+        item('engine-off.apu-generator', 'APU generator ...... ON'),
+        item('engine-off.engine-anti-ice', 'Engine anti-ice ...... OFF'),
+        item('engine-off.start-switches', 'Engine start switches ...... OFF'),
+        item('engine-off.start-levers', 'Engine start levers ...... CUTOFF'),
+        item('engine-off.ready', '(Ready for deicing)', true),
+        item('engine-off.isolation-valve', 'Isolation valve ...... OPEN'),
+        item('engine-off.after-deicing', 'After deicing', true),
+        item('engine-off.timer', 'Timer ...... 60 seconds'),
+        item('engine-off.anti-collision', 'Anti-collision light ...... ON'),
+        item('engine-off.before-start', 'Before start checklist ...... Complete'),
+        item('engine-off.after-sixty', 'After at least 60 seconds', true),
+        item('engine-off.engine-bleeds', 'Engine bleeds ...... ON'),
+        item('engine-off.apu-bleed', 'APU bleed ...... ON'),
+        item('engine-off.dual-bleed', 'DUAL BLEED light ...... Illuminated'),
+        item('engine-off.packs', 'Packs ...... OFF'),
+        item('engine-off.ground-clear', 'Ground personnel / equipment ...... Clear'),
+        item('engine-off.engines', 'Engines ...... Start'),
+        item('engine-off.before-taxi-complete', 'Before taxi procedure and checklist (including Flaps 40 - UP - Takeoff flaps) ...... Complete'),
+      ],
+    },
+    {
+      id: 'b737-deicing.engine-idle',
+      title: '3b. At De-icing Pad - Engine-Idle Deicing',
+      completion: 'exclusive',
+      items: [
+        item('engine-idle.all-bleeds', 'All bleeds ...... OFF'),
+        item('engine-idle.ready', '(Ready for deicing)', true),
+        item('engine-idle.engine-generators', 'Engine generators ...... ON'),
+        item('engine-idle.apu', 'APU ...... OFF'),
+        item('engine-idle.after-deicing', 'After deicing', true),
+        item('engine-idle.ground-clear', 'Ground personnel / equipment ...... Clear'),
+        item('engine-idle.timing', 'Timing ...... 60 seconds'),
+        item('engine-idle.anti-collision', 'Anti-collision light ...... ON'),
+        item('engine-idle.flaps-forty', 'Flaps ...... 40°'),
+        item('engine-idle.engine-anti-ice', 'Engine anti-ice ...... As required'),
+        item('engine-idle.flight-controls', 'Flight controls ...... Check'),
+        item('engine-idle.flaps-forty-light', 'After the Flaps 40 green light', true),
+        item('engine-idle.flaps-up', 'Flaps ...... UP'),
+        item('engine-idle.after-sixty', 'After at least 60 seconds', true),
+        item('engine-idle.engine-bleeds', 'Engine bleeds ...... ON'),
+        item('engine-idle.packs', 'Packs ...... AUTO'),
+        item('engine-idle.flaps-up-light', 'After the flaps-up light is out', true),
+        item('engine-idle.takeoff-flaps', 'Flaps ...... Takeoff flaps'),
+        item('engine-idle.recall', 'Recall ...... Check'),
+        item('engine-idle.weather-radar', 'Weather radar ...... Set'),
+        item('engine-idle.eng-sys', 'ENG/SYS ...... Check and clear'),
+        item('engine-idle.before-taxi-complete', 'Before taxi checklist ...... Complete'),
+      ],
+    },
+  ],
+  b737DeicingEnSource,
+)
+
+export const b737DeicingZhChecklist = createBuiltinChecklist(
+  'b737-deicing-zh',
+  '737 Deicing Procedures (Chinese)',
+  '适用于滑行至除冰位后进行的发动机关车或慢车除冰。',
+  [
+    {
+      id: 'b737-deicing.before-taxi',
+      title: '1. 滑行前程序',
+      description: '注意当需要发动机关车除冰，或不确定是否关车除冰：\n\n- 保持 APU 发电机接通。\n- 保持 APU 接通。',
+      items: [
+        item('before-taxi.generator', '发电机 ...... ON'),
+        item('before-taxi.gen-off-bus', 'GEN OFF BUS 灯 ...... 灭', false, '此步骤可确保发动机发电机无故障。'),
+        item('before-taxi.apu-generator', '如可能关车: APU 发电机 ...... ON'),
+        item('before-taxi.probe-heat', '探头加温 ...... ON'),
+        item('before-taxi.start-switches', '发动机起动电门 ...... 连续'),
+        item('before-taxi.engine-anti-ice', '发动机防冰 ...... 按需'),
+        item('before-taxi.isolation-valve', '隔离活门 ...... AUTO'),
+        item('before-taxi.all-bleeds', '所有引气 ...... OFF'),
+        item('before-taxi.apu-idle', '如确认慢车除冰: APU ...... OFF'),
+        item('before-taxi.ground-clear', '地面人员／设备 ...... 移开'),
+        item('before-taxi.recall', '再现 ...... 检查'),
+        item('before-taxi.eng-sys', 'ENG/SYS ...... 检查并清空'),
+      ],
+    },
+    { id: 'b737-deicing.approaching-pad', title: '2. 即将到达除冰位', items: [item('approaching-pad.all-bleeds', '所有引气 ...... OFF')] },
+    {
+      id: 'b737-deicing.engine-off',
+      title: '3a. 如关车除冰',
+      completion: 'exclusive',
+      items: [
+        item('engine-off.all-bleeds', '所有引气 ...... OFF'), item('engine-off.apu-generator', 'APU 发电机 ...... ON'), item('engine-off.engine-anti-ice', '发动机防冰 ...... OFF'), item('engine-off.start-switches', '发动机起动电门 ...... OFF'), item('engine-off.start-levers', '发动机起动手柄 ...... CUTOFF', true),
+        item('engine-off.ready', '(已准备好除冰)', true), item('engine-off.isolation-valve', '隔离活门 ...... OPEN'), item('engine-off.after-deicing', '除冰完成后', true),
+        item('engine-off.timer', '计时器 ...... 60 秒'), item('engine-off.anti-collision', '防撞灯 ...... ON'), item('engine-off.before-start', '起动前检查单 ...... 完成'), item('engine-off.after-sixty', '至少60秒后', true),
+        item('engine-off.engine-bleeds', '发动机引气 ...... ON'), item('engine-off.apu-bleed', 'APU 引气 ...... ON'), item('engine-off.dual-bleed', '双引气灯（Dual Bleed） ...... 亮'), item('engine-off.packs', '组件（Packs） ...... OFF'),
+        item('engine-off.ground-clear', '地面人员／设备 ...... 移开'), item('engine-off.engines', '发动机 ...... 起动'), item('engine-off.before-taxi-complete', '滑行前程序和检查单（其中襟翼40-UP-起飞襟翼） ...... 完成'),
+      ],
+    },
+    {
+      id: 'b737-deicing.engine-idle',
+      title: '3b. 如慢车除冰',
+      completion: 'exclusive',
+      items: [
+        item('engine-idle.all-bleeds', '所有引气 ...... OFF'), item('engine-idle.ready', '(已准备好除冰)', true), item('engine-idle.engine-generators', '发动机发电机 ...... 接通'), item('engine-idle.apu', 'APU ...... OFF'), item('engine-idle.after-deicing', '除冰完成后', true),
+        item('engine-idle.ground-clear', '地面人员／设备 ...... 移开'), item('engine-idle.timing', '计时 ...... 60 秒'), item('engine-idle.anti-collision', '防撞灯 ...... ON'), item('engine-idle.flaps-forty', '襟翼 - 40°'), item('engine-idle.engine-anti-ice', '发动机防冰 ...... 按需'),
+        item('engine-idle.flight-controls', '操纵 ...... 检查'), item('engine-idle.flaps-forty-light', '襟翼40绿灯后', true), item('engine-idle.flaps-up', '襟翼 ...... UP'), item('engine-idle.after-sixty', '至少60秒后', true), item('engine-idle.engine-bleeds', '发动机引气 ...... ON'),
+        item('engine-idle.packs', '空调组件（Packs） ...... AUTO'), item('engine-idle.flaps-up-light', '襟翼收上无灯后', true), item('engine-idle.takeoff-flaps', '襟翼 ...... 起飞襟翼'), item('engine-idle.recall', '再现 ...... 检查'), item('engine-idle.weather-radar', '气象雷达 ...... 调定'),
+        item('engine-idle.eng-sys', 'ENG/SYS ...... 检查并清空'), item('engine-idle.before-taxi-complete', '滑行前检查单 ...... 完成'),
+      ],
+    },
+  ],
+  b737DeicingZhSource,
+)
+
+type PublicDeicingSection = { title: string; description?: string; items: string[] };
 type PublicDeicingLabels = {
   title: string;
   description: string;
@@ -11,141 +155,16 @@ type PublicDeicingLabels = {
   sections: PublicDeicingSection[];
 };
 
-const englishSections: PublicDeicingSection[] = [
-  {
-    title: "1. Before Taxi Procedure",
-    items: [
-      "GENERATOR ...... ON",
-      "GEN OFF BUS lights ...... Verify OFF",
-      "If engine shutdown is possible: APU generator ...... ON",
-      "Probe heat ...... ON",
-      "Engine start switches ...... CONT",
-      "Engine anti-ice ...... As required",
-      "Isolation valve ...... AUTO",
-      "All bleeds ...... OFF",
-      "If engine-idle deicing is confirmed: APU ...... OFF",
-      "Ground personnel / equipment ...... Clear",
-      "Recall ...... Check",
-      "ENG/SYS ...... Check and clear",
-    ],
-  },
-  { title: "2. Approaching De-icing Pad", items: ["All bleeds ...... OFF"] },
-  {
-    title: "3a. At De-icing Pad - Engine-Off Deicing",
-    items: [
-      "All bleeds ...... OFF",
-      "APU generator ...... ON",
-      "Engine start switches ...... OFF",
-      "Engine start levers ...... CUTOFF",
-      "(Ready for deicing)",
-      "Engine anti-ice ...... OFF",
-      "Isolation valve ...... OPEN",
-    ],
-  },
-  { title: "3b. At De-icing Pad - Engine-Idle Deicing", items: ["All bleeds ...... OFF", "(Ready for deicing)", "Engine generators ...... ON", "APU ...... OFF"] },
-  {
-    title: "4a. After Engine-Off Deicing",
-    items: [
-      "Timer ...... 60 seconds",
-      "Anti-collision light ...... ON",
-      "Before start checklist ...... Complete",
-      "After at least 60 seconds",
-      "Engine bleeds ...... ON",
-      "APU bleed ...... ON",
-      "DUAL BLEED light ...... Illuminated",
-      "Packs ...... OFF",
-      "Ground personnel / equipment ...... Clear",
-      "Engines ...... Start",
-      "Before taxi procedure and checklist (including Flaps 40 - UP - Takeoff flaps) ...... Complete",
-    ],
-  },
-  {
-    title: "4b. After Engine-Idle Deicing",
-    items: [
-      "Ground personnel / equipment ...... Clear",
-      "Timing ...... 60 seconds",
-      "Anti-collision light ...... ON",
-      "Flaps ...... 40°",
-      "Engine anti-ice ...... As required",
-      "Flight controls ...... Check",
-      "After the Flaps 40 green light",
-      "Flaps ...... UP",
-      "After at least 60 seconds",
-      "Engine bleeds ...... ON",
-      "Packs ...... AUTO",
-      "After the flaps-up light is out",
-      "Flaps ...... Takeoff flaps",
-      "Recall ...... Check",
-      "Weather radar ...... Set",
-      "ENG/SYS ...... Check and clear",
-      "Before taxi checklist ...... Complete",
-    ],
-  },
-];
+function sectionsFromChecklist(checklist: Checklist): PublicDeicingSection[] {
+  return checklist.sections.map((section) => ({
+    title: section.title,
+    description: section.description,
+    items: section.items.map((item) => item.title),
+  }))
+}
 
-const chineseSections: PublicDeicingSection[] = [
-  {
-    title: "1. 滑行前程序",
-    items: [
-      "发电机 ...... ON",
-      "GEN OFF BUS 灯 ...... 灭",
-      "如可能关车: APU 发电机 ...... ON",
-      "探头加温 ...... ON",
-      "发动机起动电门 ...... 连续",
-      "发动机防冰 ...... 按需",
-      "隔离活门 ...... AUTO",
-      "所有引气 ...... OFF",
-      "如确认慢车除冰: APU ...... OFF",
-      "地面人员／设备 ...... 移开",
-      "再现 ...... 检查",
-      "ENG/SYS ...... 检查并清空",
-    ],
-  },
-  { title: "2. 即将到达除冰位", items: ["所有引气 ...... OFF"] },
-  {
-    title: "3a. 如关车除冰",
-    items: ["所有引气 ...... OFF", "APU 发电机 ...... ON", "发动机起动电门 ...... OFF", "发动机起动手柄 ...... CUTOFF", "(已准备好除冰)", "发动机防冰 ...... OFF", "隔离活门 ...... OPEN"],
-  },
-  { title: "3b. 如慢车除冰", items: ["所有引气 ...... OFF", "(已准备好除冰)", "发动机发电机 ...... 接通", "APU ...... OFF"] },
-  {
-    title: "4a. 发动机关车除冰后",
-    items: [
-      "计时器 ...... 60 秒",
-      "防撞灯 ...... ON",
-      "起动前检查单 ...... 完成",
-      "至少60秒后",
-      "发动机引气 ...... ON",
-      "APU 引气 ...... ON",
-      "双引气灯（Dual Bleed） ...... 亮",
-      "组件（Packs） ...... OFF",
-      "地面人员／设备 ...... 移开",
-      "发动机 ...... 起动",
-      "滑行前程序和检查单（其中襟翼40-UP-起飞襟翼） ...... 完成",
-    ],
-  },
-  {
-    title: "4b. 发动机慢车除冰后",
-    items: [
-      "地面人员／设备 ...... 移开",
-      "计时 ...... 60 秒",
-      "防撞灯 ...... ON",
-      "襟翼 - 40°",
-      "发动机防冰 ...... 按需",
-      "操纵 ...... 检查",
-      "襟翼40绿灯后",
-      "襟翼 ...... UP",
-      "至少60秒后",
-      "发动机引气 ...... ON",
-      "空调组件（Packs） ...... AUTO",
-      "襟翼收上无灯后",
-      "襟翼 ...... 起飞襟翼",
-      "再现 ...... 检查",
-      "气象雷达 ...... 调定",
-      "ENG/SYS ...... 检查并清空",
-      "滑行前检查单 ...... 完成",
-    ],
-  },
-];
+const canonicalEnglishSections = sectionsFromChecklist(b737DeicingEnChecklist)
+const canonicalChineseSections = sectionsFromChecklist(b737DeicingZhChecklist)
 
 const labels: Record<string, PublicDeicingLabels> = {
   en: {
@@ -153,14 +172,14 @@ const labels: Record<string, PublicDeicingLabels> = {
     description: "Applicable for engine-off or engine-idle deicing after taxiing to a de-icing pad.",
     noteTitle: "APU Note",
     note: "CAUTION: When engine-off deicing is required, or when unsure whether to shut down for deicing:\n\n- Keep APU generator ON.\n- Keep APU ON.",
-    sections: englishSections,
+    sections: canonicalEnglishSections,
   },
   "zh-CN": {
     title: "737 除冰程序",
     description: "适用于滑行至除冰位后进行的发动机关车或慢车除冰。",
     noteTitle: "APU 说明",
     note: "注意当需要发动机关车除冰，或不确定是否关车除冰：\n\n- 保持 APU 发电机接通。\n- 保持 APU 接通。",
-    sections: chineseSections,
+    sections: canonicalChineseSections,
   },
   ja: {
     title: "737 除氷手順",
@@ -170,6 +189,7 @@ const labels: Record<string, PublicDeicingLabels> = {
     sections: [
       {
         title: "1. タキシング前手順",
+        description: "注意：エンジン停止除氷が必要な場合、またはエンジンを停止して除氷するか不明な場合：\n\n- APU 発電機を ON に保持する。\n- APU を ON に保持する。",
         items: [
           "発電機 ...... ON",
           "GEN OFF BUS ライト ...... 消灯を確認",
@@ -191,10 +211,10 @@ const labels: Record<string, PublicDeicingLabels> = {
         items: [
           "すべてのブリード ...... OFF",
           "APU 発電機 ...... ON",
+          "エンジン防氷 ...... OFF",
           "エンジン始動スイッチ ...... OFF",
           "エンジン始動レバー ...... CUTOFF",
           "（除氷準備完了）",
-          "エンジン防氷 ...... OFF",
           "アイソレーションバルブ ...... OPEN",
         ],
       },
@@ -247,6 +267,7 @@ const labels: Record<string, PublicDeicingLabels> = {
     sections: [
       {
         title: "1. 택시 전 절차",
+        description: "주의: 엔진 정지 제빙이 필요하거나 엔진을 정지하고 제빙할지 확실하지 않은 경우:\n\n- APU 발전기를 ON 상태로 유지합니다.\n- APU를 ON 상태로 유지합니다.",
         items: [
           "발전기 ...... ON",
           "GEN OFF BUS 등 ...... 소등 확인",
@@ -268,10 +289,10 @@ const labels: Record<string, PublicDeicingLabels> = {
         items: [
           "모든 블리드 ...... OFF",
           "APU 발전기 ...... ON",
+          "엔진 방빙 ...... OFF",
           "엔진 시동 스위치 ...... OFF",
           "엔진 시동 레버 ...... CUTOFF",
           "(제빙 준비 완료)",
-          "엔진 방빙 ...... OFF",
           "아이솔레이션 밸브 ...... OPEN",
         ],
       },
@@ -324,6 +345,8 @@ const labels: Record<string, PublicDeicingLabels> = {
     sections: [
       {
         title: "1. Procédure avant roulage",
+        description:
+          "ATTENTION : lorsque le dégivrage moteur arrêté est requis, ou en cas de doute sur l’arrêt moteur pour le dégivrage :\n\n- Maintenir le générateur APU sur ON.\n- Maintenir l’APU sur ON.",
         items: [
           "GÉNÉRATEUR ...... ON",
           "Voyants GEN OFF BUS ...... Vérifier éteints",
@@ -345,10 +368,10 @@ const labels: Record<string, PublicDeicingLabels> = {
         items: [
           "Toutes les purges ...... OFF",
           "Générateur APU ...... ON",
+          "Antigivrage moteur ...... OFF",
           "Interrupteurs de démarrage moteur ...... OFF",
           "Manettes de démarrage moteur ...... CUTOFF",
           "(Prêt pour le dégivrage)",
-          "Antigivrage moteur ...... OFF",
           "Vanne d’isolement ...... OPEN",
         ],
       },
@@ -433,6 +456,7 @@ export function publicDeicingChecklist(locale: string): { checklist: Checklist; 
       sections: source.sections.map((section, sectionIndex) => ({
         ...section,
         title: localizedSections[sectionIndex]?.title || section.title,
+        description: localizedSections[sectionIndex]?.description || section.description,
         items: section.items.map((item, itemIndex) => ({
           ...item,
           title: localizedSections[sectionIndex]?.items[itemIndex] || item.title,

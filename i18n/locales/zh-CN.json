@@ -106,7 +106,6 @@
     "copyUnavailable": "当前浏览器不支持复制",
     "checkSection": "完成本组",
     "uncheckSection": "取消本组",
-    "publicHint": "状态仅保存在当前页面",
     "resetConfirm": "当前页面的所有勾选状态都会被清除。",
     "cancel": "取消",
     "exclusiveGroupName": "选一组完成",

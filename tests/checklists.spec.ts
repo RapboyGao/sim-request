@@ -25,8 +25,8 @@ import {
 } from '../utils/checklists'
 
 describe('checklists data', () => {
-  it('contains all eight aviation source pages', () => {
-    expect(builtinChecklists).toHaveLength(8)
+  it('contains all six private aviation source pages', () => {
+    expect(builtinChecklists).toHaveLength(6)
     expect(builtinChecklists.map((item) => item.id)).toEqual([
       'before-flight-day',
       'before-sleep',
@@ -34,18 +34,15 @@ describe('checklists data', () => {
       'first-leg',
       'next-legs',
       'leaving-aircraft',
-      'b737-deicing-en',
-      'b737-deicing-zh',
     ])
     expect(builtinChecklists.every((item) => item.sections.length > 0)).toBe(true)
     expect(builtinChecklists.every((item) => typeof item.sourceMarkdown === 'string' && item.sourceMarkdown.length > 0)).toBe(true)
     expect(builtinChecklists.find((item) => item.id === 'before-flight-day')?.sourceMarkdown).toContain('Before Flight Recommendations')
-    expect(builtinChecklists.find((item) => item.id === 'b737-deicing-zh')?.sourceMarkdown).toContain('保持 APU 发电机接通。')
   })
 
-  it('contains the revised bilingual deicing procedures', () => {
-    const english = builtinChecklists.find((item) => item.id === 'b737-deicing-en')!
-    const chinese = builtinChecklists.find((item) => item.id === 'b737-deicing-zh')!
+  it('contains the revised bilingual public deicing procedures', () => {
+    const english = publicDeicingChecklist('en').checklist
+    const chinese = publicDeicingChecklist('zh-CN').checklist
 
     const englishNotes = extractReadableChecklistNotes(english.sourceMarkdown || '')
     const chineseNotes = extractReadableChecklistNotes(chinese.sourceMarkdown || '')
@@ -72,6 +69,10 @@ describe('checklists data', () => {
     expect(chineseNotes[0]?.content).not.toContain('发动机起动手柄 ...... CUTOFF')
     expect(chinese.sections[0]?.items.map((item) => item.title)).toContain('发电机 ...... ON')
     expect(chinese.sections[3]?.items.map((item) => item.title)).toContain('滑行前检查单 ...... 完成')
+    expect(english.sections[0]?.description).toContain('Keep APU generator ON.')
+    expect(chinese.sections[0]?.description).toContain('保持 APU 发电机接通。')
+    expect(english.sections[0]?.items[1]?.description).toBe('This step ensures the engine generators are free of faults.')
+    expect(chinese.sections[0]?.items[1]?.description).toBe('此步骤可确保发动机发电机无故障。')
     expect(english.sections[2]?.items.map((item) => item.title)).toContain('Engine start levers ...... CUTOFF')
     expect(english.sections[2]?.items.map((item) => item.title)).toContain('After deicing')
     expect(chinese.sections[2]?.items.map((item) => item.title)).toContain('除冰完成后')
@@ -114,7 +115,8 @@ describe('checklists data', () => {
     expect(publicDeicingChecklist('ko').checklist.sections.flatMap((section) => section.items)).toHaveLength(english.sections.flatMap((section) => section.items).length)
     expect(publicDeicingChecklist('fr').checklist.sections.flatMap((section) => section.items)).toHaveLength(english.sections.flatMap((section) => section.items).length)
     expect(chinese.sections[0]?.items[0]?.title).toBe('发电机 ...... ON')
-    expect(english.sections[2]?.items[3]?.title).toBe('Engine start levers ...... CUTOFF')
+    expect(chinese.sections[0]?.description).toContain('保持 APU 接通。')
+    expect(english.sections[2]?.items.map((item) => item.title).indexOf('Engine anti-ice ...... OFF')).toBeLessThan(english.sections[2]?.items.map((item) => item.title).indexOf('Engine start switches ...... OFF') ?? -1)
     expect(chinese.sections[2]?.items.map((item) => item.title)).toContain('除冰完成后')
     expect(publicDeicingChecklist('ja').checklist.sections[2]?.items.map((item) => item.title)).toContain('除氷完了後')
   })
@@ -179,8 +181,8 @@ describe('checklists data', () => {
     expect(setChecklistSectionStatus(initial, checklist, checklist.sections[0]!, true)).toMatchObject({ 'b-item': null, 'c-item': null })
   })
 
-  it('disables only the other section in the selected exclusive group', () => {
-    const checklist = builtinChecklists.find((item) => item.id === 'b737-deicing-en')!
+  it('disables only the other section in the selected public deicing group', () => {
+    const checklist = publicDeicingChecklist('en').checklist
     const [firstGroup] = exclusiveSectionGroups(checklist)
     const firstSelectedItem = firstGroup![0]!.items[0]!
     const secondSelectedItem = firstGroup![1]!.items[0]!
@@ -237,8 +239,8 @@ describe('checklists data', () => {
 })
 
 describe('checklists routes', () => {
-  it('maps all eight built-in checklists to stable pages', () => {
-    expect(CHECKLIST_ROUTE_IDS).toHaveLength(8)
+  it('maps all six private built-in checklists to stable pages', () => {
+    expect(CHECKLIST_ROUTE_IDS).toHaveLength(6)
     expect(CHECKLIST_ROUTE_IDS).toEqual(builtinChecklists.map((item) => item.id))
     expect(checklistRoute('demo key', CHECKLIST_ROUTE_IDS[0]!)).toBe('/checklists/demo%20key/before-flight-day')
     expect(checklistsHomeRoute('demo')).toBe('/checklists/demo/')
