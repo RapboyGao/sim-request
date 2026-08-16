@@ -22,25 +22,6 @@
           </div>
         </div>
 
-        <div class="source-stack mb-8">
-          <v-expansion-panels variant="accordion">
-            <v-expansion-panel rounded="lg">
-              <v-expansion-panel-title>
-                <v-icon icon="mdi-file-document-outline" color="primary" class="mr-3" />
-                {{ content.noteTitle }}
-                <template #actions>
-                  <v-btn size="small" variant="tonal" prepend-icon="mdi-content-copy" @click.stop="copyNote">
-                    {{ t('deicing.copy') }}
-                  </v-btn>
-                </template>
-              </v-expansion-panel-title>
-              <v-expansion-panel-text>
-                <pre class="source-content">{{ content.note }}</pre>
-              </v-expansion-panel-text>
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </div>
-
         <ChecklistSections
           :checklist="content.checklist"
           :status="status"
@@ -74,63 +55,38 @@
       </v-card>
     </v-dialog>
 
-    <v-snackbar v-model="snackbar.open" :color="snackbar.color" timeout="3000">{{ snackbar.message }}</v-snackbar>
   </v-container>
 </template>
 
 <script setup lang="ts">
 import ChecklistSections from '~/components/checklists/ChecklistSections.vue'
-import { useStorage } from '@vueuse/core'
 import { publicDeicingChecklist } from '~/data/public-deicing'
-import type { Checklist, ChecklistStatus } from '~/types/checklist'
-import { checklistStats, resetChecklistStatus, setChecklistSectionStatus, toggleChecklistItemStatus } from '~/utils/checklists'
+import type { Checklist } from '~/types/checklist'
+import { checklistStats } from '~/utils/checklists'
 
 const { t, locale } = useI18n()
 const content = computed(() => publicDeicingChecklist(locale.value))
-const status = useStorage<ChecklistStatus>('public-deicing-status-v2', {})
+const publicBuiltins = computed(() => [content.value.checklist])
+const { status, toggleItem: toggleStoredItem, setSection: setStoredSection, resetChecklist } = useChecklists({ scope: 'public', builtins: publicBuiltins })
 const resetDialog = ref(false)
-const snackbar = reactive({ open: false, message: '', color: 'success' })
 const stats = computed(() => checklistStats(content.value.checklist, status.value))
 const railStatus = computed(() => stats.value.complete ? 'complete' : 'partial')
 
 function toggleItem(itemId: string) {
-  status.value = toggleChecklistItemStatus(status.value, content.value.checklist, itemId)
+  toggleStoredItem(itemId, content.value.checklist)
 }
 
 function setAll(section: Checklist['sections'][number], checked: boolean) {
-  status.value = setChecklistSectionStatus(status.value, content.value.checklist, section, checked)
+  setStoredSection(section, checked, content.value.checklist)
 }
 
 function reset() {
-  status.value = resetChecklistStatus(status.value, content.value.checklist)
+  resetChecklist(content.value.checklist)
   resetDialog.value = false
 }
 
 function scrollTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' })
-}
-
-async function copyNote() {
-  try {
-    if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(content.value.note)
-    } else {
-      const textarea = document.createElement('textarea')
-      textarea.value = content.value.note
-      textarea.style.position = 'fixed'
-      textarea.style.opacity = '0'
-      document.body.appendChild(textarea)
-      textarea.select()
-      document.execCommand('copy')
-      textarea.remove()
-    }
-    snackbar.message = t('deicing.copied')
-    snackbar.color = 'success'
-  } catch {
-    snackbar.message = t('deicing.copyUnavailable')
-    snackbar.color = 'error'
-  }
-  snackbar.open = true
 }
 
 useHead(() => ({ title: content.value.checklist.title }))
@@ -150,8 +106,6 @@ useHead(() => ({ title: content.value.checklist.title }))
 .detail-description { max-width: 700px; color: var(--muted); line-height: 1.6; margin: 10px 0 0; white-space: pre-line; }
 .detail-actions { display: flex; align-items: center; flex: 0 0 auto; }
 .sections-stack { display: grid; gap: 2px; }
-.source-stack :deep(.v-expansion-panel) { background: var(--surface-elevated); border: 1px solid var(--border); }
-.source-content { max-height: 520px; overflow: auto; margin: 0; padding: 14px; border-radius: 10px; background: color-mix(in srgb, var(--surface) 76%, var(--bg)); color: var(--text); font: .78rem/1.55 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
 .detail-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 22px; color: var(--muted); font-size: .8rem; }
 @media (max-width: 650px) {
   .checklist-detail-layout { gap: 8px; }

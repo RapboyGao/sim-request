@@ -1,3 +1,13 @@
+<script setup lang="ts">
+definePageMeta({ layout: false })
+await navigateTo(`/private-checklists/${encodeURIComponent(String(useRoute().params.passwords || ''))}/`, { replace: true })
+</script>
+<!-- legacy route -->
+<!--
+  The former private page is intentionally kept as a redirect so old bookmarks
+  never expose private data in the public space.
+-->
+<!--
 <template>
   <v-container class="checklists-home py-6 py-md-10">
     <template v-if="allChecklists.length">
@@ -139,3 +149,4 @@ useHead({ title: '检查单' })
   .group-actions { flex: 0 0 auto; }
 }
 </style>
+-->

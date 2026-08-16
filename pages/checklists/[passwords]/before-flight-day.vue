@@ -1,10 +1,1 @@
-<template>
-  <ChecklistDetailPage :checklist="beforeFlightDayChecklist" />
-</template>
-
-<script setup lang="ts">
-import ChecklistDetailPage from '~/components/checklists/ChecklistDetailPage.vue'
-import { beforeFlightDayChecklist } from '~/data/checklist-pages/before-flight-day'
-
-definePageMeta({ layout: 'checklists' })
-</script>
+<script setup lang="ts">definePageMeta({ layout: false }); const r = useRoute(); await navigateTo(`/private-checklists/${encodeURIComponent(String(r.params.passwords))}/before-flight-day`, { replace: true })</script>

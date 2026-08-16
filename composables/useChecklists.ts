@@ -1,5 +1,5 @@
 import { useStorage } from '@vueuse/core'
-import { builtinChecklists } from '~/data/checklists'
+import { builtinChecklists as builtinChecklistsDefault } from '~/data/checklists'
 import type { Checklist, ChecklistBackup, ChecklistStatus, StoredCustomChecklists } from '~/types/checklist'
 import {
   cloneChecklist,
@@ -15,9 +15,12 @@ import {
   validateCustomChecklists,
 } from '~/utils/checklists'
 
-const CUSTOM_STORAGE_KEY = 'private-checklists-v2'
-const STATUS_STORAGE_KEY = 'private-checklist-status-v2'
-const FAVORITES_STORAGE_KEY = 'private-checklist-favorites-v2'
+export type ChecklistScope = 'public' | 'private'
+
+const STORAGE_KEYS: Record<ChecklistScope, { custom: string; status: string; favorites: string }> = {
+  private: { custom: 'private-checklists-v2', status: 'private-checklist-status-v2', favorites: 'private-checklist-favorites-v2' },
+  public: { custom: 'public-checklists-v2', status: 'public-checklist-status-v2', favorites: 'public-checklist-favorites-v2' },
+}
 
 function copy<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T
@@ -35,18 +38,21 @@ function normalizeFavoriteIds(value: unknown) {
   return [...new Set(value.filter((id): id is string => typeof id === 'string'))]
 }
 
-export function useChecklists() {
-  const storedCustom = useStorage<StoredCustomChecklists>(CUSTOM_STORAGE_KEY, { version: 2, checklists: [] }, undefined, {
+export function useChecklists(options: { scope?: ChecklistScope; builtins?: MaybeRef<Checklist[]> } = {}) {
+  const scope = options.scope || 'private'
+  const keys = STORAGE_KEYS[scope]
+  const builtinChecklists = computed(() => toValue(options.builtins) || [...(scope === 'private' ? builtinChecklistsDefault : [])])
+  const storedCustom = useStorage<StoredCustomChecklists>(keys.custom, { version: 2, checklists: [] }, undefined, {
     mergeDefaults: true,
   })
-  const storedStatus = useStorage<ChecklistStatus>(STATUS_STORAGE_KEY, {})
-  const storedFavorites = useStorage<string[]>(FAVORITES_STORAGE_KEY, [])
-  const custom = useState<Checklist[]>('checklists-custom-checklists', () => {
+  const storedStatus = useStorage<ChecklistStatus>(keys.status, {})
+  const storedFavorites = useStorage<string[]>(keys.favorites, [])
+  const custom = useState<Checklist[]>(`checklists-${scope}-custom-checklists`, () => {
     const valid = validateCustomChecklists(storedCustom.value)
     return valid ? copy(valid.map(normalizeChecklist)) : []
   })
-  const status = useState<ChecklistStatus>('checklists-status', () => copy(storedStatus.value))
-  const favorites = useState<string[]>('checklists-favorites', () => normalizeFavoriteIds(storedFavorites.value))
+  const status = useState<ChecklistStatus>(`checklists-${scope}-status`, () => copy(storedStatus.value))
+  const favorites = useState<string[]>(`checklists-${scope}-favorites`, () => normalizeFavoriteIds(storedFavorites.value))
 
   if (import.meta.client) {
     watch(custom, (value) => {
@@ -60,7 +66,7 @@ export function useChecklists() {
     }, { deep: true })
   }
 
-  const allChecklists = computed(() => [...builtinChecklists, ...custom.value])
+  const allChecklists = computed(() => [...builtinChecklists.value, ...custom.value])
 
   function addChecklist(title = '新检查单') {
     const id = newId('custom-checklist')
@@ -124,9 +130,9 @@ export function useChecklists() {
 
   function replaceCustomChecklists(checklists: Checklist[], importedStatus: ChecklistStatus = {}) {
     custom.value = copy(checklists.map(normalizeChecklist))
-    const validFavoriteIds = new Set([...builtinChecklists, ...checklists].map((checklist) => checklist.id))
+    const validFavoriteIds = new Set([...builtinChecklists.value, ...checklists].map((checklist) => checklist.id))
     favorites.value = favorites.value.filter((id) => validFavoriteIds.has(id))
-    const builtinItemIds = new Set(builtinChecklists.flatMap((checklist) => checklist.sections.flatMap((section) => section.items.map((item) => item.id))))
+    const builtinItemIds = new Set(builtinChecklists.value.flatMap((checklist) => checklist.sections.flatMap((section) => section.items.map((item) => item.id))))
     const nextStatus = Object.fromEntries(Object.entries(status.value).filter(([id]) => builtinItemIds.has(id))) as ChecklistStatus
     for (const checklist of custom.value) {
       for (const section of checklist.sections) {
@@ -162,6 +168,7 @@ export function useChecklists() {
   }
 
   return {
+    scope,
     builtinChecklists,
     customChecklists: custom,
     allChecklists,

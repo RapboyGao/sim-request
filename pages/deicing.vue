@@ -1,7 +1,4 @@
-<template>
-  <PublicDeicingChecklist />
-</template>
-
 <script setup lang="ts">
-definePageMeta({ layout: 'default' })
+definePageMeta({ layout: false })
+await navigateTo('/checklists/', { replace: true })
 </script>

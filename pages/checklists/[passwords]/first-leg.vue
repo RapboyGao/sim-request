@@ -1,10 +1,1 @@
-<template>
-  <ChecklistDetailPage :checklist="firstLegChecklist" />
-</template>
-
-<script setup lang="ts">
-import ChecklistDetailPage from '~/components/checklists/ChecklistDetailPage.vue'
-import { firstLegChecklist } from '~/data/checklist-pages/first-leg'
-
-definePageMeta({ layout: 'checklists' })
-</script>
+<script setup lang="ts">definePageMeta({ layout: false }); const r = useRoute(); await navigateTo(`/private-checklists/${encodeURIComponent(String(r.params.passwords))}/first-leg`, { replace: true })</script>

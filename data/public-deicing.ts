@@ -169,21 +169,21 @@ const canonicalChineseSections = sectionsFromChecklist(b737DeicingZhChecklist)
 const labels: Record<string, PublicDeicingLabels> = {
   en: {
     title: "737 Deicing Procedures",
-    description: "Applicable for engine-off or engine-idle deicing after taxiing to a de-icing pad.",
+    description: "Applicable for engine-off or engine-idle deicing after taxiing to a de-icing pad. This procedure replaces the original before-taxi procedure and deicing auxiliary procedure.",
     noteTitle: "APU Note",
     note: "CAUTION: When engine-off deicing is required, or when unsure whether to shut down for deicing:\n\n- Keep APU generator ON.\n- Keep APU ON.",
     sections: canonicalEnglishSections,
   },
   "zh-CN": {
     title: "737 除冰程序",
-    description: "适用于滑行至除冰位后进行的发动机关车或慢车除冰。",
+    description: "适用于滑行至除冰位后进行的发动机关车或慢车除冰。\n本程序用于替换原滑行前程序和除冰辅助程序。",
     noteTitle: "APU 说明",
     note: "注意当需要发动机关车除冰，或不确定是否关车除冰：\n\n- 保持 APU 发电机接通。\n- 保持 APU 接通。",
     sections: canonicalChineseSections,
   },
   ja: {
     title: "737 除氷手順",
-    description: "除氷パッドまでタキシングした後に行う、エンジン停止またはアイドル状態での除氷に適用します。",
+    description: "除氷パッドまでタキシングした後に行う、エンジン停止またはアイドル状態での除氷に適用します。\n本手順は、従来のタキシング前手順および除氷補助手順に代わるものです。",
     noteTitle: "APU の注意事項",
     note: "注意：エンジン停止除氷が必要な場合、またはエンジンを停止して除氷するか不明な場合：\n\n- APU 発電機を ON に保持する。\n- APU を ON に保持する。",
     sections: [
@@ -261,7 +261,7 @@ const labels: Record<string, PublicDeicingLabels> = {
   },
   ko: {
     title: "737 제빙 절차",
-    description: "제빙 패드까지 택시한 후 엔진 정지 또는 공회전 상태로 제빙할 때 적용합니다.",
+    description: "제빙 패드까지 택시한 후 엔진 정지 또는 공회전 상태로 제빙할 때 적용합니다.\n본 절차는 기존 택시 전 절차와 제빙 보조 절차를 대체합니다.",
     noteTitle: "APU 주의사항",
     note: "주의: 엔진 정지 제빙이 필요하거나 엔진을 정지하고 제빙할지 확실하지 않은 경우:\n\n- APU 발전기를 ON 상태로 유지합니다.\n- APU를 ON 상태로 유지합니다.",
     sections: [
@@ -339,7 +339,7 @@ const labels: Record<string, PublicDeicingLabels> = {
   },
   fr: {
     title: "Procédures de dégivrage du 737",
-    description: "S’applique au dégivrage moteur arrêté ou au ralenti après le roulage jusqu’à une aire de dégivrage.",
+    description: "S’applique au dégivrage moteur arrêté ou au ralenti après le roulage jusqu’à une aire de dégivrage.\nCette procédure remplace la procédure avant roulage et la procédure auxiliaire de dégivrage d’origine.",
     noteTitle: "Note APU",
     note: "ATTENTION : lorsque le dégivrage moteur arrêté est requis, ou en cas de doute sur l’arrêt moteur pour le dégivrage :\n\n- Maintenir le générateur APU sur ON.\n- Maintenir l’APU sur ON.",
     sections: [
@@ -450,7 +450,7 @@ export function publicDeicingChecklist(locale: string): { checklist: Checklist; 
   return {
     checklist: {
       ...source,
-      id: `public-${source.id}`,
+      id: 'deicing',
       title: selected.title,
       description: selected.description,
       sections: source.sections.map((section, sectionIndex) => ({

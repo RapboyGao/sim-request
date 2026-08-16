@@ -41,7 +41,7 @@
               prepend-icon="mdi-weather-windy" />
             <v-list-item :to="localePath('/airspeed')" :title="t('app.navAirspeed')"
               prepend-icon="mdi-airplane-takeoff" />
-            <v-list-item :to="localePath('/deicing')" :title="t('app.navDeicing')"
+            <v-list-item :to="localePath('/checklists/')" :title="t('app.navDeicing')"
               prepend-icon="mdi-snowflake-melt" />
             <v-list-item :to="localePath('/admin')" :title="t('app.navAdmin')"
               prepend-icon="mdi-shield-account-outline" />
@@ -67,7 +67,7 @@
         prepend-icon="mdi-book-open-variant-outline" />
         <v-list-item :to="localePath('/barometric')" :title="t('app.navBarometric')" prepend-icon="mdi-weather-windy" />
         <v-list-item :to="localePath('/airspeed')" :title="t('app.navAirspeed')" prepend-icon="mdi-airplane-takeoff" />
-        <v-list-item :to="localePath('/deicing')" :title="t('app.navDeicing')" prepend-icon="mdi-snowflake-melt" />
+        <v-list-item :to="localePath('/checklists/')" :title="t('app.navDeicing')" prepend-icon="mdi-snowflake-melt" />
         <v-list-item :to="localePath('/admin')" :title="t('app.navAdmin')" prepend-icon="mdi-shield-account-outline" />
         <v-divider class="my-2" />
         <v-list-subheader>{{ t('app.navLanguage') }}</v-list-subheader>

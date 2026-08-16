@@ -3,7 +3,7 @@
     <v-list-item
       title="检查单首页"
       prepend-icon="mdi-home-outline"
-      :to="checklistsHomeRoute(passwords)"
+      :to="homeRoute"
       :active="!activeChecklistId"
       @click="emit('select')"
     />
@@ -12,7 +12,7 @@
     <v-list-item
       v-for="item in builtinChecklists"
       :key="item.id"
-      :to="checklistRoute(passwords, item.id)"
+      :to="itemRoute(item.id)"
       :active="activeChecklistId === item.id"
       :title="item.title"
       prepend-icon="mdi-format-list-checks"
@@ -23,13 +23,20 @@
 </template>
 
 <script setup lang="ts">
-import { builtinChecklists } from '~/data/checklists'
-import { checklistRoute, checklistsHomeRoute } from '~/utils/checklist-routes'
+import type { Checklist } from '~/types/checklist'
+import type { ChecklistScope } from '~/composables/useChecklists'
+import { privateChecklistRoute, privateChecklistsHomeRoute, publicChecklistRoute, publicChecklistsHomeRoute } from '~/utils/checklist-routes'
 
-defineProps<{
-  passwords: string
+const props = defineProps<{
+  scope: ChecklistScope
+  builtinChecklists: Checklist[]
+  passwords?: string
   activeChecklistId: string
 }>()
+
+const builtinChecklists = computed(() => props.builtinChecklists)
+const homeRoute = computed(() => props.scope === 'public' ? publicChecklistsHomeRoute() : privateChecklistsHomeRoute(props.passwords || ''))
+const itemRoute = (id: string) => props.scope === 'public' ? publicChecklistRoute(id) : privateChecklistRoute(props.passwords || '', id)
 
 const emit = defineEmits<{
   select: []
