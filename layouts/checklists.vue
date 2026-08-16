@@ -7,20 +7,25 @@
       </v-app-bar-title>
       <v-spacer />
 
-      <v-menu v-if="smAndUp" v-model="menuOpen" content-class="checklists-menu-content">
+      <v-menu v-if="smAndUp" v-model="menuOpen" content-class="checklists-menu-content" :close-on-content-click="false">
         <template #activator="{ props }">
-          <v-btn v-bind="props" icon="mdi-format-list-bulleted" variant="text" aria-label="打开检查单目录" title="检查单目录" />
+          <v-btn v-bind="props" icon="mdi-format-list-bulleted" variant="text" :aria-label="t('app.checklistsMenu')" :title="t('app.checklistsMenu')" />
         </template>
-        <ChecklistNavigationList :scope="scope" :passwords="passwords" :builtin-checklists="builtinChecklists" :active-checklist-id="activeChecklistId" @select="menuOpen = false">
+        <v-list v-if="scope === 'public'" nav density="comfortable">
+          <AppNavigationMenuContent :checklist-actions="pageActions" @select="menuOpen = false" />
+          <LocaleMenuItems @select="menuOpen = false" />
+        </v-list>
+        <ChecklistNavigationList v-else :scope="scope" :passwords="passwords" :builtin-checklists="builtinChecklists" :active-checklist-id="activeChecklistId" @select="menuOpen = false">
           <ChecklistMenuActions :actions="pageActions" @select="menuOpen = false" />
+          <LocaleMenuItems @select="menuOpen = false" />
         </ChecklistNavigationList>
       </v-menu>
       <v-btn
         v-else
         icon="mdi-format-list-bulleted"
         variant="text"
-        aria-label="打开检查单目录"
-        title="检查单目录"
+        :aria-label="t('app.checklistsMenu')"
+        :title="t('app.checklistsMenu')"
         @click="drawer = true"
       />
 
@@ -31,8 +36,13 @@
     </v-app-bar>
 
     <v-navigation-drawer v-model="drawer" temporary location="start" class="checklists-drawer" :width="300">
-      <ChecklistNavigationList :scope="scope" :passwords="passwords" :builtin-checklists="builtinChecklists" :active-checklist-id="activeChecklistId" @select="drawer = false">
+      <v-list v-if="scope === 'public'" nav density="comfortable">
+        <AppNavigationMenuContent mobile :checklist-actions="pageActions" @select="drawer = false" />
+        <LocaleMenuItems @select="drawer = false" />
+      </v-list>
+      <ChecklistNavigationList v-else :scope="scope" :passwords="passwords" :builtin-checklists="builtinChecklists" :active-checklist-id="activeChecklistId" @select="drawer = false">
         <ChecklistMenuActions :actions="pageActions" @select="drawer = false" />
+        <LocaleMenuItems @select="drawer = false" />
       </ChecklistNavigationList>
     </v-navigation-drawer>
 
@@ -44,7 +54,9 @@
 
 <script setup lang="ts">
 import { useDisplay, useTheme } from 'vuetify'
+import LocaleMenuItems from '~/components/LocaleMenuItems.vue'
 import ChecklistNavigationList from '~/components/checklists/ChecklistNavigationList.vue'
+import AppNavigationMenuContent from '~/components/AppNavigationMenuContent.vue'
 import ChecklistMenuActions from '~/components/checklists/ChecklistMenuActions.vue'
 import { resolveThemeName, useThemeMode } from '~/composables/useThemeMode'
 import { provideChecklistsPageActions } from '~/composables/useChecklistsPageActions'
@@ -59,8 +71,17 @@ const drawer = ref(false)
 const menuOpen = ref(false)
 const { smAndUp } = useDisplay()
 const { actions: pageActions } = provideChecklistsPageActions()
-const scope = computed(() => route.path.startsWith('/private-checklists/') ? 'private' : 'public')
-const { locale } = useI18n()
+const { locale, t } = useI18n()
+const localePath = useLocalePath()
+const normalizedPath = computed(() => {
+  const localePrefix = `/${locale.value}`
+  return route.path === localePrefix
+    ? '/'
+    : route.path.startsWith(`${localePrefix}/`)
+      ? route.path.slice(localePrefix.length)
+      : route.path
+})
+const scope = computed(() => normalizedPath.value.startsWith('/private-checklists/') ? 'private' : 'public')
 const builtinChecklists = computed<Checklist[]>(() => scope.value === 'private' ? [...privateBuiltins] : publicBuiltinChecklists(locale.value))
 const privateChecklistsTheme = useChecklistsTheme('private')
 const publicChecklistsTheme = useChecklistsTheme('public')
@@ -70,7 +91,7 @@ const privateChecklistStore = useChecklists({ scope: 'private', builtins: comput
 const publicChecklistStore = useChecklists({ scope: 'public', builtins: computed(() => publicBuiltinChecklists(locale.value)) })
 const allChecklists = computed(() => scope.value === 'private' ? privateChecklistStore.allChecklists.value : publicChecklistStore.allChecklists.value)
 const passwords = computed(() => String(route.params.passwords || ''))
-const homePath = computed(() => (scope.value === 'public' ? publicChecklistsHomeRoute() : privateChecklistsHomeRoute(passwords.value)).replace(/\/$/, ''))
+const homePath = computed(() => localePath(scope.value === 'public' ? publicChecklistsHomeRoute() : privateChecklistsHomeRoute(passwords.value)).replace(/\/$/, ''))
 const isHome = computed(() => route.path === homePath.value || route.path === `${homePath.value}/`)
 const activeTheme = computed(() => scope.value === 'private' ? privateChecklistsTheme : publicChecklistsTheme)
 const isDark = computed(() => activeTheme.value.isDark.value)
@@ -105,7 +126,7 @@ function cycleMode() {
 }
 
 function goHome() {
-  router.push(scope.value === 'public' ? publicChecklistsHomeRoute() : privateChecklistsHomeRoute(passwords.value))
+  router.push(localePath(scope.value === 'public' ? publicChecklistsHomeRoute() : privateChecklistsHomeRoute(passwords.value)))
 }
 
 watch([themeMode, isDark], applyChecklistsTheme, { immediate: true })

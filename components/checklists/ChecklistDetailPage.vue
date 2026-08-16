@@ -121,6 +121,7 @@ import { privateChecklistsHomeRoute, privateCustomChecklistEditRoute, privateCus
 const props = defineProps<{ checklistId?: string; checklist?: Checklist; scope?: ChecklistScope; builtins?: Checklist[] }>()
 const route = useRoute()
 const router = useRouter()
+const localePath = useLocalePath()
 const scope = props.scope || 'private'
 const { allChecklists, status, toggleItem: toggleStoredItem, setSection, resetChecklist, duplicateChecklist, deleteChecklist } = useChecklists({ scope, builtins: computed(() => props.builtins || []) })
 const { register: registerPageActions } = useChecklistsPageActions()
@@ -140,9 +141,9 @@ const railStatusLabel = computed(() => ({
   partial: '部分完成',
 }[railStatus.value]))
 const passwords = computed(() => String(route.params.passwords || ''))
-const homeRoute = () => scope === 'public' ? publicChecklistsHomeRoute() : privateChecklistsHomeRoute(passwords.value)
-const customRoute = (id: string) => scope === 'public' ? publicCustomChecklistRoute(id) : privateCustomChecklistRoute(passwords.value, id)
-const editRoute = (id: string) => scope === 'public' ? publicCustomChecklistEditRoute(id) : privateCustomChecklistEditRoute(passwords.value, id)
+const homeRoute = () => localePath(scope === 'public' ? publicChecklistsHomeRoute() : privateChecklistsHomeRoute(passwords.value))
+const customRoute = (id: string) => localePath(scope === 'public' ? publicCustomChecklistRoute(id) : privateCustomChecklistRoute(passwords.value, id))
+const editRoute = (id: string) => localePath(scope === 'public' ? publicCustomChecklistEditRoute(id) : privateCustomChecklistEditRoute(passwords.value, id))
 
 function toggleItem(itemId: string) {
   if (checklist.value) toggleStoredItem(itemId, checklist.value)

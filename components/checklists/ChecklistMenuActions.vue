@@ -8,20 +8,21 @@
       block
       @click="run(actions.reset)"
     >
-      重置检查单
+      {{ t('app.checklistsReset') }}
     </v-btn>
     <template v-if="actions.edit || actions.duplicate || actions.remove">
       <v-divider class="my-2" />
-      <v-list-subheader>当前检查单</v-list-subheader>
-      <v-list-item v-if="actions.edit" prepend-icon="mdi-pencil-outline" title="编辑检查单" @click="run(actions.edit)" />
-      <v-list-item v-if="actions.duplicate" prepend-icon="mdi-content-copy" title="复制检查单" @click="run(actions.duplicate)" />
-      <v-list-item v-if="actions.remove" prepend-icon="mdi-delete-outline" title="删除检查单" @click="run(actions.remove)" />
+      <v-list-subheader>{{ t('app.checklistsCurrent') }}</v-list-subheader>
+      <v-list-item v-if="actions.edit" prepend-icon="mdi-pencil-outline" :title="t('app.checklistsEdit')" @click="run(actions.edit)" />
+      <v-list-item v-if="actions.duplicate" prepend-icon="mdi-content-copy" :title="t('app.checklistsDuplicate')" @click="run(actions.duplicate)" />
+      <v-list-item v-if="actions.remove" prepend-icon="mdi-delete-outline" :title="t('app.checklistsDelete')" @click="run(actions.remove)" />
     </template>
   </template>
 </template>
 
 <script setup lang="ts">
 import type { ChecklistPageActions } from '~/composables/useChecklistsPageActions'
+const { t } = useI18n()
 
 defineProps<{
   actions: ChecklistPageActions | null

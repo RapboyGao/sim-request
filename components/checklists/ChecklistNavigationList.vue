@@ -3,7 +3,7 @@
     <v-list-item
       title="检查单首页"
       prepend-icon="mdi-home-outline"
-      :to="homeRoute"
+      :to="localePath(homeRoute)"
       :active="!activeChecklistId"
       @click="emit('select')"
     />
@@ -12,7 +12,7 @@
     <v-list-item
       v-for="item in builtinChecklists"
       :key="item.id"
-      :to="itemRoute(item.id)"
+      :to="localePath(itemRoute(item.id))"
       :active="activeChecklistId === item.id"
       :title="item.title"
       prepend-icon="mdi-format-list-checks"
@@ -41,4 +41,5 @@ const itemRoute = (id: string) => props.scope === 'public' ? publicChecklistRout
 const emit = defineEmits<{
   select: []
 }>()
+const localePath = useLocalePath()
 </script>

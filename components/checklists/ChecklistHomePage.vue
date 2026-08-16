@@ -38,6 +38,7 @@ import { sortChecklistsByFavorite } from '~/utils/checklists'
 
 const props = defineProps<{ scope: ChecklistScope; builtins: Checklist[]; passwords?: string }>()
 const route = useRoute()
+const localePath = useLocalePath()
 const publicBuiltins = computed(() => props.builtins)
 const { allChecklists, status, favorites, addChecklist, createBackup, importBackup: restoreBackup, toggleFavorite } = useChecklists({ scope: props.scope, builtins: publicBuiltins })
 const fileInput = ref<HTMLInputElement | null>(null)
@@ -52,13 +53,13 @@ const checklistGroups = computed(() => [
 function openChecklist(id: string) {
   const target = allChecklists.value.find((item) => item.id === id)
   if (!target) return
-  navigateTo(props.scope === 'public'
+  navigateTo(localePath(props.scope === 'public'
     ? (target.source === 'builtin' ? publicChecklistRoute(id) : publicCustomChecklistRoute(id))
-    : (target.source === 'builtin' ? privateChecklistRoute(String(props.passwords || route.params.passwords || ''), id) : privateCustomChecklistRoute(String(props.passwords || route.params.passwords || ''), id)))
+    : (target.source === 'builtin' ? privateChecklistRoute(String(props.passwords || route.params.passwords || ''), id) : privateCustomChecklistRoute(String(props.passwords || route.params.passwords || ''), id))))
 }
 function createNew() {
   const id = addChecklist()
-  if (id) navigateTo(props.scope === 'public' ? publicCustomChecklistEditRoute(id) : privateCustomChecklistEditRoute(String(props.passwords || route.params.passwords || ''), id))
+  if (id) navigateTo(localePath(props.scope === 'public' ? publicCustomChecklistEditRoute(id) : privateCustomChecklistEditRoute(String(props.passwords || route.params.passwords || ''), id)))
 }
 function exportBackup() {
   const blob = new Blob([JSON.stringify(createBackup(), null, 2)], { type: 'application/json;charset=utf-8' })
