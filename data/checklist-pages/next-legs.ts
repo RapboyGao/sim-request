@@ -12,10 +12,12 @@ export const nextLegsChecklist = createBuiltinChecklist(
       id: "next-legs.before-exterior-inspection",
       title: "Before Exterior Inspection",
       items: [
+        item("before-exterior-inspection.fuel-remaining", "Fuel Remaining"),
         item("before-exterior-inspection.irs-alignment", "IRS alignment"),
         item("before-exterior-inspection.logbook", "Logbook"),
         item("before-exterior-inspection.recorder-charging", "Voice Recorder Charging"),
         item("before-exterior-inspection.devices-charging", "Devices Charging"),
+        item("before-exterior-inspection.delayed-information", "Delayed Information"),
       ],
     },
     {

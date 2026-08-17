@@ -52,6 +52,7 @@ describe('checklists data', () => {
     expect(publicFirstLegChecklist('zh-CN').sections.find((section) => section.title === 'CDU')?.items.at(-1)?.description).toBe('如果FIX 页有其他用途，可以先飞到的点为准。')
     expect(publicFirstLegChecklist('zh-CN').sections.find((section) => section.title === '第三位')?.items.map((item) => item.title)).toEqual([
       '清洁袋 ...... 至少预留 10 个',
+      '氧气面罩 ...... 测试',
       '擦手纸 ...... x1',
       '塑料袋 ...... x1',
       '大队/中队要求的其他工作 ...... 已完成',

@@ -31,6 +31,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
         title: "第三位",
         items: [
           item("third-position", "cleaning-bags", "清洁袋 ...... 至少预留 10 个", "右座清洁袋应粘贴在飞行箱前部的空间，并尽可能靠右"),
+          item("third-position", "oxygen-mask-test", "氧气面罩 ...... 测试"),
           item("third-position", "paper-towels", "擦手纸 ...... x1"),
           item("third-position", "plastic-bag", "塑料袋 ...... x1"),
           item("third-position", "other-required-work", "大队/中队要求的其他工作 ...... 已完成"),
@@ -164,6 +165,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
         title: "Third crew member",
         items: [
           item("third-position", "cleaning-bags", "Cleaning bags ...... Keep at least 10", "The right-seat cleaning bag should be attached in the space at the front of the flight case, as far to the right as possible."),
+          item("third-position", "oxygen-mask-test", "Oxygen mask ...... Test"),
           item("third-position", "paper-towels", "Paper towels ...... x1"),
           item("third-position", "plastic-bag", "Plastic bag ...... x1"),
           item("third-position", "other-required-work", "Other work required by the group/squadron ...... Complete"),
@@ -294,6 +296,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
         title: "第3乗員",
         items: [
           item("third-position", "cleaning-bags", "清掃袋 ...... 10個以上確保", "右席の清掃袋はフライトケース前部のスペースに貼り付け、できるだけ右側に寄せる。"),
+          item("third-position", "oxygen-mask-test", "酸素マスク ...... テスト"),
           item("third-position", "paper-towels", "ペーパータオル ...... x1"),
           item("third-position", "plastic-bag", "ビニール袋 ...... x1"),
           item("third-position", "other-required-work", "グループ / 中隊が要求するその他の作業 ...... 完了"),
@@ -424,6 +427,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
         title: "세 번째 승무원",
         items: [
           item("third-position", "cleaning-bags", "청소 봉투 ...... 최소 10개 확보", "오른쪽 좌석의 청소 봉투는 비행 케이스 앞쪽 공간에 부착하고 가능한 한 오른쪽에 둡니다."),
+          item("third-position", "oxygen-mask-test", "산소 마스크 ...... 테스트"),
           item("third-position", "paper-towels", "손 닦는 종이 ...... x1"),
           item("third-position", "plastic-bag", "비닐봉투 ...... x1"),
           item("third-position", "other-required-work", "그룹/중대에서 요구한 기타 작업 ...... 완료"),
@@ -557,6 +561,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
         title: "Troisième membre d’équipage",
         items: [
           item("third-position", "cleaning-bags", "Sacs de nettoyage ...... Au moins 10 en réserve", "Le sac de nettoyage du siège droit doit être fixé dans l’espace à l’avant de la flight case, aussi à droite que possible."),
+          item("third-position", "oxygen-mask-test", "Masque à oxygène ...... Tester"),
           item("third-position", "paper-towels", "Essuie-mains en papier ...... x1"),
           item("third-position", "plastic-bag", "Sac plastique ...... x1"),
           item("third-position", "other-required-work", "Autres tâches demandées par le groupe / l’escadron ...... Terminées"),

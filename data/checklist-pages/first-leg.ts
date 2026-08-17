@@ -38,6 +38,7 @@ export const firstLegChecklist = createBuiltinChecklist(
         item("airplane-status.flight-number", "Flight Number"),
         item("airplane-status.qfe", "QFE"),
         item("airplane-status.nav-options", "NAV OPTIONS"),
+        item("airplane-status.cdu-database", "CDU Database Includes Tomorrow"),
         item("airplane-status.at", "A/T"),
         item("airplane-status.internal-lights", "Internal Lights"),
         item("airplane-status.systems-reset", "Systems Reset"),
