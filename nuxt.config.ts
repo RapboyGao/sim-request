@@ -92,8 +92,11 @@ export default defineNuxtConfig({
     },
     workbox: {
       cleanupOutdatedCaches: true,
-      navigateFallback: '/',
+      navigateFallback: '/checklists/',
       navigateFallbackDenylist: [/^\/api\//, ...onlineOnlyNavigationDenylist],
+      additionalManifestEntries: [
+        { url: '/checklists/', revision: 'app-shell-v1' },
+      ],
       globPatterns: ['**/*.{js,css,html,png,svg,ico,woff2}'],
     },
     devOptions: {
