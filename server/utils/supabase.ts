@@ -8,7 +8,6 @@ export function getSupabaseServerClient() {
   const secretKey =
     config.supabaseSecretKey
     || process.env.SUPABASE_SECRET_KEY
-    || process.env.SUPABASE_KEY
 
   if (!supabaseUrl || !secretKey) return null
 

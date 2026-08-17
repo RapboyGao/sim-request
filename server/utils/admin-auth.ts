@@ -1,10 +1,16 @@
-const ADMIN_USERNAME = 'Albert'
-const ADMIN_PASSWORD = '1351531751532'
 const ADMIN_SESSION_COOKIE = 'admin_session'
 const ADMIN_SESSION_VALUE = 'logged_in'
 
 export function isAdminCredentials(username: string, password: string) {
-  return username === ADMIN_USERNAME && password === ADMIN_PASSWORD
+  const configuredUsername = process.env.ADMIN_USERNAME || ''
+  const configuredPassword = process.env.ADMIN_PASSWORD || ''
+  return Boolean(configuredUsername && configuredPassword)
+    && username === configuredUsername
+    && password === configuredPassword
+}
+
+export function hasAdminCredentials() {
+  return Boolean(process.env.ADMIN_USERNAME && process.env.ADMIN_PASSWORD)
 }
 
 export function getAdminSessionCookieName() {

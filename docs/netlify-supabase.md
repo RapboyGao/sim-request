@@ -5,6 +5,7 @@
 - Build command: `pnpm build`
 - Publish directory: `dist`
 - Node version: `20`
+- The repository `packageManager` pins pnpm to `10.11.0`; do not commit production secrets.
 
 ## Environment variables
 
@@ -12,6 +13,11 @@
 - `SUPABASE_PUBLISHABLE_KEY`
 - `SUPABASE_SECRET_KEY`
 - Optional: `SUPABASE_BOOKINGS_TABLE=bookings`
+- `ADMIN_USERNAME`
+- `ADMIN_PASSWORD`
+- Optional: `NUXT_PUBLIC_CHECKLISTS_PASSWORD` (defaults to `13515`; this is only a URL gate, not authentication)
+
+Configure these in Netlify Project configuration → Environment variables and make them available to both Builds and Functions. Mark `SUPABASE_SECRET_KEY` and `ADMIN_PASSWORD` as secret values. The secret key must be the Supabase server/service-role key and must never be exposed through `runtimeConfig.public`.
 
 ## Supabase table
 
@@ -38,8 +44,11 @@ alter table public.bookings
 ## Local development
 
 ```bash
+cp .env.example .env.local
 pnpm install
 pnpm dev
 ```
 
-Local data still uses `.data/bookings.json`.
+Fill in `ADMIN_USERNAME` and `ADMIN_PASSWORD` to use the admin page locally. Without Supabase variables, local development uses `.data/bookings.json`; production must have all Supabase and admin variables configured.
+
+After deployment, check `/api/health`. A ready deployment returns `productionReady: true` and `true` for the Supabase URL, publishable key, secret key, and admin credentials. The PWA shell is cached after the first online visit; booking submission, calendar, and people views remain online-only because they require the booking API.

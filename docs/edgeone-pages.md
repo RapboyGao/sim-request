@@ -14,6 +14,9 @@
 - `SUPABASE_PUBLISHABLE_KEY`
 - `SUPABASE_SECRET_KEY`
 - Optional: `SUPABASE_BOOKINGS_TABLE=bookings`
+- `ADMIN_USERNAME`
+- `ADMIN_PASSWORD`
+- Optional: `NUXT_PUBLIC_CHECKLISTS_PASSWORD` (defaults to `13515`; this is only a URL gate, not authentication)
 
 ## 数据库
 
@@ -40,5 +43,5 @@ create index if not exists bookings_created_at_idx on public.bookings (created_a
 
 ## 备注
 
-- 生产环境先检查 `/api/health`
+- 生产环境先配置 Supabase 和管理页环境变量，再检查 `/api/health`；应看到 `productionReady: true`。
 - 本地开发仍然使用 `.data/bookings.json`
