@@ -1,6 +1,7 @@
 import { publicDeicingChecklist } from './public-deicing'
 import { publicFirstLegChecklist } from './public-first-leg'
 import { publicTurnaroundChecklist } from './public-turnaround'
+import { publicPreflightChecklist } from './public-preflight'
 import { createBuiltinChecklist } from './checklist-pages/_factory'
 import type { Checklist } from '~/types/checklist'
 
@@ -21,6 +22,37 @@ const afterTakeoffItemIds = [
 type LocalizedItem = {
   title: string
   description?: string
+}
+
+const publicChecklistIcons: Record<string, string> = {
+  deicing: 'mdi-snowflake-melt',
+  'no-engine-bleed-takeoff': 'mdi-engine-off-outline',
+  'first-leg': 'mdi-airplane-takeoff',
+  turnaround: 'mdi-airplane-landing',
+  preflight: 'mdi-airplane-check',
+}
+
+const publicDisclaimers: Record<string, string> = {
+  'zh-CN': '本检查单/程序仅供参考，应以公司、飞机制造商、机场等公布的资料与飞机实际状态完成飞行。',
+  en: 'This checklist/procedure is for reference only. The flight should be conducted based on materials published by the company, aircraft manufacturer, airport, and the actual condition of the aircraft.',
+  ja: '本チェックリスト／手順は参考用です。会社、航空機製造者、空港などが公表する資料および航空機の実際の状態に基づいて飛行を実施してください。',
+  ko: '본 체크리스트/절차는 참고용입니다. 회사, 항공기 제작사, 공항 등이 공표한 자료와 항공기의 실제 상태를 바탕으로 비행을 수행해야 합니다.',
+  fr: 'Cette checklist/procédure est fournie à titre indicatif. Le vol doit être effectué sur la base des documents publiés par la compagnie, le constructeur aéronautique, l’aéroport, ainsi que de l’état réel de l’avion.',
+}
+
+export function decoratePublicChecklist(checklist: Checklist, locale: string): Checklist {
+  const disclaimer = publicDisclaimers[locale] || publicDisclaimers.en!
+  const description = checklist.description.includes(disclaimer)
+    ? checklist.description
+    : [checklist.description, disclaimer].filter(Boolean).join('\n')
+  return {
+    ...checklist,
+    title: checklist.id === 'preflight' || /^737(?:\s|$)/.test(checklist.title)
+      ? checklist.title
+      : `737 ${checklist.title}`,
+    description,
+    icon: publicChecklistIcons[checklist.id],
+  }
 }
 
 type LocalizedChecklistContent = {
@@ -132,5 +164,6 @@ export function noEngineBleedTakeoffChecklist(locale: string): Checklist {
 export const noEngineBleedTakeoffChecklistDefault = noEngineBleedTakeoffChecklist('zh-CN')
 
 export function publicBuiltinChecklists(locale: string): Checklist[] {
-  return [publicDeicingChecklist(locale).checklist, noEngineBleedTakeoffChecklist(locale), publicFirstLegChecklist(locale), publicTurnaroundChecklist(locale)]
+  return [publicDeicingChecklist(locale).checklist, noEngineBleedTakeoffChecklist(locale), publicPreflightChecklist(locale), publicFirstLegChecklist(locale), publicTurnaroundChecklist(locale)]
+    .map((checklist) => decoratePublicChecklist(checklist, locale))
 }

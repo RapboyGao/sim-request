@@ -3,6 +3,7 @@ import { builtinChecklists } from '../data/checklists'
 import { publicDeicingChecklist } from '../data/public-deicing'
 import { publicFirstLegChecklist } from '../data/public-first-leg'
 import { publicTurnaroundChecklist } from '../data/public-turnaround'
+import { publicBuiltinChecklists } from '../data/public-checklists'
 import { CHECKLIST_ROUTE_IDS, DEFAULT_CHECKLIST_PASSWORD, checklistRoute, checklistsHomeRoute, customChecklistEditRoute, customChecklistRoute } from '../utils/checklist-routes'
 import { extractReadableChecklistNotes } from '../utils/checklist-source'
 import type { ChecklistStatus } from '../types/checklist'
@@ -79,6 +80,65 @@ describe('checklists data', () => {
       'Preflight checklist ...... Complete',
     ]))
     expect(privateChecklists).toHaveLength(2)
+  })
+
+  it('decorates all public built-ins with 737 titles, disclaimers, and icons', () => {
+    const iconIds = ['deicing', 'no-engine-bleed-takeoff', 'preflight', 'first-leg', 'turnaround']
+    const disclaimer = '本检查单/程序仅供参考，应以公司、飞机制造商、机场等公布的资料与飞机实际状态完成飞行。'
+    const checklists = publicBuiltinChecklists('zh-CN')
+
+    expect(checklists.map((checklist) => checklist.id)).toEqual(iconIds)
+    expect(checklists.filter((checklist) => checklist.id !== 'preflight').every((checklist) => checklist.title.startsWith('737 '))).toBe(true)
+    expect(checklists.find((checklist) => checklist.id === 'preflight')?.title).toBe('航前检查单')
+    expect(checklists.every((checklist) => checklist.icon)).toBe(true)
+    expect(checklists.every((checklist) => checklist.description.includes(disclaimer))).toBe(true)
+    expect(checklists.find((checklist) => checklist.id === 'deicing')?.description).toContain('本程序用于替换原滑行前程序和除冰辅助程序。')
+
+    for (const locale of ['en', 'ja', 'ko', 'fr']) {
+      const localized = publicBuiltinChecklists(locale)
+      expect(localized).toHaveLength(5)
+      expect(localized.filter((checklist) => checklist.id !== 'preflight').every((checklist) => checklist.title.startsWith('737 '))).toBe(true)
+      expect(localized.every((checklist) => checklist.description.length > 0)).toBe(true)
+      expect(localized.every((checklist) => checklist.icon)).toBe(true)
+    }
+  })
+
+  it('includes the public preflight checklist with stable sleep and departure items', () => {
+    const checklist = publicBuiltinChecklists('zh-CN').find((item) => item.id === 'preflight')!
+
+    expect(checklist.title).toBe('737 航前检查单')
+    expect(checklist.icon).toBe('mdi-airplane-check')
+    expect(checklist.sections.map((section) => section.title)).toEqual(['睡前', '出发前'])
+    expect(checklist.sections[0]?.items.map((item) => item.title)).toEqual([
+      '定闹钟(注意国内/国际)',
+      '准备网',
+      'EFB数据更新',
+      '下载航线相关资料',
+      '飞行物品准备',
+      'iPad充电',
+      '手电筒充电',
+      '手机充电',
+      '睡眠/勿扰模式',
+    ])
+    expect(checklist.sections[1]?.items.map((item) => item.title)).toEqual([
+      'iPad',
+      '帽子',
+      '登机牌',
+      '充电器',
+      '反光背心',
+      '手电筒',
+      '录音笔',
+      '手表',
+      '领带',
+      '肩章',
+      '腰带',
+      '皮鞋',
+      '过夜带',
+      '钥匙',
+      '身份证',
+    ])
+    const ids = checklist.sections.flatMap((section) => section.items.map((item) => item.id))
+    expect(new Set(ids).size).toBe(ids.length)
   })
 
   it('includes the public turnaround leg and reuses the First Leg sequence', () => {

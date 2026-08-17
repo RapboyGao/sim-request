@@ -12,7 +12,7 @@ export const beforeSleepChecklist = createBuiltinChecklist(
       items: [
         { id: "before-sleep.main.water-bottle", title: "Water Bottle" },
         { id: "before-sleep.main.stuff-for-flight", title: "Stuff for Flight" },
-        { id: "before-sleep.main.alarm-clock", title: "Alarm Clock" },
+        { id: "before-sleep.main.alarm-clock", title: "Alarm Clock", description: "Be aware of international flights." },
         { id: "before-sleep.main.data-update", title: "Data Update" },
         { id: "before-sleep.main.prep-site", title: "Prep Site" },
         { id: "before-sleep.main.learning-site", title: "Learning Site" },

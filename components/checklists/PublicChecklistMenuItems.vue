@@ -12,7 +12,7 @@
     v-for="item in builtins"
     :key="item.id"
     :title="item.title"
-    prepend-icon="mdi-format-list-checks"
+    :prepend-icon="item.icon || 'mdi-format-list-checks'"
     :to="localizedRoute(publicChecklistRoute(item.id))"
     :active="activeId === item.id"
     @click="emit('select')"

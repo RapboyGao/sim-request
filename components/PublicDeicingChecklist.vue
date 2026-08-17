@@ -4,11 +4,16 @@
       <div class="checklist-detail-content">
         <div class="detail-head mb-7">
           <div class="detail-title-wrap">
-            <div class="eyebrow">
-              <v-icon icon="mdi-snowflake-melt" size="18" class="mr-1" />
-              {{ t('deicing.eyebrow') }}
+            <div class="detail-title-row">
+              <v-icon
+                v-if="content.checklist.icon"
+                :icon="content.checklist.icon"
+                size="30"
+                color="primary"
+                aria-hidden="true"
+              />
+              <h1 class="text-h4 text-md-h3 font-weight-bold">{{ content.checklist.title }}</h1>
             </div>
-            <h1 class="text-h4 text-md-h3 font-weight-bold mt-2">{{ content.checklist.title }}</h1>
             <p class="detail-description">{{ content.checklist.description }}</p>
           </div>
           <div class="detail-actions">
@@ -62,12 +67,15 @@
 <script setup lang="ts">
 import ChecklistSections from '~/components/checklists/ChecklistSections.vue'
 import { publicDeicingChecklist } from '~/data/public-deicing'
-import { publicBuiltinChecklists } from '~/data/public-checklists'
+import { decoratePublicChecklist, publicBuiltinChecklists } from '~/data/public-checklists'
 import type { Checklist } from '~/types/checklist'
 import { checklistStats } from '~/utils/checklists'
 
 const { t, locale } = useI18n()
-const content = computed(() => publicDeicingChecklist(locale.value))
+const content = computed(() => {
+  const raw = publicDeicingChecklist(locale.value)
+  return { ...raw, checklist: decoratePublicChecklist(raw.checklist, locale.value) }
+})
 const publicBuiltins = computed(() => publicBuiltinChecklists(locale.value))
 const { status, toggleItem: toggleStoredItem, setSection: setStoredSection, resetChecklist } = useChecklists({ scope: 'public', builtins: publicBuiltins })
 const resetDialog = ref(false)
@@ -109,6 +117,8 @@ useHead(() => ({ title: content.value.checklist.title }))
 .checklist-progress-label { color: var(--muted); font-size: .72rem; font-weight: 750; }
 .detail-head { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .detail-title-wrap { min-width: 0; flex: 1 1 auto; }
+.detail-title-row { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.detail-title-row .v-icon { flex: 0 0 auto; }
 .detail-description { max-width: 700px; color: var(--muted); line-height: 1.6; margin: 10px 0 0; white-space: pre-line; }
 .detail-actions { display: flex; align-items: center; flex: 0 0 auto; }
 .sections-stack { display: grid; gap: 2px; }

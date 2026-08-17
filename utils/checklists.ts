@@ -15,6 +15,7 @@ export function normalizeChecklist(checklist: Checklist): Checklist {
     id: checklist.id,
     title: checklist.title,
     description: checklist.description,
+    ...(checklist.source === 'builtin' && checklist.icon ? { icon: checklist.icon } : {}),
     source: checklist.source,
     sections: checklist.sections.map((section) => ({
       id: section.id,
@@ -247,6 +248,7 @@ function isValidChecklist(value: unknown, source: 'builtin' | 'custom') {
   return typeof checklist.id === 'string'
     && typeof checklist.title === 'string'
     && typeof checklist.description === 'string'
+    && (checklist.icon === undefined || typeof checklist.icon === 'string')
     && checklist.source === source
     && Array.isArray(checklist.sections)
     && checklist.sections.every(isValidSection)

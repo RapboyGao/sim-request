@@ -11,6 +11,7 @@
   >
     <v-card-item class="py-4">
       <v-card-title class="checklist-card-title text-wrap text-body-1 font-weight-bold">
+        <v-icon v-if="checklist.icon" :icon="checklist.icon" size="20" color="primary" aria-hidden="true" />
         <span
           v-if="completionStatus !== 'idle'"
           class="checklist-status-dot"
