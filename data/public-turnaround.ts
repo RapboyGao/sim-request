@@ -1,4 +1,4 @@
-import { createBuiltinChecklist, type BuiltinSectionInput } from './checklist-pages/_factory'
+import { createBuiltinChecklist, type BuiltinSectionInput } from './checklist-factory'
 import { publicFirstLegChecklist } from './public-first-leg'
 import type { Checklist } from '~/types/checklist'
 

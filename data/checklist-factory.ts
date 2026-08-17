@@ -1,5 +1,5 @@
-import type { Checklist, ChecklistItem, ChecklistNote, ChecklistSection, ChecklistSectionCompletion } from '../../types/checklist'
-import { DEFAULT_EXPIRY_HOURS } from '../../utils/checklists'
+import type { Checklist, ChecklistItem, ChecklistNote, ChecklistSection, ChecklistSectionCompletion } from '../types/checklist'
+import { DEFAULT_EXPIRY_HOURS } from '../utils/checklists'
 
 export type BuiltinItemInput = {
   id: string

@@ -1,1 +1,0 @@
-<script setup lang="ts">definePageMeta({ layout: false }); const r = useRoute(); await navigateTo(`/private-checklists/${encodeURIComponent(String(r.params.passwords))}/custom/${encodeURIComponent(String(r.params.id))}`, { replace: true })</script>

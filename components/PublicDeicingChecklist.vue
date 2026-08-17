@@ -77,7 +77,7 @@ const content = computed(() => {
   return { ...raw, checklist: decoratePublicChecklist(raw.checklist, locale.value) }
 })
 const publicBuiltins = computed(() => publicBuiltinChecklists(locale.value))
-const { status, toggleItem: toggleStoredItem, setSection: setStoredSection, resetChecklist } = useChecklists({ scope: 'public', builtins: publicBuiltins })
+const { status, toggleItem: toggleStoredItem, setSection: setStoredSection, resetChecklist } = useChecklists({ builtins: publicBuiltins })
 const resetDialog = ref(false)
 const stats = computed(() => checklistStats(content.value.checklist, status.value))
 const railStatus = computed(() => stats.value.complete ? 'complete' : 'partial')

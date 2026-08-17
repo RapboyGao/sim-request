@@ -44,7 +44,7 @@ const route = useRoute()
 const localePath = useLocalePath()
 const { t, locale } = useI18n()
 const builtins = computed(() => publicBuiltinChecklists(locale.value))
-const { customChecklists, favorites } = useChecklists({ scope: 'public', builtins })
+const { customChecklists, favorites } = useChecklists({ builtins })
 const custom = computed(() => sortChecklistsByFavorite(customChecklists.value, favorites.value))
 const activeId = computed(() => {
   if (props.activeChecklistId !== undefined) return props.activeChecklistId

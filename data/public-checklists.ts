@@ -2,7 +2,7 @@ import { publicDeicingChecklist } from './public-deicing'
 import { publicFirstLegChecklist } from './public-first-leg'
 import { publicTurnaroundChecklist } from './public-turnaround'
 import { publicPreflightChecklist } from './public-preflight'
-import { createBuiltinChecklist } from './checklist-pages/_factory'
+import { createBuiltinChecklist } from './checklist-factory'
 import type { Checklist } from '~/types/checklist'
 
 const checklistId = 'no-engine-bleed-takeoff'
