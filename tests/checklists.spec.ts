@@ -106,7 +106,7 @@ describe('checklists data', () => {
   it('includes the public preflight checklist with stable sleep and departure items', () => {
     const checklist = publicBuiltinChecklists('zh-CN').find((item) => item.id === 'preflight')!
 
-    expect(checklist.title).toBe('737 航前检查单')
+    expect(checklist.title).toBe('航前检查单')
     expect(checklist.icon).toBe('mdi-airplane-check')
     expect(checklist.sections.map((section) => section.title)).toEqual(['睡前', '出发前'])
     expect(checklist.sections[0]?.items.map((item) => item.title)).toEqual([
