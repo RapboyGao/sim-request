@@ -3,12 +3,13 @@
 </template>
 
 <script setup lang="ts">
+const route = useRoute()
 const themeModeCookie = useCookie<'system' | 'light' | 'dark'>('booking-theme-mode', {
   default: () => 'system',
   sameSite: 'lax',
 })
 
-useHead({
+useHead(() => ({
   htmlAttrs: {
     'data-theme': themeModeCookie.value || 'system',
   },
@@ -17,6 +18,7 @@ useHead({
     return titleChunk ? `${titleChunk} · ${baseTitle}` : baseTitle
   },
   link: [
+    { rel: 'manifest', href: `/api/pwa-manifest?start_url=${encodeURIComponent(route.fullPath || '/')}` },
     { rel: 'icon', type: 'image/png', sizes: '64x64', href: '/favicon.png' },
     { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
   ],
@@ -30,5 +32,5 @@ useHead({
     { name: 'apple-mobile-web-app-capable', content: 'yes' },
     { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
   ],
-})
+}))
 </script>
