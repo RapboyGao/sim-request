@@ -51,6 +51,8 @@ const activeId = computed(() => {
   const path = route.path.replace(/\/$/, '')
   if (path.endsWith('/deicing')) return 'deicing'
   if (path.endsWith('/no-engine-bleed-takeoff')) return 'no-engine-bleed-takeoff'
+  const builtin = builtins.value.find((item) => path.endsWith(`/${item.id}`))
+  if (builtin) return builtin.id
   return String(route.params.id || '')
 })
 

@@ -31,6 +31,7 @@
           :exclusive-count-label="t('deicing.exclusiveCount')"
           @toggle="toggleItem"
           @set-all="setAll"
+          @reset-section="resetSection"
         />
 
         <div class="detail-footer">
@@ -79,6 +80,10 @@ function toggleItem(itemId: string) {
 
 function setAll(section: Checklist['sections'][number], checked: boolean) {
   setStoredSection(section, checked, content.value.checklist)
+}
+
+function resetSection(section: Checklist['sections'][number]) {
+  setStoredSection(section, false, content.value.checklist)
 }
 
 function reset() {

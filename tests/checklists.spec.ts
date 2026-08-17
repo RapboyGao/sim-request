@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { builtinChecklists } from '../data/checklists'
 import { publicDeicingChecklist } from '../data/public-deicing'
+import { publicFirstLegChecklist } from '../data/public-first-leg'
 import { CHECKLIST_ROUTE_IDS, DEFAULT_CHECKLIST_PASSWORD, checklistRoute, checklistsHomeRoute, customChecklistEditRoute, customChecklistRoute } from '../utils/checklist-routes'
 import { extractReadableChecklistNotes } from '../utils/checklist-source'
 import type { ChecklistStatus } from '../types/checklist'
@@ -41,21 +42,40 @@ describe('checklists data', () => {
   })
 
   it('includes the added First Leg and Next Legs operational items', () => {
-    for (const checklistId of ['first-leg', 'next-legs']) {
-      const checklist = builtinChecklists.find((item) => item.id === checklistId)!
-      const airplaneStatusOrProcedures = checklist.sections.find((section) => section.title === 'Airplane Status' || section.title === 'Procedures')!
-      const beforeDoorsClosing = checklist.sections.find((section) => section.title === 'Before Doors Closing')!
-      const beforeStart = checklist.sections.find((section) => section.title === 'Before Start')!
+    const publicChecklist = publicFirstLegChecklist('en')
+    const privateChecklists = builtinChecklists.filter((item) => item.id === 'first-leg' || item.id === 'next-legs')
+    const publicDocuments = publicChecklist.sections.find((section) => section.title === 'Documents')!
+    const publicBeforeStart = publicChecklist.sections.find((section) => section.title === 'Before Start')!
 
-      expect(airplaneStatusOrProcedures.items.map((item) => item.title)).toEqual(expect.arrayContaining([
-        'Destination',
-        'Alternate in Weather Request',
-        'PDC optional request',
-      ]))
-      expect(beforeDoorsClosing.items.map((item) => item.title)).toContain('New Plan has no Route Change, CLB in Cockpit or Cabin')
-      const beforeStartTitles = beforeStart.items.map((item) => item.title)
-      expect(beforeStartTitles.indexOf('Transition Altitude')).toBe(beforeStartTitles.indexOf('Initial Altitude') + 1)
-    }
+    expect(publicChecklist.sections.map((section) => section.title)).toEqual(['Aircraft Exterior', 'Third crew member', 'Cockpit', 'CDU', 'Documents', 'Before Start', 'Before Entering the Runway'])
+    expect(publicFirstLegChecklist('zh-CN').sections.find((section) => section.title === 'CDU')?.items.at(-1)?.description).toBe('如果FIX 页有其他用途，可以先飞到的点为准。')
+    expect(publicFirstLegChecklist('zh-CN').sections.find((section) => section.title === '第三位')?.items.map((item) => item.title)).toEqual([
+      '清洁袋 ...... 至少预留 10 个',
+      '擦手纸 ...... x1',
+      '塑料袋 ...... x1',
+      '大队/中队要求的其他工作 ...... 已完成',
+    ])
+    expect(publicFirstLegChecklist('zh-CN').sections.at(-1)?.description).toBe('以下项目仅由观察员完成并提醒')
+    expect(publicFirstLegChecklist('zh-CN').sections.at(-1)?.items.map((item) => item.title)).toEqual([
+      '翼梁/发动机活门关断灯 ...... 灭',
+      '手势、锁销、轮挡 ...... 检查',
+      '防撞灯 ...... 核实ON',
+      '组件(2个) ...... AUTO',
+      'ENG/SYS ...... 检查并清空',
+      '起飞前检查单 ...... 完成',
+      '客舱准备好 ...... 收到',
+      '离场频率 ...... 预调',
+    ])
+    expect(publicDocuments.items.map((item) => item.title)).toContain('CLB in cockpit or cabin')
+    expect(publicBeforeStart.items.map((item) => item.title)).toContain('Transition altitude in the CDU')
+    expect(publicBeforeStart.items.find((item) => item.title === 'Initial altitude')?.id).toBe('public-first-leg.before-start.initial-altitude')
+    expect(publicBeforeStart.items[5]?.title).toBe('Transition altitude in the CDU')
+    expect(publicChecklist.sections.flatMap((section) => section.items.map((item) => item.title))).toEqual(expect.arrayContaining([
+      'Destination four-letter code ...... Check',
+      'All aircraft logbooks in the cockpit',
+      'Preflight checklist ...... Complete',
+    ]))
+    expect(privateChecklists).toHaveLength(2)
   })
 
   it('contains the revised bilingual public deicing procedures', () => {

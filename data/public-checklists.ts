@@ -1,4 +1,5 @@
 import { publicDeicingChecklist } from './public-deicing'
+import { publicFirstLegChecklist } from './public-first-leg'
 import { createBuiltinChecklist } from './checklist-pages/_factory'
 import type { Checklist } from '~/types/checklist'
 
@@ -130,5 +131,5 @@ export function noEngineBleedTakeoffChecklist(locale: string): Checklist {
 export const noEngineBleedTakeoffChecklistDefault = noEngineBleedTakeoffChecklist('zh-CN')
 
 export function publicBuiltinChecklists(locale: string): Checklist[] {
-  return [publicDeicingChecklist(locale).checklist, noEngineBleedTakeoffChecklist(locale)]
+  return [publicDeicingChecklist(locale).checklist, noEngineBleedTakeoffChecklist(locale), publicFirstLegChecklist(locale)]
 }

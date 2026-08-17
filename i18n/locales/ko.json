@@ -12,6 +12,7 @@
     "checklistsCustom": "사용자 지정 체크리스트",
     "checklistsMenu": "체크리스트 메뉴",
     "checklistsReset": "체크리스트 초기화",
+    "checklistsResetSection": "섹션 초기화",
     "checklistsCurrent": "현재 체크리스트",
     "checklistsEdit": "체크리스트 편집",
     "checklistsDuplicate": "체크리스트 복제",

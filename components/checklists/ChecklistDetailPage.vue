@@ -65,6 +65,7 @@
       class="sections-stack"
       @toggle="toggleItem"
       @set-all="setAll"
+      @reset-section="resetSection"
     />
 
     <div class="detail-footer">
@@ -151,6 +152,10 @@ function toggleItem(itemId: string) {
 
 function setAll(section: Checklist['sections'][number], checked: boolean) {
   if (checklist.value) setSection(section, checked, checklist.value)
+}
+
+function resetSection(section: Checklist['sections'][number]) {
+  if (checklist.value) setSection(section, false, checklist.value)
 }
 
 function reset() {

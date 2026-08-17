@@ -2,7 +2,8 @@
   <section class="checklists-section">
     <div class="section-rail" :class="railClass" />
     <div class="section-content">
-      <button class="section-header" :class="{ 'section-header--disabled': disabled }" type="button" :disabled="disabled" @click="toggleSection">
+      <div class="section-header" :class="{ 'section-header--disabled': disabled }">
+        <button class="section-header-main" type="button" :disabled="disabled" @click="toggleSection">
         <div>
           <div class="section-title-row">
             <div class="section-title">{{ section.title }}</div>
@@ -15,13 +16,19 @@
             <v-icon icon="mdi-lock-outline" size="14" class="mr-1" />{{ disabledHint }}
           </div>
         </div>
+        </button>
         <div class="section-header-actions">
-          <v-progress-circular :model-value="sectionStats.progress * 100" :color="sectionStats.complete ? 'success' : 'primary'" size="34" width="4">
-            <span class="progress-number">{{ Math.round(sectionStats.progress * 100) }}</span>
-          </v-progress-circular>
-          <v-icon v-if="sectionStats.complete" icon="mdi-checkbox-marked-circle-outline" />
+          <v-btn
+            icon="mdi-backup-restore"
+            variant="text"
+            size="small"
+            :aria-label="t('app.checklistsResetSection')"
+            :title="t('app.checklistsResetSection')"
+            :disabled="disabled || sectionStats.checked === 0"
+            @click.stop="resetSection"
+          />
         </div>
-      </button>
+      </div>
 
       <div class="section-items">
         <button
@@ -70,6 +77,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   toggle: [itemId: string]
   setAll: [section: ChecklistSection, checked: boolean]
+  resetSection: [section: ChecklistSection]
 }>()
 
 const stats = computed(() => getSectionStats(props.section, props.status))
@@ -95,6 +103,12 @@ function toggleItem(itemId: string) {
 function toggleSection() {
   if (props.disabled) return
   emit('setAll', props.section, !sectionStats.value.complete)
+  refreshNow()
+}
+
+function resetSection() {
+  if (props.disabled || sectionStats.value.checked === 0) return
+  emit('resetSection', props.section)
   refreshNow()
 }
 
@@ -157,15 +171,23 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 16px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  background: var(--surface-elevated);
+  padding: 8px 0 8px;
   color: var(--text);
+  text-align: left;
+}
+.section-header-main {
+  min-width: 0;
+  flex: 1;
+  display: block;
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
   text-align: left;
   cursor: pointer;
 }
-.section-header--disabled { opacity: .58; cursor: not-allowed; }
+.section-header-main:disabled { cursor: not-allowed; }
+.section-header--disabled { opacity: .58; }
 
 .section-title-row { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
 .section-title { font-weight: 750; font-size: 1.04rem; }
@@ -173,7 +195,6 @@ onBeforeUnmount(() => {
 .section-meta { display: flex; gap: 12px; color: var(--muted); font-size: .82rem; margin-top: 4px; }
 .section-disabled-detail { display: flex; align-items: center; color: var(--muted); font-size: .78rem; margin-top: 6px; }
 .section-header-actions { display: flex; align-items: center; gap: 10px; color: var(--muted); }
-.progress-number { font-size: .68rem; font-weight: 700; }
 
 .section-items { display: grid; gap: 8px; padding: 10px 0 20px; }
 
@@ -214,6 +235,7 @@ onBeforeUnmount(() => {
 @media (max-width: 600px) {
   .checklists-section { gap: 8px; }
   .section-rail { flex-basis: 5px; }
-  .section-header, .check-item { padding: 13px 12px; }
+  .section-header { padding: 6px 0; }
+  .check-item { padding: 13px 12px; }
 }
 </style>

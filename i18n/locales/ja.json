@@ -12,6 +12,7 @@
     "checklistsCustom": "カスタムチェックリスト",
     "checklistsMenu": "チェックリストメニュー",
     "checklistsReset": "チェックリストをリセット",
+    "checklistsResetSection": "セクションをリセット",
     "checklistsCurrent": "現在のチェックリスト",
     "checklistsEdit": "チェックリストを編集",
     "checklistsDuplicate": "チェックリストを複製",

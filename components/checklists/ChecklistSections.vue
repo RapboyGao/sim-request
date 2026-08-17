@@ -22,6 +22,7 @@
             :previous-sections-complete="previousSectionsComplete(sectionIndex(section))"
             @toggle="toggleItem"
             @set-all="setAll"
+            @reset-section="resetSection"
           />
         </div>
       </div>
@@ -33,6 +34,7 @@
         :previous-sections-complete="previousSectionsComplete(block.sectionIndex)"
         @toggle="toggleItem"
         @set-all="setAll"
+        @reset-section="resetSection"
       />
     </template>
   </div>
@@ -71,6 +73,7 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
   toggle: [itemId: string]
   setAll: [section: ChecklistSectionData, checked: boolean]
+  resetSection: [section: ChecklistSectionData]
 }>()
 
 const groups = computed(() => exclusiveSectionGroups(props.checklist))
@@ -121,6 +124,10 @@ function toggleItem(itemId: string) {
 
 function setAll(section: ChecklistSectionData, checked: boolean) {
   emit('setAll', section, checked)
+}
+
+function resetSection(section: ChecklistSectionData) {
+  emit('resetSection', section)
 }
 </script>
 

@@ -37,6 +37,7 @@ export const nextLegsChecklist = createBuiltinChecklist(
         item("procedures.jepp-route", "Jepp Route"),
         item("procedures.alternate-in-weather-request", "Alternate in Weather Request"),
         item("procedures.pdc-optional-request", "PDC optional request"),
+        item("procedures.acc-height", "Acceleration Height"),
       ],
     },
     {
@@ -72,7 +73,7 @@ export const nextLegsChecklist = createBuiltinChecklist(
         { id: "next-legs.before-start.dual-bleed", title: "Dual Bleed" },
         item("before-start.eosid", "EOSID"),
         item("before-start.comms", "Comms"),
-        item("before-start.voice-recorder", "Voice Recorder"),
+        item("before-start.voice-recorder-2", "Voice Recorder"),
         item("before-start.departure-clearance", "Verify Departure Clearance"),
         item("before-start.lateral-mode", "Lateral Mode"),
         item("before-start.initial-altitude", "Initial Altitude"),
