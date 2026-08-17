@@ -135,16 +135,30 @@ function layerForPressure(pressurePa: number) {
   })
 }
 
-export function pressureFromAltitude(altitudeM: number) {
+export type StandardAtmosphere = {
+  pressurePa: number
+  temperatureK: number
+}
+
+export function standardAtmosphereFromAltitude(altitudeM: number): StandardAtmosphere {
   if (!Number.isFinite(altitudeM) || altitudeM > MAX_ALTITUDE_METERS) {
     throw new RangeError('Altitude must be below 86 km.')
   }
 
-  const pressure = pressureInLayer(altitudeM, layerForAltitude(altitudeM))
-  if (!Number.isFinite(pressure)) {
+  const layer = layerForAltitude(altitudeM)
+  const deltaAltitude = altitudeM - layer.baseAltitudeM
+  const temperatureK = layer.baseTemperatureK + layer.lapseRateKPerM * deltaAltitude
+  const pressurePa = pressureInLayer(altitudeM, layer)
+
+  if (!Number.isFinite(pressurePa) || !Number.isFinite(temperatureK) || temperatureK <= 0) {
     throw new RangeError('Altitude is outside the supported numeric range.')
   }
-  return pressure
+
+  return { pressurePa, temperatureK }
+}
+
+export function pressureFromAltitude(altitudeM: number) {
+  return standardAtmosphereFromAltitude(altitudeM).pressurePa
 }
 
 export function altitudeFromPressure(pressurePa: number) {

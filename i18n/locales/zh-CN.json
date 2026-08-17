@@ -4,6 +4,19 @@
     "navBooking": "预约提交",
     "navRules": "预约规则",
     "navBarometric": "高度 / 气压换算",
+    "navAirspeed": "空地速换算",
+    "navDeicing": "除冰程序",
+    "navChecklists": "检查单",
+    "checklistsHome": "检查单首页",
+    "checklistsBuiltin": "内置检查单",
+    "checklistsCustom": "自定义检查单",
+    "checklistsMenu": "检查单目录",
+    "checklistsReset": "重置检查单",
+    "checklistsResetSection": "重置 Section",
+    "checklistsCurrent": "当前检查单",
+    "checklistsEdit": "编辑检查单",
+    "checklistsDuplicate": "复制检查单",
+    "checklistsDelete": "删除检查单",
     "navCalendar": "预约日历",
     "navAdmin": "管理页",
     "navLanguage": "语言",
@@ -12,6 +25,15 @@
     "themeLight": "浅色",
     "themeDark": "深色",
     "navPeople": "按人查看"
+  },
+  "checklistTime": {
+    "justNow": "刚刚",
+    "minuteAgo": "{count} 分钟前",
+    "minutesAgo": "{count} 分钟前",
+    "hourAgo": "{count} 小时前",
+    "hoursAgo": "{count} 小时前",
+    "dayAgo": "{count} 天前",
+    "daysAgo": "{count} 天前"
   },
   "home": {
     "eyebrow": "Observation 预约",
@@ -94,6 +116,72 @@
         "mmHg": "mmHg — 毫米汞柱"
       }
     }
+  },
+  "deicing": {
+    "eyebrow": "737 除冰检查单",
+    "progress": "完成进度",
+    "reset": "重置",
+    "copy": "复制说明",
+    "copied": "说明已复制",
+    "copyUnavailable": "当前浏览器不支持复制",
+    "checkSection": "完成本组",
+    "uncheckSection": "取消本组",
+    "resetConfirm": "当前页面的所有勾选状态都会被清除。",
+    "cancel": "取消",
+    "exclusiveGroupName": "选一组完成",
+    "exclusiveDisabled": "已选择另一分组",
+    "exclusiveCount": "项选 1"
+  },
+  "airspeed": {
+    "eyebrow": "飞行速度计算器",
+    "title": "GS / TAS / Mach / CAS 互换",
+    "summary": "输入任意一种速度，结合高度、温度和风场计算其余速度。",
+    "inputEyebrow": "飞行条件",
+    "inputTitle": "输入大气条件与风",
+    "speedEyebrow": "速度换算",
+    "speedTitle": "GS / TAS / Mach / CAS 互相换算",
+    "modes": { "gs": "地速 GS", "tas": "真空速 TAS", "mach": "马赫数 Mach", "cas": "校准空速 CAS" },
+    "fields": {
+      "gs": "输入地速 GS",
+      "tas": "输入真空速 TAS",
+      "mach": "输入马赫数 Mach",
+      "cas": "输入校准空速 CAS",
+      "altitude": "高度",
+      "sat": "静温 SAT",
+      "isaDeviation": "ISA 偏差",
+      "windFrom": "风向（来向）",
+      "windSpeed": "风速",
+      "track": "航迹"
+    },
+    "unit": "单位",
+    "units": { "kt": "kt — 节", "km/h": "km/h — 千米/时", "mph": "mph — 英里/时", "m/s": "m/s — 米/秒" },
+    "temperatureHint": "该高度的 ISA 标准温度：{temperature} °C",
+    "errors": {
+      "invalid-input": "请输入有效的高度、温度、速度和方向。",
+      "unsupported-supersonic": "当前仅支持亚音速计算（Mach < 1）。",
+      "track-unachievable": "当前 TAS 与风场无法保持指定航迹。"
+    },
+    "resultEyebrow": "空地速与温度",
+    "resultTitle": "空地速与温度",
+    "results": {
+      "gs": "地速 GS",
+      "tas": "真空速 TAS",
+      "mach": "马赫数 Mach",
+      "cas": "校准空速 CAS",
+      "tat": "总空气温度 TAT",
+      "heading": "计算航向",
+      "headwind": "顺 / 逆风分量",
+      "crosswind": "侧风分量"
+    },
+    "vectors": { "tas": "真空速", "wind": "风速", "gs": "地速" },
+    "chartEyebrow": "风三角",
+    "chartTitle": "风速、真空速与地速",
+    "chartHint": "真空速向量 + 风速向量 = 地速向量；风向按来向输入，图中按去向绘制。",
+    "chartUnavailable": "当前输入无法绘制有效风三角。",
+    "qrEyebrow": "分享页面",
+    "qrTitle": "扫码打开此页面",
+    "qrHint": "使用手机相机扫描下方二维码。",
+    "qrAlt": "当前页面二维码"
   },
   "rules": {
     "eyebrow": "Observation 预约",

@@ -4,6 +4,19 @@
     "navBooking": "Book",
     "navRules": "Rules",
     "navBarometric": "Altitude / pressure",
+    "navAirspeed": "Airspeed converter",
+    "navDeicing": "Deicing procedures",
+    "navChecklists": "Checklists",
+    "checklistsHome": "Checklist home",
+    "checklistsBuiltin": "Built-in checklists",
+    "checklistsCustom": "Custom checklists",
+    "checklistsMenu": "Checklist menu",
+    "checklistsReset": "Reset checklist",
+    "checklistsResetSection": "Reset section",
+    "checklistsCurrent": "Current checklist",
+    "checklistsEdit": "Edit checklist",
+    "checklistsDuplicate": "Duplicate checklist",
+    "checklistsDelete": "Delete checklist",
     "navCalendar": "Calendar",
     "navAdmin": "Admin",
     "navLanguage": "Language",
@@ -12,6 +25,15 @@
     "themeLight": "Light",
     "themeDark": "Dark",
     "navPeople": "By person"
+  },
+  "checklistTime": {
+    "justNow": "just now",
+    "minuteAgo": "{count} minute ago",
+    "minutesAgo": "{count} minutes ago",
+    "hourAgo": "{count} hour ago",
+    "hoursAgo": "{count} hours ago",
+    "dayAgo": "{count} day ago",
+    "daysAgo": "{count} days ago"
   },
   "home": {
     "eyebrow": "Observation Booking",
@@ -94,6 +116,72 @@
         "mmHg": "mmHg — millimetres of mercury"
       }
     }
+  },
+  "deicing": {
+    "eyebrow": "737 deicing checklist",
+    "progress": "Progress",
+    "reset": "Reset",
+    "copy": "Copy note",
+    "copied": "Note copied",
+    "copyUnavailable": "Copy is not available in this browser",
+    "checkSection": "Complete section",
+    "uncheckSection": "Uncheck section",
+    "resetConfirm": "All checked items on this page will be cleared.",
+    "cancel": "Cancel",
+    "exclusiveGroupName": "Choose one group",
+    "exclusiveDisabled": "Another section is selected",
+    "exclusiveCount": "sections · choose 1"
+  },
+  "airspeed": {
+    "eyebrow": "Flight speed calculator",
+    "title": "GS / TAS / Mach / CAS converter",
+    "summary": "Enter any one speed and calculate the others from altitude, temperature, and wind.",
+    "inputEyebrow": "Flight conditions",
+    "inputTitle": "Atmosphere and wind inputs",
+    "speedEyebrow": "Speed conversion",
+    "speedTitle": "GS / TAS / Mach / CAS conversion",
+    "modes": { "gs": "Ground speed GS", "tas": "True airspeed TAS", "mach": "Mach number", "cas": "Calibrated airspeed CAS" },
+    "fields": {
+      "gs": "Input ground speed GS",
+      "tas": "Input true airspeed TAS",
+      "mach": "Input Mach number",
+      "cas": "Input calibrated airspeed CAS",
+      "altitude": "Altitude",
+      "sat": "Static air temperature SAT",
+      "isaDeviation": "ISA deviation",
+      "windFrom": "Wind direction (from)",
+      "windSpeed": "Wind speed",
+      "track": "Ground track"
+    },
+    "unit": "Unit",
+    "units": { "kt": "kt — knots", "km/h": "km/h", "mph": "mph", "m/s": "m/s" },
+    "temperatureHint": "ISA standard temperature at this altitude: {temperature} °C",
+    "errors": {
+      "invalid-input": "Enter valid altitude, temperature, speed, and direction values.",
+      "unsupported-supersonic": "Only subsonic calculations are supported (Mach < 1).",
+      "track-unachievable": "The selected TAS and wind cannot maintain the requested track."
+    },
+    "resultEyebrow": "Air and ground speed & temperature",
+    "resultTitle": "Air and ground speed",
+    "results": {
+      "gs": "Ground speed GS",
+      "tas": "True airspeed TAS",
+      "mach": "Mach number",
+      "cas": "Calibrated airspeed CAS",
+      "tat": "Total air temperature TAT",
+      "heading": "Calculated heading",
+      "headwind": "Headwind / tailwind",
+      "crosswind": "Crosswind"
+    },
+    "vectors": { "tas": "True airspeed", "wind": "Wind", "gs": "Ground speed" },
+    "chartEyebrow": "Wind triangle",
+    "chartTitle": "Wind, true airspeed, and ground speed",
+    "chartHint": "True airspeed vector + wind vector = ground speed vector. Wind is entered from and drawn to.",
+    "chartUnavailable": "A valid wind triangle is not available for the current inputs.",
+    "qrEyebrow": "Share this page",
+    "qrTitle": "Scan to open this page",
+    "qrHint": "Use your phone camera to scan the QR code.",
+    "qrAlt": "QR code for this page"
   },
   "rules": {
     "eyebrow": "Observation Booking",

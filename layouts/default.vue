@@ -24,23 +24,14 @@
             />
           </v-list>
         </v-menu>
-        <v-menu>
+        <v-menu v-model="menuOpen" :close-on-content-click="false">
           <template #activator="{ props }">
             <v-btn icon variant="text" v-bind="props" :aria-label="t('app.title')">
               <v-icon icon="mdi-menu" />
             </v-btn>
           </template>
           <v-list density="compact">
-            <v-list-item :to="localePath('/')" :title="t('app.navBooking')" prepend-icon="mdi-bookmark-plus-outline" />
-            <v-list-item :to="localePath('/people')" :title="t('app.navPeople')" prepend-icon="mdi-account-group-outline" />
-            <v-list-item :to="localePath('/calendar')" :title="t('app.navCalendar')"
-            prepend-icon="mdi-calendar-month-outline" />
-            <v-list-item :to="localePath('/rules')" :title="t('app.navRules')"
-              prepend-icon="mdi-book-open-variant-outline" />
-            <v-list-item :to="localePath('/barometric')" :title="t('app.navBarometric')"
-              prepend-icon="mdi-weather-windy" />
-            <v-list-item :to="localePath('/admin')" :title="t('app.navAdmin')"
-              prepend-icon="mdi-shield-account-outline" />
+            <AppNavigationMenuContent @select="menuOpen = false" />
           </v-list>
         </v-menu>
       </div>
@@ -55,14 +46,7 @@
           @click="cycleThemeMode"
         >
         </v-list-item>
-        <v-list-item :to="localePath('/')" :title="t('app.navBooking')" prepend-icon="mdi-bookmark-plus-outline" />
-        <v-list-item :to="localePath('/people')" :title="t('app.navPeople')" prepend-icon="mdi-account-group-outline" />
-        <v-list-item :to="localePath('/calendar')" :title="t('app.navCalendar')"
-        prepend-icon="mdi-calendar-month-outline" />
-        <v-list-item :to="localePath('/rules')" :title="t('app.navRules')"
-        prepend-icon="mdi-book-open-variant-outline" />
-        <v-list-item :to="localePath('/barometric')" :title="t('app.navBarometric')" prepend-icon="mdi-weather-windy" />
-        <v-list-item :to="localePath('/admin')" :title="t('app.navAdmin')" prepend-icon="mdi-shield-account-outline" />
+        <AppNavigationMenuContent mobile @select="drawer = false" />
         <v-divider class="my-2" />
         <v-list-subheader>{{ t('app.navLanguage') }}</v-list-subheader>
         <v-list-item
@@ -90,12 +74,14 @@
 </template>
 
 <script setup lang="ts">
+import AppNavigationMenuContent from '~/components/AppNavigationMenuContent.vue'
 const { themeMode, setThemeMode, themeModeIcon, themeModeColor, themeModeLabel } = useThemeMode()
 const { t, locale, locales } = useI18n()
 const localePath = useLocalePath()
 const switchLocalePath = useSwitchLocalePath()
 const route = useRoute()
 const drawer = ref(false)
+const menuOpen = ref(false)
 const { active: routeLoading } = useRouteLoading()
 
 const pageTitleKeys: Record<string, string> = {
@@ -104,6 +90,8 @@ const pageTitleKeys: Record<string, string> = {
   '/calendar': 'app.navCalendar',
   '/rules': 'app.navRules',
   '/barometric': 'app.navBarometric',
+  '/airspeed': 'app.navAirspeed',
+  '/deicing': 'app.navChecklists',
   '/admin': 'app.navAdmin',
 }
 
