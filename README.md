@@ -14,7 +14,6 @@ Nuxt 4 + Vuetify 预约模拟机观摩时段系统。
 | `SUPABASE_BOOKINGS_TABLE` | 可选 | 预约表名，默认 `bookings` |
 | `ADMIN_USERNAME` | 生产必需 | 管理页面登录用户名 |
 | `ADMIN_PASSWORD` | 生产必需 | 管理页面登录密码，必须使用强密码 |
-| `NUXT_PUBLIC_CHECKLISTS_PASSWORD` | 可选 | 私密检查单 URL 参数，默认 `13515`；它不是服务端鉴权 |
 | `BOOKING_STORAGE_FILE` | 本地可选 | 本地 JSON 数据文件路径，生产环境不使用 |
 
 Netlify 不会自动读取仓库中的 `.env` 文件。生产环境请在 Netlify 项目的 **Project configuration → Environment variables** 中配置变量，并确保变量同时可用于 **Builds** 和 **Functions**；修改变量后需要重新部署。`SUPABASE_SECRET_KEY` 和 `ADMIN_PASSWORD` 应标记为 secret。
@@ -52,10 +51,9 @@ pnpm build
    - `SUPABASE_SECRET_KEY`
    - `ADMIN_USERNAME`
    - `ADMIN_PASSWORD`
-   - `NUXT_PUBLIC_CHECKLISTS_PASSWORD`（可选）
    - `SUPABASE_BOOKINGS_TABLE`（可选，默认 `bookings`）
 6. 部署完成后访问 `https://<你的站点域名>/api/health`，确认 `productionReady: true`，且 `supabase.url`、`supabase.publishableKey`、`supabase.secretKey`、`admin.credentials` 均为 `true`。
-7. 首次上线后验证：公开检查单、私密检查单、气压/空速换算、管理页登录，以及在线访问后断网刷新检查单页面。
+7. 首次上线后验证：公开检查单、气压/空速换算、管理页登录，以及在线访问后断网刷新公开检查单页面。
 8. PWA 页面需要先在线打开一次；所有页面界面均可离线打开，但预约提交、按人查看和预约日历的数据接口仍然需要网络。
 
 注意：旧版本源码中的管理密码如果曾经被使用过，应在上线前立即更换；删除源码中的硬编码不会使已经泄露的旧密码失效。
@@ -71,7 +69,6 @@ pnpm build
    - `SUPABASE_SECRET_KEY`
    - `ADMIN_USERNAME`
    - `ADMIN_PASSWORD`
-   - 可选：`NUXT_PUBLIC_CHECKLISTS_PASSWORD`
    - 可选：`SUPABASE_BOOKINGS_TABLE`
 5. 数据库仍然只使用 Supabase，不使用 EdgeOne KV。
 6. EdgeOne Node 版本建议使用 `20`。

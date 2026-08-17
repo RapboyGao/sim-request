@@ -15,7 +15,6 @@
 - Optional: `SUPABASE_BOOKINGS_TABLE=bookings`
 - `ADMIN_USERNAME`
 - `ADMIN_PASSWORD`
-- Optional: `NUXT_PUBLIC_CHECKLISTS_PASSWORD` (defaults to `13515`; this is only a URL gate, not authentication)
 
 Configure these in Netlify Project configuration → Environment variables and make them available to both Builds and Functions. Mark `SUPABASE_SECRET_KEY` and `ADMIN_PASSWORD` as secret values. The secret key must be the Supabase server/service-role key and must never be exposed through `runtimeConfig.public`.
 

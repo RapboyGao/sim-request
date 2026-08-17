@@ -1,4 +1,4 @@
-import { createBuiltinChecklist, type BuiltinSectionInput } from "./checklist-pages/_factory";
+import { createBuiltinChecklist, type BuiltinSectionInput } from './checklist-factory'
 import type { Checklist } from "~/types/checklist";
 
 type LocalizedFirstLeg = {

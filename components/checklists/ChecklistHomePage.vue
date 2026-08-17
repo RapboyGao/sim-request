@@ -32,18 +32,14 @@
 <script setup lang="ts">
 import ChecklistCard from '~/components/checklists/ChecklistCard.vue'
 import type { Checklist } from '~/types/checklist'
-import type { ChecklistScope } from '~/composables/useChecklists'
-import { publicChecklistRoute, publicChecklistsHomeRoute, publicCustomChecklistEditRoute, publicCustomChecklistRoute, privateChecklistRoute, privateCustomChecklistEditRoute, privateCustomChecklistRoute, privateChecklistsHomeRoute } from '~/utils/checklist-routes'
+import { publicChecklistRoute, publicCustomChecklistEditRoute, publicCustomChecklistRoute } from '~/utils/checklist-routes'
 import { sortChecklistsByFavorite } from '~/utils/checklists'
 
-const props = defineProps<{ scope: ChecklistScope; builtins: Checklist[]; passwords?: string }>()
-const route = useRoute()
+const props = defineProps<{ builtins: Checklist[] }>()
 const localePath = useLocalePath()
-const publicBuiltins = computed(() => props.builtins)
-const { allChecklists, status, favorites, addChecklist, createBackup, importBackup: restoreBackup, toggleFavorite } = useChecklists({ scope: props.scope, builtins: publicBuiltins })
+const { allChecklists, status, favorites, addChecklist, createBackup, importBackup: restoreBackup, toggleFavorite } = useChecklists({ builtins: computed(() => props.builtins) })
 const fileInput = ref<HTMLInputElement | null>(null)
 const snackbar = reactive({ open: false, message: '', color: 'success' })
-const homeRoute = () => props.scope === 'public' ? publicChecklistsHomeRoute() : privateChecklistsHomeRoute(String(props.passwords || route.params.passwords || ''))
 
 const checklistGroups = computed(() => [
   { key: 'builtin', title: '内置检查单', items: sortChecklistsByFavorite(allChecklists.value.filter((item) => item.source === 'builtin'), favorites.value) },
@@ -53,13 +49,11 @@ const checklistGroups = computed(() => [
 function openChecklist(id: string) {
   const target = allChecklists.value.find((item) => item.id === id)
   if (!target) return
-  navigateTo(localePath(props.scope === 'public'
-    ? (target.source === 'builtin' ? publicChecklistRoute(id) : publicCustomChecklistRoute(id))
-    : (target.source === 'builtin' ? privateChecklistRoute(String(props.passwords || route.params.passwords || ''), id) : privateCustomChecklistRoute(String(props.passwords || route.params.passwords || ''), id))))
+  navigateTo(localePath(target.source === 'builtin' ? publicChecklistRoute(id) : publicCustomChecklistRoute(id)))
 }
 function createNew() {
   const id = addChecklist()
-  if (id) navigateTo(localePath(props.scope === 'public' ? publicCustomChecklistEditRoute(id) : privateCustomChecklistEditRoute(String(props.passwords || route.params.passwords || ''), id)))
+  if (id) navigateTo(localePath(publicCustomChecklistEditRoute(id)))
 }
 function exportBackup() {
   const blob = new Blob([JSON.stringify(createBackup(), null, 2)], { type: 'application/json;charset=utf-8' })

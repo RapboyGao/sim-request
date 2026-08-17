@@ -1,4 +1,4 @@
-<template><ChecklistHomePage scope="public" :builtins="builtins" /></template>
+<template><ChecklistHomePage :builtins="builtins" /></template>
 
 <script setup lang="ts">
 import ChecklistHomePage from '~/components/checklists/ChecklistHomePage.vue'

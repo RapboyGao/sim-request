@@ -121,19 +121,19 @@
 
 <script setup lang="ts">
 import ChecklistSections from '~/components/checklists/ChecklistSections.vue'
+import { publicBuiltinChecklists } from '~/data/public-checklists'
 import type { Checklist } from '~/types/checklist'
 import { useChecklistsPageActions } from '~/composables/useChecklistsPageActions'
 import { extractReadableChecklistNotes, type ReadableChecklistNote } from '~/utils/checklist-source'
 import { checklistStats } from '~/utils/checklists'
-import type { ChecklistScope } from '~/composables/useChecklists'
-import { privateChecklistsHomeRoute, privateCustomChecklistEditRoute, privateCustomChecklistRoute, publicChecklistsHomeRoute, publicCustomChecklistEditRoute, publicCustomChecklistRoute } from '~/utils/checklist-routes'
+import { publicChecklistRoute, publicChecklistsHomeRoute, publicCustomChecklistEditRoute, publicCustomChecklistRoute } from '~/utils/checklist-routes'
 
-const props = defineProps<{ checklistId?: string; checklist?: Checklist; scope?: ChecklistScope; builtins?: Checklist[] }>()
-const route = useRoute()
+const props = defineProps<{ checklistId?: string; checklist?: Checklist }>()
 const router = useRouter()
 const localePath = useLocalePath()
-const scope = props.scope || 'private'
-const { allChecklists, status, toggleItem: toggleStoredItem, setSection, resetChecklist, duplicateChecklist, deleteChecklist } = useChecklists({ scope, builtins: computed(() => props.builtins || []) })
+const { locale } = useI18n()
+const builtins = computed(() => publicBuiltinChecklists(locale.value))
+const { allChecklists, status, toggleItem: toggleStoredItem, setSection, resetChecklist, duplicateChecklist, deleteChecklist } = useChecklists({ builtins })
 const { register: registerPageActions } = useChecklistsPageActions()
 const resetDialog = ref(false)
 const deleteDialog = ref(false)
@@ -161,10 +161,9 @@ const railStatusLabel = computed(() => ({
   complete: '已完成',
   partial: '部分完成',
 }[railStatus.value]))
-const passwords = computed(() => String(route.params.passwords || ''))
-const homeRoute = () => localePath(scope === 'public' ? publicChecklistsHomeRoute() : privateChecklistsHomeRoute(passwords.value))
-const customRoute = (id: string) => localePath(scope === 'public' ? publicCustomChecklistRoute(id) : privateCustomChecklistRoute(passwords.value, id))
-const editRoute = (id: string) => localePath(scope === 'public' ? publicCustomChecklistEditRoute(id) : privateCustomChecklistEditRoute(passwords.value, id))
+const homeRoute = () => localePath(publicChecklistsHomeRoute())
+const customRoute = (id: string) => localePath(publicCustomChecklistRoute(id))
+const editRoute = (id: string) => localePath(publicCustomChecklistEditRoute(id))
 
 function toggleItem(itemId: string) {
   if (checklist.value) toggleStoredItem(itemId, checklist.value)

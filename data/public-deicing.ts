@@ -1,5 +1,5 @@
-import { b737DeicingEnSource, b737DeicingZhSource } from './checklist-source-documents'
-import { createBuiltinChecklist } from './checklist-pages/_factory'
+import { b737DeicingEnSource, b737DeicingZhSource } from './public-checklist-source-documents'
+import { createBuiltinChecklist } from './checklist-factory'
 import type { Checklist } from "~/types/checklist";
 
 const item = (id: string, title: string, isEmphasized = false, description = '') => ({

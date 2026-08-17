@@ -16,7 +16,6 @@
 - Optional: `SUPABASE_BOOKINGS_TABLE=bookings`
 - `ADMIN_USERNAME`
 - `ADMIN_PASSWORD`
-- Optional: `NUXT_PUBLIC_CHECKLISTS_PASSWORD` (defaults to `13515`; this is only a URL gate, not authentication)
 
 ## 数据库
 

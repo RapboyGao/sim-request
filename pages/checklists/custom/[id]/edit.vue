@@ -8,7 +8,7 @@ import type { Checklist } from '~/types/checklist'
 import { publicChecklistsHomeRoute, publicCustomChecklistRoute } from '~/utils/checklist-routes'
 definePageMeta({ layout: 'checklists' })
 const route = useRoute(); const router = useRouter()
-const { customChecklists, updateChecklist } = useChecklists({ scope: 'public', builtins: computed(() => []) })
+const { customChecklists, updateChecklist } = useChecklists()
 const checklist = computed(() => customChecklists.value.find((item) => item.id === String(route.params.id || '')))
 function goHome() { router.push(publicChecklistsHomeRoute()) }
 function cancel() { checklist.value ? router.push(publicCustomChecklistRoute(checklist.value.id)) : goHome() }
