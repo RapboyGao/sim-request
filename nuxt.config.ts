@@ -1,10 +1,5 @@
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 
-const onlineOnlyNavigationDenylist = [
-  /^\/(?:(?:en|ja|ko|fr)(?:\/)?)?$/,
-  /^\/(?:(?:en|ja|ko|fr)\/)?(?:calendar|people)(?:\/|$)/,
-]
-
 export default defineNuxtConfig({
   ssr: false,
   compatibilityDate: '2026-04-10',
@@ -93,7 +88,7 @@ export default defineNuxtConfig({
     workbox: {
       cleanupOutdatedCaches: true,
       navigateFallback: '/checklists/',
-      navigateFallbackDenylist: [/^\/api\//, ...onlineOnlyNavigationDenylist],
+      navigateFallbackDenylist: [/^\/api\//],
       additionalManifestEntries: [
         { url: '/checklists/', revision: 'app-shell-v1' },
       ],
