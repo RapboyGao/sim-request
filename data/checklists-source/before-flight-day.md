@@ -126,7 +126,12 @@ let itemsInsidePackage = [
     - FL330 257kt=.73 / 255kt=.7239
     - 颠簸最高飞FL351
 
-(以上于 29 Apr 2026 更新)
+## 检查单
+
+16. 首班航段地面应完成（__PUBLIC_FIRST_LEG_URL__）
+    过站航段应完成（__PUBLIC_TURNAROUND_URL__）
+
+(以上于 17 Aug 2026 更新)
 
 以上仅用于确保安全/免于责罚，且与平时习惯不同，请仔细阅读。
 ```
@@ -210,7 +215,12 @@ let itemsInsidePackage = [
     - FL330 257kt=.73 / 255kt=.7239
     - 颠簸最高飞FL351
 
-(以上于 29 Apr 2026 更新)
+## 检查单
+
+16. 首班航段地面应完成（__PUBLIC_FIRST_LEG_URL__）
+    过站航段应完成（__PUBLIC_TURNAROUND_URL__）
+
+(以上于 17 Aug 2026 更新)
 
 以上仅用于确保安全/免于责罚，且与平时习惯不同，请仔细阅读。
 ```
@@ -294,7 +304,12 @@ let itemsInsidePackage = [
     - FL330 257kt=.73 / 255kt=.7239
     - 颠簸最高飞FL351
 
-(以上于 29 Apr 2026 更新)
+## 检查单
+
+16. 首班航段地面应完成（__PUBLIC_FIRST_LEG_URL__）
+    过站航段应完成（__PUBLIC_TURNAROUND_URL__）
+
+(以上于 17 Aug 2026 更新)
 
 以上仅用于确保安全/免于责罚，且与平时习惯不同，请仔细阅读。
 ```
@@ -379,7 +394,12 @@ let itemsInsidePackage = [
     - FL330 257kt=.73 / 255kt=.7239
     - 颠簸最高飞FL351
 
-(以上于 29 Apr 2026 更新)
+## 检查单
+
+16. 首班航段地面应完成（__PUBLIC_FIRST_LEG_URL__）
+    过站航段应完成（__PUBLIC_TURNAROUND_URL__）
+
+(以上于 17 Aug 2026 更新)
 
 以上仅用于确保安全/免于责罚，且与平时习惯不同，请仔细阅读。
 ```
@@ -424,4 +444,3 @@ let itemsInsidePackage = [
 ---
 
 <ResetAllButton />
-

@@ -15,6 +15,11 @@
           <h1 class="text-h4 text-md-h3 font-weight-bold">{{ checklist.title }}</h1>
         </div>
         <p v-if="checklist.description" class="detail-description">{{ checklist.description }}</p>
+        <div v-if="showFlightChecklistReferences" class="detail-description checklist-reference-block">
+          <div>## 检查单</div>
+          <div>16. 首班航段地面应完成（<NuxtLink :to="firstLegChecklistUrl">{{ firstLegChecklistUrl }}</NuxtLink>）</div>
+          <div class="checklist-reference-subitem">过站航段应完成（<NuxtLink :to="turnaroundChecklistUrl">{{ turnaroundChecklistUrl }}</NuxtLink>）</div>
+        </div>
       </div>
       <div class="detail-actions">
         <v-btn
@@ -40,7 +45,7 @@
             </template>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
-            <pre class="source-content">{{ note.content }}</pre>
+            <pre class="source-content"><template v-for="(part, index) in sourceNoteParts(note.content)" :key="`${note.id}-${index}`"><NuxtLink v-if="part.href" :to="part.href">{{ part.text }}</NuxtLink><template v-else>{{ part.text }}</template></template></pre>
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -140,7 +145,18 @@ const deleteDialog = ref(false)
 const snackbar = reactive({ open: false, message: '', color: 'success' })
 
 const checklist = computed(() => props.checklist || allChecklists.value.find((item) => item.id === props.checklistId))
-const sourceNotes = computed(() => checklist.value?.sourceMarkdown ? extractReadableChecklistNotes(checklist.value.sourceMarkdown) : [])
+const siteOrigin = import.meta.client ? window.location.origin : ''
+const firstLegChecklistUrl = computed(() => siteOrigin ? new URL(localePath(publicChecklistRoute('first-leg')), siteOrigin).toString() : localePath(publicChecklistRoute('first-leg')))
+const turnaroundChecklistUrl = computed(() => siteOrigin ? new URL(localePath(publicChecklistRoute('turnaround')), siteOrigin).toString() : localePath(publicChecklistRoute('turnaround')))
+const sourceNotes = computed(() => {
+  if (!checklist.value?.sourceMarkdown) return []
+  return extractReadableChecklistNotes(checklist.value.sourceMarkdown).map((note) => ({
+    ...note,
+    content: note.content
+      .replaceAll('__PUBLIC_FIRST_LEG_URL__', firstLegChecklistUrl.value)
+      .replaceAll('__PUBLIC_TURNAROUND_URL__', turnaroundChecklistUrl.value),
+  }))
+})
 const stats = computed(() => checklist.value ? checklistStats(checklist.value, status.value) : { checked: 0, total: 0, expired: 0, progress: 0, complete: false })
 const railStatus = computed(() => {
   if (stats.value.complete) return 'complete'
@@ -208,6 +224,22 @@ function scrollTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
+function sourceNoteParts(content: string) {
+  const parts: Array<{ text: string; href?: string }> = []
+  const urlPattern = /https?:\/\/[^\s）)]+/g
+  let lastIndex = 0
+  let match: RegExpExecArray | null
+
+  while ((match = urlPattern.exec(content))) {
+    if (match.index > lastIndex) parts.push({ text: content.slice(lastIndex, match.index) })
+    parts.push({ text: match[0], href: match[0] })
+    lastIndex = match.index + match[0].length
+  }
+
+  if (lastIndex < content.length) parts.push({ text: content.slice(lastIndex) })
+  return parts.length ? parts : [{ text: content }]
+}
+
 function showMessage(message: string, color = 'success') {
   snackbar.message = message
   snackbar.color = color
@@ -260,11 +292,15 @@ useHead(() => ({ title: checklist.value?.title || '检查单' }))
 .detail-title-row { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .detail-title-row .v-icon { flex: 0 0 auto; }
 .detail-description { max-width: 700px; color: var(--muted); line-height: 1.6; margin: 10px 0 0; white-space: pre-line; }
+.checklist-reference-block { display: grid; gap: 4px; }
+.checklist-reference-subitem { padding-left: 2ch; }
+.checklist-reference-block a { color: rgb(var(--v-theme-primary)); overflow-wrap: anywhere; }
 .detail-actions { display: flex; align-items: center; flex: 0 0 auto; }
 .sections-stack { display: grid; gap: 2px; }
 .notes-stack :deep(.v-expansion-panel) { background: var(--surface-elevated); border: 1px solid var(--border); }
 .source-stack :deep(.v-expansion-panel) { background: var(--surface-elevated); border: 1px solid var(--border); }
 .source-content { max-height: 520px; overflow: auto; margin: 0; padding: 14px; border-radius: 10px; background: color-mix(in srgb, var(--surface) 76%, var(--bg)); color: var(--text); font: .78rem/1.55 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+.source-content a { color: rgb(var(--v-theme-primary)); }
 .note-paragraph { line-height: 1.6; margin: 0 0 8px; }
 .note-list { padding-left: 20px; margin: 0; display: grid; gap: 8px; line-height: 1.55; }
 .detail-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 22px; color: var(--muted); font-size: .8rem; }

@@ -4,7 +4,7 @@ import { publicDeicingChecklist } from '../data/public-deicing'
 import { publicFirstLegChecklist } from '../data/public-first-leg'
 import { publicTurnaroundChecklist } from '../data/public-turnaround'
 import { publicBuiltinChecklists } from '../data/public-checklists'
-import { CHECKLIST_ROUTE_IDS, DEFAULT_CHECKLIST_PASSWORD, checklistRoute, checklistsHomeRoute, customChecklistEditRoute, customChecklistRoute } from '../utils/checklist-routes'
+import { CHECKLIST_ROUTE_IDS, DEFAULT_CHECKLIST_PASSWORD, checklistRoute, checklistsHomeRoute, customChecklistEditRoute, customChecklistRoute, publicChecklistRoute } from '../utils/checklist-routes'
 import { extractReadableChecklistNotes } from '../utils/checklist-source'
 import type { ChecklistStatus } from '../types/checklist'
 import {
@@ -40,7 +40,13 @@ describe('checklists data', () => {
     ])
     expect(builtinChecklists.every((item) => item.sections.length > 0)).toBe(true)
     expect(builtinChecklists.every((item) => typeof item.sourceMarkdown === 'string' && item.sourceMarkdown.length > 0)).toBe(true)
-    expect(builtinChecklists.find((item) => item.id === 'before-flight-day')?.sourceMarkdown).toContain('Before Flight Recommendations')
+    const beforeFlightDaySource = builtinChecklists.find((item) => item.id === 'before-flight-day')?.sourceMarkdown || ''
+    expect(beforeFlightDaySource).toContain('Before Flight Recommendations')
+    expect(beforeFlightDaySource).not.toContain('29 Apr 2026')
+    expect(beforeFlightDaySource.match(/17 Aug 2026/g)).toHaveLength(4)
+    expect(beforeFlightDaySource.match(/## 检查单/g)).toHaveLength(4)
+    expect(beforeFlightDaySource.match(/__PUBLIC_FIRST_LEG_URL__/g)).toHaveLength(4)
+    expect(beforeFlightDaySource.match(/__PUBLIC_TURNAROUND_URL__/g)).toHaveLength(4)
   })
 
   it('includes the added First Leg and Next Legs operational items', () => {
@@ -376,6 +382,8 @@ describe('checklists routes', () => {
     expect(checklistsHomeRoute()).toBe('/checklists/13515/')
     expect(customChecklistRoute('demo', 'custom-1')).toBe('/checklists/demo/custom/custom-1')
     expect(customChecklistEditRoute('demo', 'custom-1')).toBe('/checklists/demo/custom/custom-1/edit')
+    expect(publicChecklistRoute('first-leg')).toBe('/checklists/first-leg')
+    expect(publicChecklistRoute('turnaround')).toBe('/checklists/turnaround')
   })
 })
 
