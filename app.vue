@@ -27,10 +27,10 @@ useHead(() => ({
       name: 'description',
       content: 'Observation 预约系统，用于模拟机观摩预约、日历查看与管理。'
     },
-    { name: 'theme-color', content: '#0f766e' },
+    { name: 'theme-color', content: '#000000' },
     { name: 'mobile-web-app-capable', content: 'yes' },
     { name: 'apple-mobile-web-app-capable', content: 'yes' },
-    { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
+    { name: 'apple-mobile-web-app-status-bar-style', content: 'black' },
   ],
 }))
 </script>
