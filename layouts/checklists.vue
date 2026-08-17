@@ -104,7 +104,7 @@ const activeChecklistId = computed(() => {
   if (scope.value === 'public' && path.endsWith('/no-engine-bleed-takeoff')) return 'no-engine-bleed-takeoff'
   return CHECKLIST_ROUTE_IDS.find((id) => path.endsWith(`/${id}`)) || String(route.params.id || '')
 })
-const activeChecklistTitle = computed(() => allChecklists.value.find((item) => item.id === activeChecklistId.value)?.title || (scope.value === 'public' ? '公开检查单' : 'Private Checklist'))
+const activeChecklistTitle = computed(() => allChecklists.value.find((item) => item.id === activeChecklistId.value)?.title || '检查单')
 
 function applyChecklistsTheme() {
   vuetifyTheme.global.name.value = isDark.value ? 'bookingDark' : 'bookingLight'

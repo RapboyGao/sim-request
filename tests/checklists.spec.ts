@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { builtinChecklists } from '../data/checklists'
 import { publicDeicingChecklist } from '../data/public-deicing'
 import { publicFirstLegChecklist } from '../data/public-first-leg'
+import { publicTurnaroundChecklist } from '../data/public-turnaround'
 import { CHECKLIST_ROUTE_IDS, DEFAULT_CHECKLIST_PASSWORD, checklistRoute, checklistsHomeRoute, customChecklistEditRoute, customChecklistRoute } from '../utils/checklist-routes'
 import { extractReadableChecklistNotes } from '../utils/checklist-source'
 import type { ChecklistStatus } from '../types/checklist'
@@ -69,6 +70,7 @@ describe('checklists data', () => {
     expect(publicDocuments.items.map((item) => item.title)).toContain('CLB in cockpit or cabin')
     expect(publicBeforeStart.items.map((item) => item.title)).toContain('Transition altitude in the CDU')
     expect(publicBeforeStart.items.find((item) => item.title === 'Initial altitude')?.id).toBe('public-first-leg.before-start.initial-altitude')
+    expect(publicChecklist.sections.find((section) => section.title === 'Cockpit')?.items.map((item) => item.title)).toContain('Headset and microphone ...... Check')
     expect(publicBeforeStart.items[5]?.title).toBe('Transition altitude in the CDU')
     expect(publicChecklist.sections.flatMap((section) => section.items.map((item) => item.title))).toEqual(expect.arrayContaining([
       'Destination four-letter code ...... Check',
@@ -76,6 +78,33 @@ describe('checklists data', () => {
       'Preflight checklist ...... Complete',
     ]))
     expect(privateChecklists).toHaveLength(2)
+  })
+
+  it('includes the public turnaround leg and reuses the First Leg sequence', () => {
+    const checklist = publicTurnaroundChecklist('zh-CN')
+    const deplaning = checklist.sections.find((section) => section.title === '下客时')!
+    const cockpit = checklist.sections.find((section) => section.title === '驾驶舱')!
+
+    expect(checklist.id).toBe('turnaround')
+    expect(deplaning.items.slice(0, 3).map((item) => item.title)).toEqual(['记录剩余油量', '联系现场(按需)', 'Logbooks'])
+    expect(deplaning.items.at(-1)?.title).toBe('清洁袋 ...... 按需更换')
+    expect(deplaning.items.find((item) => item.title === '云执照')?.description).toBe('如果没有网络，应该先打印时间条，等后续航段结束填写')
+    expect(deplaning.items.find((item) => item.title === '设备充电')?.description).toBe('录音笔、EFB、手机等')
+    expect(cockpit.items.map((item) => item.title)).toEqual([
+      '除冰Request ...... 已申请 (冬季)',
+      '驾驶舱准备 ...... 检查',
+      'FLT/LAND ALT ...... 检查',
+      '飞行指引 ...... 接通',
+      '自动刹车 ...... RTO',
+      '油耗 ...... 已重置',
+    ])
+    expect(checklist.sections.some((section) => section.id === 'public-turnaround.aircraft-exterior')).toBe(false)
+    expect(checklist.sections.some((section) => section.id === 'public-turnaround.third-position')).toBe(false)
+    expect(checklist.sections.some((section) => section.id === 'public-turnaround.cockpit')).toBe(false)
+    expect(checklist.sections.flatMap((section) => section.items).some((item) => item.id === 'public-turnaround.documents.pins-covers')).toBe(false)
+    expect(checklist.sections.at(-1)?.id).toBe('public-turnaround.before-runway')
+    expect(checklist.sections.find((section) => section.id === 'public-turnaround.before-start')?.items.some((item) => item.id.startsWith('public-turnaround.'))).toBe(true)
+    expect(new Set(checklist.sections.flatMap((section) => section.items.map((item) => item.id))).size).toBe(checklist.sections.flatMap((section) => section.items).length)
   })
 
   it('contains the revised bilingual public deicing procedures', () => {
