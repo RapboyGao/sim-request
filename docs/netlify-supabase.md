@@ -51,4 +51,4 @@ pnpm dev
 
 Fill in `ADMIN_USERNAME` and `ADMIN_PASSWORD` to use the admin page locally. Without Supabase variables, local development uses `.data/bookings.json`; production must have all Supabase and admin variables configured.
 
-After deployment, check `/api/health`. A ready deployment returns `productionReady: true` and `true` for the Supabase URL, publishable key, secret key, and admin credentials. The PWA shell is cached after the first online visit; booking submission, calendar, and people views remain online-only because they require the booking API.
+After deployment, check `/api/health`. A ready deployment returns `productionReady: true` and `true` for the Supabase URL, publishable key, secret key, and admin credentials. The PWA shell is cached after the first online visit, so all page interfaces can open offline; booking submission, calendar data, and people data still require the booking API connection.

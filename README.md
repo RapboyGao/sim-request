@@ -56,7 +56,7 @@ pnpm build
    - `SUPABASE_BOOKINGS_TABLE`（可选，默认 `bookings`）
 6. 部署完成后访问 `https://<你的站点域名>/api/health`，确认 `productionReady: true`，且 `supabase.url`、`supabase.publishableKey`、`supabase.secretKey`、`admin.credentials` 均为 `true`。
 7. 首次上线后验证：公开检查单、私密检查单、气压/空速换算、管理页登录，以及在线访问后断网刷新检查单页面。
-8. PWA 离线页面需要先在线打开一次；预约提交、按人查看和预约日历依赖在线 API，不纳入离线保证。
+8. PWA 页面需要先在线打开一次；所有页面界面均可离线打开，但预约提交、按人查看和预约日历的数据接口仍然需要网络。
 
 注意：旧版本源码中的管理密码如果曾经被使用过，应在上线前立即更换；删除源码中的硬编码不会使已经泄露的旧密码失效。
 
