@@ -127,6 +127,8 @@ describe('checklists data', () => {
       '睡眠/勿扰模式',
     ])
     expect(checklist.sections[1]?.items.map((item) => item.title)).toEqual([
+      '延误/取消 ...... 检查',
+      '群消息 ...... 发送',
       'iPad',
       '帽子',
       '登机牌',

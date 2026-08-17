@@ -23,6 +23,11 @@ export const beforeFlightGoingChecklist = createBuiltinChecklist(
       ],
     },
     {
+      id: "before-flight-going.flight-status",
+      title: "航班状态",
+      items: [item("flight-status.delayed", "延误/取消.....检查"), item("flight-status.send", "准备时间.....发送")],
+    },
+    {
       id: "before-flight-going.items",
       title: "物品",
       items: [item("items.ipad", "IPAD"), item("items.charger", "充电器"), item("items.flashlight", "手电筒"), item("items.recorder", "录音笔"), item("items.boarding-pass", "登机牌")],

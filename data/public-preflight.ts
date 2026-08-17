@@ -35,6 +35,8 @@ const localizedContent: Record<string, LocalizedPreflight> = {
         id: "public-preflight.before-departure",
         title: "出发前",
         items: [
+          item("before-departure", "delay-cancellation", "延误/取消 ...... 检查"),
+          item("before-departure", "group-messages", "群消息 ...... 发送"),
           item("before-departure", "ipad", "iPad"),
           item("before-departure", "cap", "帽子"),
           item("before-departure", "boarding-pass", "登机牌"),
@@ -76,6 +78,8 @@ const localizedContent: Record<string, LocalizedPreflight> = {
         id: "public-preflight.before-departure",
         title: "Before Departure",
         items: [
+          item("before-departure", "delay-cancellation", "Delay/cancellation ...... Check"),
+          item("before-departure", "group-messages", "Group messages ...... Send"),
           item("before-departure", "ipad", "iPad"),
           item("before-departure", "cap", "Cap"),
           item("before-departure", "boarding-pass", "Boarding pass"),
@@ -117,6 +121,8 @@ const localizedContent: Record<string, LocalizedPreflight> = {
         id: "public-preflight.before-departure",
         title: "出発前",
         items: [
+          item("before-departure", "delay-cancellation", "遅延／欠航 ...... 確認"),
+          item("before-departure", "group-messages", "グループメッセージ ...... 送信"),
           item("before-departure", "ipad", "iPad"),
           item("before-departure", "cap", "帽子"),
           item("before-departure", "boarding-pass", "搭乗券"),
@@ -158,6 +164,8 @@ const localizedContent: Record<string, LocalizedPreflight> = {
         id: "public-preflight.before-departure",
         title: "출발 전",
         items: [
+          item("before-departure", "delay-cancellation", "지연/취소 ...... 확인"),
+          item("before-departure", "group-messages", "단체 메시지 ...... 발송"),
           item("before-departure", "ipad", "iPad"),
           item("before-departure", "cap", "모자"),
           item("before-departure", "boarding-pass", "탑승권"),
@@ -199,6 +207,8 @@ const localizedContent: Record<string, LocalizedPreflight> = {
         id: "public-preflight.before-departure",
         title: "Avant le départ",
         items: [
+          item("before-departure", "delay-cancellation", "Retard/annulation ...... Vérifier"),
+          item("before-departure", "group-messages", "Messages du groupe ...... Envoyer"),
           item("before-departure", "ipad", "iPad"),
           item("before-departure", "cap", "Casquette"),
           item("before-departure", "boarding-pass", "Carte d’embarquement"),

@@ -15,11 +15,6 @@
           <h1 class="text-h4 text-md-h3 font-weight-bold">{{ checklist.title }}</h1>
         </div>
         <p v-if="checklist.description" class="detail-description">{{ checklist.description }}</p>
-        <div v-if="showFlightChecklistReferences" class="detail-description checklist-reference-block">
-          <div>## 检查单</div>
-          <div>16. 首班航段地面应完成（<NuxtLink :to="firstLegChecklistUrl">{{ firstLegChecklistUrl }}</NuxtLink>）</div>
-          <div class="checklist-reference-subitem">过站航段应完成（<NuxtLink :to="turnaroundChecklistUrl">{{ turnaroundChecklistUrl }}</NuxtLink>）</div>
-        </div>
       </div>
       <div class="detail-actions">
         <v-btn
@@ -292,9 +287,6 @@ useHead(() => ({ title: checklist.value?.title || '检查单' }))
 .detail-title-row { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .detail-title-row .v-icon { flex: 0 0 auto; }
 .detail-description { max-width: 700px; color: var(--muted); line-height: 1.6; margin: 10px 0 0; white-space: pre-line; }
-.checklist-reference-block { display: grid; gap: 4px; }
-.checklist-reference-subitem { padding-left: 2ch; }
-.checklist-reference-block a { color: rgb(var(--v-theme-primary)); overflow-wrap: anywhere; }
 .detail-actions { display: flex; align-items: center; flex: 0 0 auto; }
 .sections-stack { display: grid; gap: 2px; }
 .notes-stack :deep(.v-expansion-panel) { background: var(--surface-elevated); border: 1px solid var(--border); }
