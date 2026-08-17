@@ -64,8 +64,8 @@ export default defineNuxtConfig({
       scope: '/',
       display: 'standalone',
       orientation: 'portrait-primary',
-      theme_color: '#0f766e',
-      background_color: '#f8fafc',
+      theme_color: '#000000',
+      background_color: '#000000',
       icons: [
         {
           src: '/pwa-192x192.png',
