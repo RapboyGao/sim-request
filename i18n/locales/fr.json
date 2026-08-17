@@ -25,6 +25,15 @@
     "themeDark": "Sombre",
     "navPeople": "Par personne"
   },
+  "checklistTime": {
+    "justNow": "à l’instant",
+    "minuteAgo": "il y a {count} minute",
+    "minutesAgo": "il y a {count} minutes",
+    "hourAgo": "il y a {count} heure",
+    "hoursAgo": "il y a {count} heures",
+    "dayAgo": "il y a {count} jour",
+    "daysAgo": "il y a {count} jours"
+  },
   "home": {
     "eyebrow": "Observation Réservation",
     "title": "Réservez par date et par créneaux de 2 heures",

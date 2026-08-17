@@ -40,6 +40,24 @@ describe('checklists data', () => {
     expect(builtinChecklists.find((item) => item.id === 'before-flight-day')?.sourceMarkdown).toContain('Before Flight Recommendations')
   })
 
+  it('includes the added First Leg and Next Legs operational items', () => {
+    for (const checklistId of ['first-leg', 'next-legs']) {
+      const checklist = builtinChecklists.find((item) => item.id === checklistId)!
+      const airplaneStatusOrProcedures = checklist.sections.find((section) => section.title === 'Airplane Status' || section.title === 'Procedures')!
+      const beforeDoorsClosing = checklist.sections.find((section) => section.title === 'Before Doors Closing')!
+      const beforeStart = checklist.sections.find((section) => section.title === 'Before Start')!
+
+      expect(airplaneStatusOrProcedures.items.map((item) => item.title)).toEqual(expect.arrayContaining([
+        'Destination',
+        'Alternate in Weather Request',
+        'PDC optional request',
+      ]))
+      expect(beforeDoorsClosing.items.map((item) => item.title)).toContain('New Plan has no Route Change, CLB in Cockpit or Cabin')
+      const beforeStartTitles = beforeStart.items.map((item) => item.title)
+      expect(beforeStartTitles.indexOf('Transition Altitude')).toBe(beforeStartTitles.indexOf('Initial Altitude') + 1)
+    }
+  })
+
   it('contains the revised bilingual public deicing procedures', () => {
     const english = publicDeicingChecklist('en').checklist
     const chinese = publicDeicingChecklist('zh-CN').checklist

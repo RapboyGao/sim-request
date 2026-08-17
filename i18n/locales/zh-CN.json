@@ -25,6 +25,15 @@
     "themeDark": "深色",
     "navPeople": "按人查看"
   },
+  "checklistTime": {
+    "justNow": "刚刚",
+    "minuteAgo": "{count} 分钟前",
+    "minutesAgo": "{count} 分钟前",
+    "hourAgo": "{count} 小时前",
+    "hoursAgo": "{count} 小时前",
+    "dayAgo": "{count} 天前",
+    "daysAgo": "{count} 天前"
+  },
   "home": {
     "eyebrow": "Observation 预约",
     "title": "按日期和 2 小时时段预约观摩名额",

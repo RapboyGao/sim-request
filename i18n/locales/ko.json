@@ -25,6 +25,15 @@
     "themeDark": "다크",
     "navPeople": "인물별"
   },
+  "checklistTime": {
+    "justNow": "방금 전",
+    "minuteAgo": "{count}분 전",
+    "minutesAgo": "{count}분 전",
+    "hourAgo": "{count}시간 전",
+    "hoursAgo": "{count}시간 전",
+    "dayAgo": "{count}일 전",
+    "daysAgo": "{count}일 전"
+  },
   "home": {
     "eyebrow": "Observation 예약",
     "title": "날짜와 2시간 단위로 관람을 예약하세요",

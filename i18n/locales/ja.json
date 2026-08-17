@@ -25,6 +25,15 @@
     "themeDark": "ダーク",
     "navPeople": "人物別"
   },
+  "checklistTime": {
+    "justNow": "たった今",
+    "minuteAgo": "{count}分前",
+    "minutesAgo": "{count}分前",
+    "hourAgo": "{count}時間前",
+    "hoursAgo": "{count}時間前",
+    "dayAgo": "{count}日前",
+    "daysAgo": "{count}日前"
+  },
   "home": {
     "eyebrow": "Observation 予約",
     "title": "日付と2時間枠で見学枠を予約する",
