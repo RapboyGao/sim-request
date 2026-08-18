@@ -72,9 +72,9 @@ export default defineNuxtPlugin((nuxtApp) => {
     vuetifyInstance.theme.global.name.value = resolved
 
     if (import.meta.client) {
-      document.documentElement.dataset.theme = mode
-      document.documentElement.style.colorScheme =
-        mode === 'system' ? (systemDark ? 'dark' : 'light') : (resolved === 'bookingDark' ? 'dark' : 'light')
+      const resolvedMode = resolved === 'bookingDark' ? 'dark' : 'light'
+      document.documentElement.dataset.theme = resolvedMode
+      document.documentElement.style.colorScheme = resolvedMode
     }
   }
 
