@@ -7,6 +7,21 @@ function newId(prefix: string) {
   const uuid = import.meta.client && typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`
   return `${prefix}-${uuid}`
 }
+
+function createUniqueIdFactory(checklists: Checklist[]) {
+  const usedIds = new Set(checklists.flatMap((checklist) => [
+    checklist.id,
+    ...checklist.sections.flatMap((section) => [section.id, ...section.items.map((item) => item.id)]),
+    ...checklist.notes.map((note) => note.id),
+  ]))
+
+  return (prefix: string) => {
+    let id = newId(prefix)
+    while (usedIds.has(id)) id = newId(prefix)
+    usedIds.add(id)
+    return id
+  }
+}
 function normalizeFavoriteIds(value: unknown) { return Array.isArray(value) ? [...new Set(value.filter((id): id is string => typeof id === 'string'))] : [] }
 
 export function useChecklists(options: { builtins?: MaybeRef<Checklist[]> } = {}) {
@@ -48,11 +63,11 @@ export function useChecklists(options: { builtins?: MaybeRef<Checklist[]> } = {}
     favorites.value = favorites.value.filter((favoriteId) => favoriteId !== id)
   }
   function duplicateChecklist(id: string) {
-    const target = custom.value.find((item) => item.id === id)
+    const target = allChecklists.value.find((item) => item.id === id)
     if (!target) return ''
-    const copyId = newId('custom-checklist')
-    custom.value = [...custom.value, cloneChecklist(target, copyId, `${target.title} 副本`)]
-    return copyId
+    const cloned = cloneChecklist(target, createUniqueIdFactory(allChecklists.value), `${target.title} 副本`)
+    custom.value = [...custom.value, cloned]
+    return cloned.id
   }
   function toggleItem(itemId: string, checklist?: Checklist) { status.value = checklist ? toggleChecklistItemStatus(status.value, checklist, itemId) : toggleStatus(status.value, itemId) }
   function resetChecklist(checklist: Checklist) { status.value = resetChecklistStatus(status.value, checklist) }

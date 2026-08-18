@@ -32,7 +32,6 @@ export function normalizeChecklist(checklist: Checklist): Checklist {
       })),
     })),
     notes: checklist.notes,
-    ...(checklist.sourceMarkdown ? { sourceMarkdown: checklist.sourceMarkdown } : {}),
   }
 
   for (const group of exclusiveSectionGroups(normalized)) {
@@ -204,19 +203,28 @@ export function removeDeletedItemStatuses(status: ChecklistStatus, previous: Che
   return next
 }
 
-export function cloneChecklist(checklist: Checklist, id: string, title = checklist.title) {
+export type ChecklistIdFactory = (prefix: string) => string
+
+export function cloneChecklist(checklist: Checklist, createId: ChecklistIdFactory, title = checklist.title) {
+  const id = createId('custom-checklist')
+  const cloned = structuredClone(checklist)
+
   return {
-    ...structuredClone(checklist),
+    ...cloned,
     id,
     title,
     source: 'custom' as const,
-    sections: checklist.sections.map((section, sectionIndex) => ({
+    sections: cloned.sections.map((section) => ({
       ...section,
-      id: `${id}-section-${sectionIndex + 1}`,
-      items: section.items.map((item, itemIndex) => ({
+      id: createId('custom-section'),
+      items: section.items.map((item) => ({
         ...item,
-        id: `${id}-section-${sectionIndex + 1}-item-${itemIndex + 1}`,
+        id: createId('custom-item'),
       })),
+    })),
+    notes: cloned.notes.map((note) => ({
+      ...note,
+      id: createId('custom-note'),
     })),
   }
 }

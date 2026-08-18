@@ -1,4 +1,3 @@
-import { b737DeicingEnSource, b737DeicingZhSource } from './public-checklist-source-documents'
 import { createBuiltinChecklist } from './checklist-factory'
 import type { Checklist } from "~/types/checklist";
 
@@ -92,7 +91,6 @@ export const b737DeicingEnChecklist = createBuiltinChecklist(
       ],
     },
   ],
-  b737DeicingEnSource,
 )
 
 export const b737DeicingZhChecklist = createBuiltinChecklist(
@@ -145,7 +143,6 @@ export const b737DeicingZhChecklist = createBuiltinChecklist(
       ],
     },
   ],
-  b737DeicingZhSource,
 )
 
 type PublicDeicingSection = { title: string; description?: string; items: string[] };

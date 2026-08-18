@@ -34,7 +34,6 @@ export type Checklist = {
   source: ChecklistSource
   sections: ChecklistSection[]
   notes: ChecklistNote[]
-  sourceMarkdown?: string
 }
 
 export type ChecklistStatus = Record<string, string | null>

@@ -23,7 +23,6 @@ export function createBuiltinChecklist(
   title: string,
   description: string,
   sections: BuiltinSectionInput[],
-  sourceMarkdown: string,
   notes: ChecklistNote[] = [],
 ): Checklist {
   return {
@@ -46,6 +45,5 @@ export function createBuiltinChecklist(
       })),
     })),
     notes,
-    sourceMarkdown,
   }
 }

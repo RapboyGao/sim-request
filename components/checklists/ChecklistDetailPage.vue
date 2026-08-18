@@ -27,25 +27,6 @@
       </div>
     </div>
 
-    <div v-if="sourceNotes.length" class="source-stack mb-8">
-      <v-expansion-panels variant="accordion">
-        <v-expansion-panel v-for="note in sourceNotes" :key="note.id" rounded="lg">
-          <v-expansion-panel-title>
-            <v-icon icon="mdi-file-document-outline" color="primary" class="mr-3" />
-            {{ note.title }}
-            <template #actions>
-              <v-btn size="small" variant="tonal" prepend-icon="mdi-content-copy" @click.stop="copySource(note)">
-                复制说明
-              </v-btn>
-            </template>
-          </v-expansion-panel-title>
-          <v-expansion-panel-text>
-            <pre class="source-content"><template v-for="(part, index) in sourceNoteParts(note.content)" :key="`${note.id}-${index}`"><NuxtLink v-if="part.href" :to="part.href">{{ part.text }}</NuxtLink><template v-else>{{ part.text }}</template></template></pre>
-          </v-expansion-panel-text>
-        </v-expansion-panel>
-      </v-expansion-panels>
-    </div>
-
     <div v-if="checklist.notes.length" class="notes-stack mb-8">
       <v-expansion-panels variant="accordion" multiple>
         <v-expansion-panel v-for="item in checklist.notes" :key="item.id" rounded="lg">
@@ -124,9 +105,8 @@ import ChecklistSections from '~/components/checklists/ChecklistSections.vue'
 import { publicBuiltinChecklists } from '~/data/public-checklists'
 import type { Checklist } from '~/types/checklist'
 import { useChecklistsPageActions } from '~/composables/useChecklistsPageActions'
-import { extractReadableChecklistNotes, type ReadableChecklistNote } from '~/utils/checklist-source'
 import { checklistStats } from '~/utils/checklists'
-import { publicChecklistRoute, publicChecklistsHomeRoute, publicCustomChecklistEditRoute, publicCustomChecklistRoute } from '~/utils/checklist-routes'
+import { publicChecklistsHomeRoute, publicCustomChecklistEditRoute, publicCustomChecklistRoute } from '~/utils/checklist-routes'
 
 const props = defineProps<{ checklistId?: string; checklist?: Checklist }>()
 const router = useRouter()
@@ -140,18 +120,6 @@ const deleteDialog = ref(false)
 const snackbar = reactive({ open: false, message: '', color: 'success' })
 
 const checklist = computed(() => props.checklist || allChecklists.value.find((item) => item.id === props.checklistId))
-const siteOrigin = import.meta.client ? window.location.origin : ''
-const firstLegChecklistUrl = computed(() => siteOrigin ? new URL(localePath(publicChecklistRoute('first-leg')), siteOrigin).toString() : localePath(publicChecklistRoute('first-leg')))
-const turnaroundChecklistUrl = computed(() => siteOrigin ? new URL(localePath(publicChecklistRoute('turnaround')), siteOrigin).toString() : localePath(publicChecklistRoute('turnaround')))
-const sourceNotes = computed(() => {
-  if (!checklist.value?.sourceMarkdown) return []
-  return extractReadableChecklistNotes(checklist.value.sourceMarkdown).map((note) => ({
-    ...note,
-    content: note.content
-      .replaceAll('__PUBLIC_FIRST_LEG_URL__', firstLegChecklistUrl.value)
-      .replaceAll('__PUBLIC_TURNAROUND_URL__', turnaroundChecklistUrl.value),
-  }))
-})
 const stats = computed(() => checklist.value ? checklistStats(checklist.value, status.value) : { checked: 0, total: 0, expired: 0, progress: 0, complete: false })
 const railStatus = computed(() => {
   if (stats.value.complete) return 'complete'
@@ -204,9 +172,9 @@ function remove() {
 onMounted(() => {
   registerPageActions({
     reset: () => { resetDialog.value = true },
+    duplicate,
     ...(checklist.value?.source === 'custom' ? {
       edit: openEditor,
-      duplicate,
       remove: () => { deleteDialog.value = true },
     } : {}),
   })
@@ -218,30 +186,10 @@ function scrollTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-function sourceNoteParts(content: string) {
-  const parts: Array<{ text: string; href?: string }> = []
-  const urlPattern = /https?:\/\/[^\s）)]+/g
-  let lastIndex = 0
-  let match: RegExpExecArray | null
-
-  while ((match = urlPattern.exec(content))) {
-    if (match.index > lastIndex) parts.push({ text: content.slice(lastIndex, match.index) })
-    parts.push({ text: match[0], href: match[0] })
-    lastIndex = match.index + match[0].length
-  }
-
-  if (lastIndex < content.length) parts.push({ text: content.slice(lastIndex) })
-  return parts.length ? parts : [{ text: content }]
-}
-
 function showMessage(message: string, color = 'success') {
   snackbar.message = message
   snackbar.color = color
   snackbar.open = true
-}
-
-async function copySource(note: ReadableChecklistNote) {
-  await copyText(note.content, '说明已复制')
 }
 
 async function copyNote(item: Checklist['notes'][number]) {
@@ -289,9 +237,6 @@ useHead(() => ({ title: checklist.value?.title || '检查单' }))
 .detail-actions { display: flex; align-items: center; flex: 0 0 auto; }
 .sections-stack { display: grid; gap: 2px; }
 .notes-stack :deep(.v-expansion-panel) { background: var(--surface-elevated); border: 1px solid var(--border); }
-.source-stack :deep(.v-expansion-panel) { background: var(--surface-elevated); border: 1px solid var(--border); }
-.source-content { max-height: 520px; overflow: auto; margin: 0; padding: 14px; border-radius: 10px; background: color-mix(in srgb, var(--surface) 76%, var(--bg)); color: var(--text); font: .78rem/1.55 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
-.source-content a { color: rgb(var(--v-theme-primary)); }
 .note-paragraph { line-height: 1.6; margin: 0 0 8px; }
 .note-list { padding-left: 20px; margin: 0; display: grid; gap: 8px; line-height: 1.55; }
 .detail-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 22px; color: var(--muted); font-size: .8rem; }
