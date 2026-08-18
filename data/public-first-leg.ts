@@ -1,4 +1,4 @@
-import { createBuiltinChecklist, type BuiltinSectionInput } from './checklist-factory'
+import { createBuiltinChecklist, type BuiltinSectionInput } from "./checklist-factory";
 import type { Checklist } from "~/types/checklist";
 
 type LocalizedFirstLeg = {
@@ -19,7 +19,7 @@ const cduItem = (id: string, title: string, description = "") => item("cockpit",
 const localizedContent: Record<string, LocalizedFirstLeg> = {
   "zh-CN": {
     title: "第一航段",
-    description: "",
+    description: "如某项内容在当前运行条件下无需执行（例如在修正海压机场无需执行“QFE”），请勾选该项，表示已确认并考虑过该项目；勾选后，对应的 Group 将视为完成。",
     sections: [
       {
         id: "public-first-leg.aircraft-exterior",
@@ -52,11 +52,12 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
           item("cockpit", "asbestos-gloves", "石棉手套 x1对", "通常在左侧置物篮"),
           item("cockpit", "life-vests", "救生衣 x4", "在驾驶舱座椅口袋"),
           item("cockpit", "flashlights", "手电筒 x2", "手电筒上的红灯应闪亮"),
-          item("cockpit", "dds-deferred-faults", "DDS保留故障"),
+          item("cockpit", "dds-deferred-faults", "Defferd Defects"),
           item("cockpit", "tlb-history-faults", "TLB历史故障"),
           item("cockpit", "printer-paper", "打印纸"),
           item("cockpit", "circuit-breakers", "跳开关"),
-          item("cockpit", "cockpit-preparation", "驾驶舱准备 ...... 已检查"),
+          item("cockpit", "cockpit-preparation", "驾驶舱准备"),
+          item("cockpit", "windshield-wipers", "风挡/雨刷 ...... 检查", "如果没有降水，则执行以下步骤：\n1. 在插入耳机前检查风挡雨刷，以防关闭风挡时夹到耳机线。\n2. 打开风挡，并确认飞机下方无人。\n3. 倒水，检查雨刷能否达到满意的清洁效果。\n4. 检查风挡框无夹杂物，尤其要从下向上观察。\n5. 关闭并锁好风挡。"),
           item("cockpit", "headset-and-microphone", "耳机和发话 ...... 检查"),
           item("cockpit", "speed-trim-fail", "SPEED TRIM FAIL灭"),
           item("cockpit", "tcas-test", "TCAS TEST"),
@@ -64,6 +65,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
           item("cockpit", "deicing-request", "除冰Request ...... 已申请 (冬季)"),
           // item("cockpit", "windshield-wipers", "风挡雨刷 ...... 已检查 (雨季)", "不要干刷。倒水后再测试雨刷器。"),
           item("cockpit", "flight-number", "航班号", "NG系列航班号可以输入到驾驶盘拨号器，或写在纸上"),
+          item("cockpit", "screens-and-controls-cleaning", "屏幕和操纵 ...... 按需清洁"),
         ],
       },
       {
@@ -71,17 +73,18 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
         title: "CDU",
         items: [
           cduItem("qfe", "QFE", "如果机场使用QFE，应检查QFE是否已在CDU中选择"),
-          cduItem("route-check", "航路 ...... 检查"),
           cduItem("eosid", "EOSID ...... 已输入"),
           cduItem("special-areas", "限制区、禁区、禁航、通告 ...... 已输入"),
           cduItem("special-procedures", "释压程序 ...... 已输入"),
           cduItem("destination-icao", "目的地四字码 ...... 检查"),
+          cduItem("route-check", "航路 ...... 检查"),
           cduItem("route-end-fix", "航路结束点 ...... FIX 2/2页", "如果FIX 页有其他用途，可以先飞到的点为准。"),
         ],
       },
       {
         id: "public-first-leg.documents",
         title: "Documents",
+        description: "Documents 检查可与下方的“起动前”检查单同时进行。",
         items: [
           item("documents", "pins-covers", "销子和管套 ...... 已取下"),
           item("documents", "tlb-released", "TLB 机务已放行"),
@@ -150,7 +153,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
   },
   en: {
     title: "First Leg",
-    description: "",
+    description: "If an item does not need to be performed under the current operating conditions (for example, QFE at a corrected-pressure airport), check it to show that it has been considered. The corresponding group will then be treated as complete.",
     sections: [
       {
         id: "public-first-leg.aircraft-exterior",
@@ -164,7 +167,12 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
         id: "public-first-leg.third-position",
         title: "Third crew member",
         items: [
-          item("third-position", "cleaning-bags", "Cleaning bags ...... Keep at least 10", "The right-seat cleaning bag should be attached in the space at the front of the flight case, as far to the right as possible."),
+          item(
+            "third-position",
+            "cleaning-bags",
+            "Cleaning bags ...... Keep at least 10",
+            "The right-seat cleaning bag should be attached in the space at the front of the flight case, as far to the right as possible.",
+          ),
           item("third-position", "oxygen-mask-test", "Oxygen mask ...... Test"),
           item("third-position", "paper-towels", "Paper towels ...... x1"),
           item("third-position", "plastic-bag", "Plastic bag ...... x1"),
@@ -191,6 +199,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
           item("cockpit", "printer-paper", "Printer paper"),
           item("cockpit", "circuit-breakers", "Circuit breakers"),
           item("cockpit", "cockpit-preparation", "Cockpit preparation ...... Checked"),
+          item("cockpit", "windshield-wipers", "Windshield wipers ...... Check", "If there is no precipitation, perform the following steps:\n1. Check the windshield wipers before plugging in the headset to prevent the headset cable from being caught when closing the windshield.\n2. Open the windshield and confirm that no one is below the aircraft.\n3. Pour water and check that the wipers provide a satisfactory cleaning effect.\n4. Check that the windshield frame is free of foreign objects, especially by looking upward from below.\n5. Close and lock the windshield."),
           item("cockpit", "headset-and-microphone", "Headset and microphone ...... Check"),
           item("cockpit", "speed-trim-fail", "SPEED TRIM FAIL ...... Extinguished"),
           item("cockpit", "tcas-test", "TCAS TEST"),
@@ -198,6 +207,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
           item("cockpit", "deicing-request", "Deicing request ...... Requested (winter)"),
           // item("cockpit", "windshield-wipers", "Windshield wipers ...... Checked (rainy season)", "Do not dry-test. Add water before testing the wipers."),
           item("cockpit", "flight-number", "Flight number", "NG-series flight numbers may be entered in the yoke dialer or written on paper"),
+          item("cockpit", "screens-and-controls-cleaning", "Screens and controls ...... Clean as needed"),
         ],
       },
       {
@@ -205,17 +215,18 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
         title: "CDU",
         items: [
           cduItem("qfe", "QFE", "If the airport uses QFE, verify that QFE is selected in the CDU"),
-          cduItem("route-check", "Route ...... Check"),
           cduItem("eosid", "EOSID ...... Entered"),
           cduItem("special-areas", "Restricted areas, prohibited areas, no-fly areas, notices ...... Entered"),
           cduItem("special-procedures", "Depressurization procedure ...... Entered"),
           cduItem("destination-icao", "Destination four-letter code ...... Check"),
+          cduItem("route-check", "Route ...... Check"),
           cduItem("route-end-fix", "Route ending point ...... FIX page 2/2", "If the FIX page has another purpose, use the first point to be flown as the reference."),
         ],
       },
       {
         id: "public-first-leg.documents",
         title: "Documents",
+        description: "The Documents check may be performed at the same time as the “Before Start” checklist below.",
         items: [
           item("documents", "pins-covers", "Pins and covers ...... Removed"),
           item("documents", "tlb-released", "TLB maintenance release"),
@@ -262,7 +273,12 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
           item("before-start", "takeoff-trim-green-band", "Trim ...... Takeoff trim, in the green band"),
           item("before-start", "eosid", "EOSID ...... Entered"),
           item("before-start", "preflight-checklist", "Preflight checklist ...... Complete"),
-          item("before-start", "sunglasses-screen-brightness", "Sunglasses / Screen brightness", "If takeoff is toward the sun or departure may turn toward a strongly sunlit side, increase screen brightness and wear sunglasses."),
+          item(
+            "before-start",
+            "sunglasses-screen-brightness",
+            "Sunglasses / Screen brightness",
+            "If takeoff is toward the sun or departure may turn toward a strongly sunlit side, increase screen brightness and wear sunglasses.",
+          ),
         ],
       },
       {
@@ -284,12 +300,15 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
   },
   ja: {
     title: "第1レグ",
-    description: "",
+    description: "現在の運航条件では実施不要な項目（例：修正海面気圧を使用する空港での「QFE」）も、確認・考慮済みであることを示すためにチェックしてください。チェックすると、該当するグループは完了として扱われます。",
     sections: [
       {
         id: "public-first-leg.aircraft-exterior",
         title: "機外",
-        items: [item("aircraft-exterior", "pins-covers", "ピンとカバー ...... 取り外し済み", "ロックピン4本、カバー3個"), item("aircraft-exterior", "external-lights", "外部灯 ...... 点検済み", "夜間飛行の可能性がある場合")],
+        items: [
+          item("aircraft-exterior", "pins-covers", "ピンとカバー ...... 取り外し済み", "ロックピン4本、カバー3個"),
+          item("aircraft-exterior", "external-lights", "外部灯 ...... 点検済み", "夜間飛行の可能性がある場合"),
+        ],
       },
       {
         id: "public-first-leg.third-position",
@@ -322,6 +341,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
           item("cockpit", "printer-paper", "プリンター用紙"),
           item("cockpit", "circuit-breakers", "サーキットブレーカー"),
           item("cockpit", "cockpit-preparation", "コックピット準備 ...... 点検済み"),
+          item("cockpit", "windshield-wipers", "ウインドシールド/ワイパー ...... 点検", "降水がない場合は、以下の手順を実施する：\n1. ヘッドセットを接続する前にウインドシールドワイパーを点検し、ウインドシールドを閉じる際にヘッドセットのケーブルを挟まないようにする。\n2. ウインドシールドを開け、機体下に人がいないことを確認する。\n3. 水をかけ、ワイパーが十分な清掃効果を発揮することを確認する。\n4. ウインドシールドフレームに異物がないことを、特に下から上を見て確認する。\n5. ウインドシールドを閉じ、確実にロックする。"),
           item("cockpit", "headset-and-microphone", "ヘッドセットとマイク ...... 確認"),
           item("cockpit", "speed-trim-fail", "SPEED TRIM FAIL ...... 消灯"),
           item("cockpit", "tcas-test", "TCAS TEST"),
@@ -329,6 +349,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
           item("cockpit", "deicing-request", "除氷リクエスト ...... 申請済み (冬季)"),
           // item("cockpit", "windshield-wipers", "ウインドシールドワイパー ...... 点検済み (雨季)", "空運転しない。水をかけてからワイパーをテストする。"),
           item("cockpit", "flight-number", "便名", "NG 系列の便名は操縦桿のダイヤラーに入力するか、紙に記入"),
+          item("cockpit", "screens-and-controls-cleaning", "画面と操縦装置 ...... 必要に応じて清掃"),
         ],
       },
       {
@@ -336,17 +357,18 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
         title: "CDU",
         items: [
           cduItem("qfe", "QFE", "空港が QFE を使用する場合、CDU で QFE が選択されていることを確認"),
-          cduItem("route-check", "経路 ...... 確認"),
           cduItem("eosid", "EOSID ...... 入力済み"),
           cduItem("special-areas", "制限区域、立入禁止区域、飛行禁止区域、通報 ...... 入力済み"),
           cduItem("special-procedures", "減圧手順 ...... 入力済み"),
           cduItem("destination-icao", "目的地 4 レターコード ...... 確認"),
+          cduItem("route-check", "経路 ...... 確認"),
           cduItem("route-end-fix", "経路終点 ...... FIX 2/2 ページ", "FIX ページに別の用途がある場合は、先に飛行する地点を基準にする。"),
         ],
       },
       {
         id: "public-first-leg.documents",
         title: "書類",
+        description: "Documents の確認は、下にある「起動前」チェックリストと同時に実施できます。",
         items: [
           item("documents", "pins-covers", "ピンとカバー ...... 取り外し済み"),
           item("documents", "tlb-released", "TLB 整備リリース済み"),
@@ -393,7 +415,12 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
           item("before-start", "takeoff-trim-green-band", "トリム ...... 離陸トリム、グリーンバンド内"),
           item("before-start", "eosid", "EOSID ...... 入力済み"),
           item("before-start", "preflight-checklist", "飛行前チェックリスト ...... 完了"),
-          item("before-start", "sunglasses-screen-brightness", "サングラス / 画面の明るさ", "太陽に向かって離陸する場合、または出発後に日差しの強い方向へ旋回する可能性がある場合は、画面の明るさを上げ、サングラスを着用する。"),
+          item(
+            "before-start",
+            "sunglasses-screen-brightness",
+            "サングラス / 画面の明るさ",
+            "太陽に向かって離陸する場合、または出発後に日差しの強い方向へ旋回する可能性がある場合は、画面の明るさを上げ、サングラスを着用する。",
+          ),
         ],
       },
       {
@@ -415,12 +442,15 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
   },
   ko: {
     title: "첫 번째 레그",
-    description: "",
+    description: "현재 운항 조건에서 수행할 필요가 없는 항목(예: 수정 해면기압 공항에서의 ‘QFE’)도 고려했음을 표시하기 위해 체크하십시오. 체크하면 해당 Group이 완료된 것으로 처리됩니다.",
     sections: [
       {
         id: "public-first-leg.aircraft-exterior",
         title: "항공기 외부",
-        items: [item("aircraft-exterior", "pins-covers", "핀과 커버 ...... 제거 확인", "잠금 핀 4개, 커버 3개"), item("aircraft-exterior", "external-lights", "외부등 ...... 점검 완료", "야간 비행 가능성이 있는 경우")],
+        items: [
+          item("aircraft-exterior", "pins-covers", "핀과 커버 ...... 제거 확인", "잠금 핀 4개, 커버 3개"),
+          item("aircraft-exterior", "external-lights", "외부등 ...... 점검 완료", "야간 비행 가능성이 있는 경우"),
+        ],
       },
       {
         id: "public-first-leg.third-position",
@@ -453,6 +483,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
           item("cockpit", "printer-paper", "프린터 용지"),
           item("cockpit", "circuit-breakers", "회로 차단기"),
           item("cockpit", "cockpit-preparation", "조종실 준비 ...... 점검 완료"),
+          item("cockpit", "windshield-wipers", "윈드실드/와이퍼 ...... 점검", "강수가 없을 때 다음 절차를 수행합니다:\n1. 헤드셋을 연결하기 전에 윈드실드 와이퍼를 점검하여 윈드실드를 닫을 때 헤드셋 케이블이 끼이지 않도록 합니다.\n2. 윈드실드를 열고 항공기 아래에 사람이 없는지 확인합니다.\n3. 물을 뿌리고 와이퍼가 만족스러운 세척 효과를 내는지 확인합니다.\n4. 특히 아래에서 위를 바라보며 윈드실드 프레임에 이물질이 없는지 확인합니다.\n5. 윈드실드를 닫고 확실히 잠급니다."),
           item("cockpit", "headset-and-microphone", "헤드셋 및 마이크 ...... 확인"),
           item("cockpit", "speed-trim-fail", "SPEED TRIM FAIL ...... 소등"),
           item("cockpit", "tcas-test", "TCAS TEST"),
@@ -460,6 +491,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
           item("cockpit", "deicing-request", "제빙 요청 ...... 신청 완료 (겨울철)"),
           // item("cockpit", "windshield-wipers", "윈드실드 와이퍼 ...... 점검 완료 (우기)", "마른 상태에서 작동하지 말 것. 물을 뿌린 후 와이퍼를 테스트하십시오."),
           item("cockpit", "flight-number", "항공편 번호", "NG 계열 항공편 번호는 조종간 다이얼러에 입력하거나 종이에 기록"),
+          item("cockpit", "screens-and-controls-cleaning", "화면 및 조종장치 ...... 필요 시 청소"),
         ],
       },
       {
@@ -467,17 +499,18 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
         title: "CDU",
         items: [
           cduItem("qfe", "QFE", "공항이 QFE를 사용하는 경우 CDU에서 QFE가 선택되었는지 확인"),
-          cduItem("route-check", "항로 ...... 확인"),
           cduItem("eosid", "EOSID ...... 입력 완료"),
           cduItem("special-areas", "제한구역, 금지구역, 비행금지구역, 공지 ...... 입력 완료"),
           cduItem("special-procedures", "감압 절차 ...... 입력 완료"),
           cduItem("destination-icao", "목적지 4문자 코드 ...... 확인"),
+          cduItem("route-check", "항로 ...... 확인"),
           cduItem("route-end-fix", "항로 종료 지점 ...... FIX 2/2페이지", "FIX 페이지에 다른 용도가 있으면 먼저 비행할 지점을 기준으로 합니다."),
         ],
       },
       {
         id: "public-first-leg.documents",
         title: "서류",
+        description: "Documents 점검은 아래의 '시동 전' 체크리스트와 동시에 수행할 수 있습니다.",
         items: [
           item("documents", "pins-covers", "핀과 커버 ...... 제거 확인"),
           item("documents", "tlb-released", "TLB 정비 출고"),
@@ -524,7 +557,12 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
           item("before-start", "takeoff-trim-green-band", "트림 ...... 이륙 트림, 녹색 영역"),
           item("before-start", "eosid", "EOSID ...... 입력 완료"),
           item("before-start", "preflight-checklist", "비행 전 체크리스트 ...... 완료"),
-          item("before-start", "sunglasses-screen-brightness", "선글라스/화면 밝기", "햇빛을 향해 이륙하거나 출항 후 강한 햇빛이 드는 방향으로 선회할 수 있다면 화면 밝기를 높이고 선글라스를 착용합니다."),
+          item(
+            "before-start",
+            "sunglasses-screen-brightness",
+            "선글라스/화면 밝기",
+            "햇빛을 향해 이륙하거나 출항 후 강한 햇빛이 드는 방향으로 선회할 수 있다면 화면 밝기를 높이고 선글라스를 착용합니다.",
+          ),
         ],
       },
       {
@@ -546,7 +584,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
   },
   fr: {
     title: "Premier secteur",
-    description: "",
+    description: "Si un élément n’a pas besoin d’être exécuté dans les conditions d’exploitation actuelles (par exemple le « QFE » sur un aérodrome utilisant la pression corrigée), cochez-le pour indiquer qu’il a été pris en compte. Le groupe correspondant sera alors considéré comme terminé.",
     sections: [
       {
         id: "public-first-leg.aircraft-exterior",
@@ -560,7 +598,12 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
         id: "public-first-leg.third-position",
         title: "Troisième membre d’équipage",
         items: [
-          item("third-position", "cleaning-bags", "Sacs de nettoyage ...... Au moins 10 en réserve", "Le sac de nettoyage du siège droit doit être fixé dans l’espace à l’avant de la flight case, aussi à droite que possible."),
+          item(
+            "third-position",
+            "cleaning-bags",
+            "Sacs de nettoyage ...... Au moins 10 en réserve",
+            "Le sac de nettoyage du siège droit doit être fixé dans l’espace à l’avant de la flight case, aussi à droite que possible.",
+          ),
           item("third-position", "oxygen-mask-test", "Masque à oxygène ...... Tester"),
           item("third-position", "paper-towels", "Essuie-mains en papier ...... x1"),
           item("third-position", "plastic-bag", "Sac plastique ...... x1"),
@@ -587,6 +630,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
           item("cockpit", "printer-paper", "Papier imprimante"),
           item("cockpit", "circuit-breakers", "Disjoncteurs"),
           item("cockpit", "cockpit-preparation", "Préparation cockpit ...... Vérifiée"),
+          item("cockpit", "windshield-wipers", "Pare-brise/essuie-glaces ...... Vérifier", "S'il n'y a pas de précipitations, effectuer les étapes suivantes :\n1. Vérifier les essuie-glaces avant de brancher le casque afin d'éviter de coincer le câble du casque en fermant le pare-brise.\n2. Ouvrir le pare-brise et confirmer que personne ne se trouve sous l'avion.\n3. Verser de l'eau et vérifier que les essuie-glaces assurent un nettoyage satisfaisant.\n4. Vérifier l'absence de corps étrangers dans le cadre du pare-brise, en regardant notamment de bas en haut.\n5. Fermer et verrouiller le pare-brise."),
           item("cockpit", "headset-and-microphone", "Casque et microphone ...... Vérifier"),
           item("cockpit", "speed-trim-fail", "SPEED TRIM FAIL ...... Éteint"),
           item("cockpit", "tcas-test", "TCAS TEST"),
@@ -594,6 +638,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
           item("cockpit", "deicing-request", "Demande de dégivrage ...... Demandée (hiver)"),
           // item("cockpit", "windshield-wipers", "Essuie-glaces ...... Vérifiés (saison des pluies)", "Ne pas tester à sec. Ajouter de l’eau avant de tester les essuie-glaces."),
           item("cockpit", "flight-number", "Numéro de vol", "Les numéros de vol de la série NG peuvent être saisis dans le composeur du manche ou écrits sur papier"),
+          item("cockpit", "screens-and-controls-cleaning", "Écrans et commandes ...... Nettoyer si nécessaire"),
         ],
       },
       {
@@ -601,17 +646,18 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
         title: "CDU",
         items: [
           cduItem("qfe", "QFE", "Si l’aéroport utilise le QFE, vérifier qu’il est sélectionné dans le CDU"),
-          cduItem("route-check", "Route ...... Vérifier"),
           cduItem("eosid", "EOSID ...... Entré"),
           cduItem("special-areas", "Zones réglementées, interdites, interdites de survol, avis ...... Entrés"),
           cduItem("special-procedures", "Procédure de dépressurisation ...... Entrée"),
           cduItem("destination-icao", "Code destination à quatre lettres ...... Vérifier"),
+          cduItem("route-check", "Route ...... Vérifier"),
           cduItem("route-end-fix", "Point de fin de route ...... page FIX 2/2", "Si la page FIX a une autre fonction, prendre comme référence le premier point à survoler."),
         ],
       },
       {
         id: "public-first-leg.documents",
         title: "Documents",
+        description: "La vérification des Documents peut être effectuée en même temps que la checklist « Avant démarrage » ci-dessous.",
         items: [
           item("documents", "pins-covers", "Goupilles et capots ...... Retirés"),
           item("documents", "tlb-released", "TLB libéré par la maintenance"),
@@ -663,7 +709,12 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
           item("before-start", "takeoff-trim-green-band", "Trim ...... Trim décollage, dans la zone verte"),
           item("before-start", "eosid", "EOSID ...... Entré"),
           item("before-start", "preflight-checklist", "Checklist avant vol ...... Terminée"),
-          item("before-start", "sunglasses-screen-brightness", "Lunettes de soleil / Luminosité écran", "Si le décollage se fait face au soleil ou si le départ peut virer vers un côté très ensoleillé, augmenter la luminosité des écrans et porter des lunettes de soleil."),
+          item(
+            "before-start",
+            "sunglasses-screen-brightness",
+            "Lunettes de soleil / Luminosité écran",
+            "Si le décollage se fait face au soleil ou si le départ peut virer vers un côté très ensoleillé, augmenter la luminosité des écrans et porter des lunettes de soleil.",
+          ),
         ],
       },
       {

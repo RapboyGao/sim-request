@@ -17,7 +17,7 @@ const item = (section: string, id: string, title: string, description = '') => (
 const localizedContent: Record<string, LocalizedTurnaround> = {
   'zh-CN': {
     title: '过站航段',
-    description: '',
+    description: '如某项内容在当前运行条件下无需执行（例如在修正海压机场无需执行“QFE”），请勾选该项，表示已确认并考虑过该项目；勾选后，对应的 Group 将视为完成。',
     sections: [
       {
         id: 'public-turnaround.deplaning',
@@ -45,7 +45,7 @@ const localizedContent: Record<string, LocalizedTurnaround> = {
         title: '驾驶舱',
         items: [
           item('turnaround-cockpit', 'deicing-request', '除冰Request ...... 已申请 (冬季)'),
-          item('turnaround-cockpit', 'cockpit-preparation', '驾驶舱准备 ...... 检查'),
+          item('turnaround-cockpit', 'cockpit-preparation', '驾驶舱准备'),
           item('turnaround-cockpit', 'flt-land-alt', 'FLT/LAND ALT ...... 检查'),
           item('turnaround-cockpit', 'flight-director', '飞行指引 ...... 接通'),
           item('turnaround-cockpit', 'autobrake', '自动刹车 ...... RTO'),
@@ -56,7 +56,7 @@ const localizedContent: Record<string, LocalizedTurnaround> = {
   },
   en: {
     title: 'Turnaround Leg',
-    description: '',
+    description: 'If an item does not need to be performed under the current operating conditions (for example, QFE at a corrected-pressure airport), check it to show that it has been considered. The corresponding group will then be treated as complete.',
     sections: [
       {
         id: 'public-turnaround.deplaning',
@@ -95,7 +95,7 @@ const localizedContent: Record<string, LocalizedTurnaround> = {
   },
   ja: {
     title: '乗継レグ',
-    description: '',
+    description: '現在の運航条件では実施不要な項目（例：修正海面気圧を使用する空港での「QFE」）も、確認・考慮済みであることを示すためにチェックしてください。チェックすると、該当するグループは完了として扱われます。',
     sections: [
       {
         id: 'public-turnaround.deplaning',
@@ -134,7 +134,7 @@ const localizedContent: Record<string, LocalizedTurnaround> = {
   },
   ko: {
     title: '턴어라운드 레그',
-    description: '',
+    description: '현재 운항 조건에서 수행할 필요가 없는 항목(예: 수정 해면기압 공항에서의 ‘QFE’)도 고려했음을 표시하기 위해 체크하십시오. 체크하면 해당 Group이 완료된 것으로 처리됩니다.',
     sections: [
       {
         id: 'public-turnaround.deplaning',
@@ -173,7 +173,7 @@ const localizedContent: Record<string, LocalizedTurnaround> = {
   },
   fr: {
     title: 'Secteur de transit',
-    description: '',
+    description: 'Si un élément n’a pas besoin d’être exécuté dans les conditions d’exploitation actuelles (par exemple le « QFE » sur un aérodrome utilisant la pression corrigée), cochez-le pour indiquer qu’il a été pris en compte. Le groupe correspondant sera alors considéré comme terminé.',
     sections: [
       {
         id: 'public-turnaround.deplaning',
