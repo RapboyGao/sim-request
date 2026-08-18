@@ -17,7 +17,7 @@ const item = (section: string, id: string, title: string, description = '') => (
 const localizedContent: Record<string, LocalizedTurnaround> = {
   'zh-CN': {
     title: '过站航段',
-    description: '如某项内容在当前运行条件下无需执行（例如在修正海压机场无需执行“QFE”），请勾选该项，表示已确认并考虑过该项目；勾选后，对应的 Group 将视为完成。',
+    description: '无需执行的项目也要勾选（例如修正海压机场的QFE）。',
     sections: [
       {
         id: 'public-turnaround.deplaning',
@@ -239,7 +239,6 @@ export function publicTurnaroundChecklist(locale: string): Checklist {
     selected.title,
     selected.description,
     [...selected.sections, ...cloneFirstLegSections(firstLeg)],
-    '',
   )
 }
 

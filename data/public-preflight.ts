@@ -232,7 +232,7 @@ const localizedContent: Record<string, LocalizedPreflight> = {
 
 export function publicPreflightChecklist(locale: string): Checklist {
   const selected = localizedContent[locale] || localizedContent.en!;
-  return createBuiltinChecklist("preflight", selected.title, "", selected.sections, "");
+  return createBuiltinChecklist("preflight", selected.title, "", selected.sections);
 }
 
 export const publicPreflightChecklistDefault = publicPreflightChecklist("zh-CN");

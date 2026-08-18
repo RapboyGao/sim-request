@@ -19,7 +19,7 @@ const cduItem = (id: string, title: string, description = "") => item("cockpit",
 const localizedContent: Record<string, LocalizedFirstLeg> = {
   "zh-CN": {
     title: "第一航段",
-    description: "如某项内容在当前运行条件下无需执行（例如在修正海压机场无需执行“QFE”），请勾选该项，表示已确认并考虑过该项目；勾选后，对应的 Group 将视为完成。",
+    description: "无需执行的项目也要勾选（例如修正海压机场的QFE）。",
     sections: [
       {
         id: "public-first-leg.aircraft-exterior",
@@ -738,7 +738,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
 
 export function publicFirstLegChecklist(locale: string): Checklist {
   const selected = localizedContent[locale] || localizedContent.en!;
-  return createBuiltinChecklist("first-leg", selected.title, selected.description, selected.sections, "");
+  return createBuiltinChecklist("first-leg", selected.title, selected.description, selected.sections);
 }
 
 export const publicFirstLegChecklistDefault = publicFirstLegChecklist("zh-CN");

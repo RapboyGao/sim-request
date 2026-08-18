@@ -69,15 +69,20 @@ import ChecklistSections from '~/components/checklists/ChecklistSections.vue'
 import { publicDeicingChecklist } from '~/data/public-deicing'
 import { decoratePublicChecklist, publicBuiltinChecklists } from '~/data/public-checklists'
 import type { Checklist } from '~/types/checklist'
+import { publicCustomChecklistRoute } from '~/utils/checklist-routes'
 import { checklistStats } from '~/utils/checklists'
+import { useChecklistsPageActions } from '~/composables/useChecklistsPageActions'
 
 const { t, locale } = useI18n()
+const router = useRouter()
+const localePath = useLocalePath()
 const content = computed(() => {
   const raw = publicDeicingChecklist(locale.value)
   return { ...raw, checklist: decoratePublicChecklist(raw.checklist, locale.value) }
 })
 const publicBuiltins = computed(() => publicBuiltinChecklists(locale.value))
-const { status, toggleItem: toggleStoredItem, setSection: setStoredSection, resetChecklist } = useChecklists({ builtins: publicBuiltins })
+const { status, toggleItem: toggleStoredItem, setSection: setStoredSection, resetChecklist, duplicateChecklist } = useChecklists({ builtins: publicBuiltins })
+const { register: registerPageActions } = useChecklistsPageActions()
 const resetDialog = ref(false)
 const stats = computed(() => checklistStats(content.value.checklist, status.value))
 const railStatus = computed(() => stats.value.complete ? 'complete' : 'partial')
@@ -99,11 +104,25 @@ function reset() {
   resetDialog.value = false
 }
 
+function duplicate() {
+  const id = duplicateChecklist(content.value.checklist.id)
+  if (id) router.push(localePath(publicCustomChecklistRoute(id)))
+}
+
 function scrollTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 useHead(() => ({ title: content.value.checklist.title }))
+
+onMounted(() => {
+  registerPageActions({
+    reset: () => { resetDialog.value = true },
+    duplicate,
+  })
+})
+
+onBeforeUnmount(() => registerPageActions(null))
 </script>
 
 <style scoped>

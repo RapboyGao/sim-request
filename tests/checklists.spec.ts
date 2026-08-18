@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { publicBuiltinChecklists } from '../data/public-checklists'
 import { publicDeicingChecklist } from '../data/public-deicing'
 import { publicChecklistRoute, publicChecklistsHomeRoute, publicCustomChecklistEditRoute, publicCustomChecklistRoute } from '../utils/checklist-routes'
-import { checklistCompletionStatus, checklistStats, exclusiveSectionGroups, normalizeChecklist, toggleChecklistItemStatus } from '../utils/checklists'
+import { checklistCompletionStatus, checklistStats, cloneChecklist, exclusiveSectionGroups, normalizeChecklist, toggleChecklistItemStatus } from '../utils/checklists'
 
 describe('public checklist catalog', () => {
   it('contains only the public built-in checklists', () => {
@@ -66,13 +66,35 @@ describe('public checklist catalog', () => {
     expect(firstLegDocuments.items.map((item) => item.id)).toContain('public-first-leg.documents.clb-location')
     expect(firstLegDocuments.description).toBe('Documents 检查可与下方的“起动前”检查单同时进行。')
     expect(turnaroundDocuments.description).toBe('Documents 检查可与下方的“起动前”检查单同时进行。')
-    expect(firstLeg.description).toContain('如某项内容在当前运行条件下无需执行')
-    expect(firstLeg.description).toContain('对应的 Group 将视为完成')
-    expect(turnaround.description).toContain('如某项内容在当前运行条件下无需执行')
-    expect(turnaround.description).toContain('对应的 Group 将视为完成')
+    expect(firstLeg.description).toMatch(/^无需执行的项目也要勾选（例如修正海压机场的QFE）。/)
+    expect(turnaround.description).toMatch(/^无需执行的项目也要勾选（例如修正海压机场的QFE）。/)
     expect(turnaroundDocuments.items.map((item) => item.id)).not.toContain('public-turnaround.documents.logbook-pages')
     expect(turnaroundDocuments.items.map((item) => item.id)).not.toContain('public-turnaround.documents.clb-location')
     expect(firstLegBeforeStart.items.find((item) => item.id.endsWith('.transition-altitude'))?.title).toBe('CDU中的Transition Altitude')
+  })
+
+  it('clones a checklist as custom content with fresh IDs for every entity', () => {
+    const source = structuredClone(publicBuiltinChecklists('zh-CN')[0]!)
+    source.notes = [{ id: 'builtin-note', title: 'Note', paragraphs: ['Text'], bullets: [] }]
+    let sequence = 0
+    const createId = (prefix: string) => `${prefix}-random-${++sequence}`
+    const collectIds = (checklist: typeof source) => [
+      checklist.id,
+      ...checklist.sections.flatMap((section) => [section.id, ...section.items.map((item) => item.id)]),
+      ...checklist.notes.map((note) => note.id),
+    ]
+
+    const first = cloneChecklist(source, createId, `${source.title} 副本`)
+    const second = cloneChecklist(source, createId, `${source.title} 副本`)
+    const sourceIds = new Set(collectIds(source))
+    const clonedIds = [...collectIds(first), ...collectIds(second)]
+
+    expect(first.source).toBe('custom')
+    expect(first.title).toBe(`${source.title} 副本`)
+    expect(Object.keys(first).some((key) => key.endsWith('Markdown'))).toBe(false)
+    expect(new Set(clonedIds).size).toBe(clonedIds.length)
+    expect(clonedIds.every((id) => !sourceIds.has(id))).toBe(true)
+    expect(first.notes[0]?.id).not.toBe(source.notes[0]?.id)
   })
 })
 

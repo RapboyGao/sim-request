@@ -158,7 +158,7 @@ export function noEngineBleedTakeoffChecklist(locale: string): Checklist {
       title: selected.afterTakeoffItems[index]?.title || id,
       description: selected.afterTakeoffItems[index]?.description || '',
     })),
-  }], '')
+  }])
 }
 
 export const noEngineBleedTakeoffChecklistDefault = noEngineBleedTakeoffChecklist('zh-CN')
