@@ -101,7 +101,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
           item("documents", "flight-plan-info", "飞行计划信息正确"),
           item("documents", "flight-plan-route-change", "飞行计划航路有无更改"),
           item("documents", "flight-plan-signed", "飞行计划已签字"),
-          item("documents", "all-logbooks", "所有飞机所有记录本已在驾驶舱"),
+          item("documents", "all-logbooks", "所有记录本都在驾驶舱"),
           item("documents", "logbook-pages", "所有记录本有足够的剩余页数"),
           item("documents", "clb-location", "CLB 在驾驶舱或客舱"),
         ],
@@ -128,7 +128,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
           item("before-start", "takeoff-trim-green-band", "配平 ...... 起飞配平，绿区"),
           item("before-start", "eosid", "EOSID ...... 已输入"),
           item("before-start", "preflight-checklist", "飞行前检查单 ...... 已完成"),
-          item("before-start", "sunglasses-screen-brightness", "墨镜/屏幕亮度", "如果向阳起飞或离场可能转向阳光较强一侧，调亮屏幕亮度并配戴墨镜"),
+          item("before-start", "sunglasses-screen-brightness", "墨镜/屏幕亮度", "如果向阳起飞或离场可能转向阳光较强一侧，调亮屏幕亮度并配戴墨镜\n如果从入口内移起飞，建议调亮屏幕亮度"),
         ],
       },
       {
