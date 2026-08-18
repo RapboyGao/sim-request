@@ -91,7 +91,36 @@ export default defineNuxtConfig({
       additionalManifestEntries: [
         { url: '/checklists/', revision: 'app-shell-v1' },
       ],
-      globPatterns: ['**/*.{js,css,html,png,svg,ico,woff2}'],
+      ignoreURLParametersMatching: [/^v$/],
+      globPatterns: ['**/*.{js,css,html,json,png,svg,ico,woff,woff2,ttf,eot}'],
+      runtimeCaching: [
+        {
+          urlPattern: ({ request }) => request.mode === 'navigate',
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'site-pages',
+            networkTimeoutSeconds: 3,
+            cacheableResponse: { statuses: [0, 200] },
+          },
+        },
+        {
+          urlPattern: /\/api\/pwa-manifest(?:\?.*)?$/,
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'pwa-manifest',
+            networkTimeoutSeconds: 3,
+            cacheableResponse: { statuses: [0, 200] },
+          },
+        },
+        {
+          urlPattern: ({ request }) => ['font', 'image', 'script', 'style', 'worker'].includes(request.destination),
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'site-assets',
+            cacheableResponse: { statuses: [0, 200] },
+          },
+        },
+      ],
     },
     devOptions: {
       enabled: true,

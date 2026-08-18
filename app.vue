@@ -4,15 +4,8 @@
 
 <script setup lang="ts">
 const route = useRoute()
-const themeModeCookie = useCookie<'system' | 'light' | 'dark'>('booking-theme-mode', {
-  default: () => 'system',
-  sameSite: 'lax',
-})
 
 useHead(() => ({
-  htmlAttrs: {
-    'data-theme': themeModeCookie.value || 'system',
-  },
   titleTemplate: (titleChunk) => {
     const baseTitle = 'Observation 预约'
     return titleChunk ? `${titleChunk} · ${baseTitle}` : baseTitle

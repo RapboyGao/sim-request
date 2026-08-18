@@ -32,15 +32,22 @@ const route = useRoute(); const router = useRouter(); const localePath = useLoca
 const { actions: pageActions } = provideChecklistsPageActions(); const drawer = ref(false); const menuOpen = ref(false)
 const theme = useChecklistsTheme(); const vuetifyTheme = useTheme(); const builtins = computed(() => publicBuiltinChecklists(locale.value)); const { allChecklists } = useChecklists({ builtins })
 const isDark = computed(() => theme.isDark.value); const themeMode = computed(() => theme.mode.value)
+const resolvedThemeMode = computed(() => theme.resolvedMode.value)
 const themeIcon = computed(() => themeMode.value === 'dark' ? 'mdi-weather-night' : themeMode.value === 'light' ? 'mdi-weather-sunny' : 'mdi-theme-light-dark')
 const themeLabel = computed(() => themeMode.value === 'dark' ? '深色模式' : themeMode.value === 'light' ? '浅色模式' : '跟随系统')
 const homePath = computed(() => localePath(publicChecklistsHomeRoute())); const isHome = computed(() => route.path === homePath.value || route.path === `${homePath.value}/`)
 const activeChecklistId = computed(() => { const path = route.path.replace(/\/$/, ''); if (path.endsWith('/deicing')) return 'deicing'; if (path.endsWith('/no-engine-bleed-takeoff')) return 'no-engine-bleed-takeoff'; return String(route.params.id || '') })
 const activeChecklistTitle = computed(() => allChecklists.value.find((item) => item.id === activeChecklistId.value)?.title || '检查单')
-function applyTheme() { vuetifyTheme.global.name.value = isDark.value ? 'bookingDark' : 'bookingLight'; if (import.meta.client) document.documentElement.style.colorScheme = isDark.value ? 'dark' : 'light' }
+function applyTheme() {
+  vuetifyTheme.global.name.value = isDark.value ? 'bookingDark' : 'bookingLight'
+  if (import.meta.client) {
+    document.documentElement.dataset.theme = resolvedThemeMode.value
+    document.documentElement.style.colorScheme = resolvedThemeMode.value
+  }
+}
 function cycleMode() { theme.cycleMode() }
 function goHome() { router.push(localePath(publicChecklistsHomeRoute())) }
-watch([isDark, themeMode], applyTheme, { immediate: true }); watch(smAndUp, () => { menuOpen.value = false; drawer.value = false })
+watch(resolvedThemeMode, applyTheme, { immediate: true }); watch(smAndUp, () => { menuOpen.value = false; drawer.value = false })
 useHead({ titleTemplate: (titleChunk) => titleChunk ? `${titleChunk} · Aviation Checklist` : 'Aviation Checklist', meta: [{ name: 'robots', content: 'noindex, nofollow, noarchive' }, { name: 'description', content: '离线航空检查单工具' }] })
 </script>
 

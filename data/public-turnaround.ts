@@ -30,6 +30,7 @@ const localizedContent: Record<string, LocalizedTurnaround> = {
           item('deplaning', 'cloud-license', '云执照', '如果没有网络，应该先打印时间条，等后续航段结束填写'),
           item('deplaning', 'time-log', '时间条(Time Log)'),
           item('deplaning', 'dual-carbon', '双碳'),
+          item('deplaning', 'single-engine-taxi', '单发滑行'),
           item('deplaning', 'flight-plan', '飞行计划'),
           item('deplaning', 'performance-calculation', '性能计算'),
           item('deplaning', 'notam', 'NOTAM'),
@@ -68,6 +69,7 @@ const localizedContent: Record<string, LocalizedTurnaround> = {
           item('deplaning', 'cloud-license', 'Cloud license', 'If there is no network, print the time log first and complete it after the subsequent leg.'),
           item('deplaning', 'time-log', 'Time Log'),
           item('deplaning', 'dual-carbon', 'Dual carbon'),
+          item('deplaning', 'single-engine-taxi', 'Single-engine taxi'),
           item('deplaning', 'flight-plan', 'Flight plan'),
           item('deplaning', 'performance-calculation', 'Performance calculation'),
           item('deplaning', 'notam', 'NOTAM'),
@@ -106,6 +108,7 @@ const localizedContent: Record<string, LocalizedTurnaround> = {
           item('deplaning', 'cloud-license', 'クラウドライセンス', 'ネットワークがない場合は先にタイムログを印刷し、次のレグ終了後に記入する。'),
           item('deplaning', 'time-log', 'タイムログ (Time Log)'),
           item('deplaning', 'dual-carbon', 'デュアルカーボン'),
+          item('deplaning', 'single-engine-taxi', '片発地上滑走'),
           item('deplaning', 'flight-plan', 'フライトプラン'),
           item('deplaning', 'performance-calculation', '性能計算'),
           item('deplaning', 'notam', 'NOTAM'),
@@ -144,6 +147,7 @@ const localizedContent: Record<string, LocalizedTurnaround> = {
           item('deplaning', 'cloud-license', '클라우드 라이선스', '네트워크가 없으면 먼저 타임 로그를 출력하고 다음 레그 종료 후 작성합니다.'),
           item('deplaning', 'time-log', '타임 로그 (Time Log)'),
           item('deplaning', 'dual-carbon', '듀얼 카본'),
+          item('deplaning', 'single-engine-taxi', '단발 지상 활주'),
           item('deplaning', 'flight-plan', '비행계획'),
           item('deplaning', 'performance-calculation', '성능 계산'),
           item('deplaning', 'notam', 'NOTAM'),
@@ -182,6 +186,7 @@ const localizedContent: Record<string, LocalizedTurnaround> = {
           item('deplaning', 'cloud-license', 'Licence cloud', 'En l’absence de réseau, imprimer d’abord le time log et le remplir après le secteur suivant.'),
           item('deplaning', 'time-log', 'Time Log'),
           item('deplaning', 'dual-carbon', 'Double carbone'),
+          item('deplaning', 'single-engine-taxi', 'Roulage sur un seul moteur'),
           item('deplaning', 'flight-plan', 'Plan de vol'),
           item('deplaning', 'performance-calculation', 'Calcul des performances'),
           item('deplaning', 'notam', 'NOTAM'),
@@ -214,7 +219,11 @@ function cloneFirstLegSections(checklist: Checklist): BuiltinSectionInput[] {
       ...section,
       id: section.id.replace(/^public-first-leg\./, 'public-turnaround.'),
       items: section.items
-        .filter((item) => item.id !== 'public-first-leg.documents.pins-covers')
+        .filter((item) => ![
+          'public-first-leg.documents.pins-covers',
+          'public-first-leg.documents.logbook-pages',
+          'public-first-leg.documents.clb-location',
+        ].includes(item.id))
         .map((item) => ({
           ...item,
           id: item.id.replace(/^public-first-leg\./, 'public-turnaround.'),

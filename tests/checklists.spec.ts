@@ -25,6 +25,32 @@ describe('public checklist catalog', () => {
       expect(checklist.sections.every((section) => section.items.every((item) => typeof item.description === 'string' && typeof item.isEmphasized === 'boolean'))).toBe(true)
     }
   })
+
+  it('keeps the first-leg and turnaround checklist differences aligned', () => {
+    const checklists = publicBuiltinChecklists('zh-CN')
+    const firstLeg = checklists.find((checklist) => checklist.id === 'first-leg')!
+    const turnaround = checklists.find((checklist) => checklist.id === 'turnaround')!
+    const firstLegBeforeStart = firstLeg.sections.find((section) => section.id.endsWith('.before-start'))!
+    const firstLegDocuments = firstLeg.sections.find((section) => section.id.endsWith('.documents'))!
+    const turnaroundDeplaning = turnaround.sections.find((section) => section.id.endsWith('.deplaning'))!
+    const turnaroundBeforeStart = turnaround.sections.find((section) => section.id.endsWith('.before-start'))!
+    const turnaroundDocuments = turnaround.sections.find((section) => section.id.endsWith('.documents'))!
+    const sunglasses = firstLegBeforeStart.items.find((item) => item.id.endsWith('.sunglasses-screen-brightness'))!
+
+    expect(turnaroundDeplaning.items.map((item) => item.title)).toContain('单发滑行')
+    expect(firstLegBeforeStart.items.map((item) => item.title)).not.toContain('配平 ...... 起飞配平')
+    expect(turnaroundBeforeStart.items.map((item) => item.title)).not.toContain('配平 ...... 起飞配平')
+    expect(firstLegBeforeStart.items.map((item) => item.title)).toContain('配平 ...... 起飞配平，绿区')
+    expect(firstLegBeforeStart.items.map((item) => item.title)).toContain('墨镜/屏幕亮度')
+    expect(turnaroundBeforeStart.items.map((item) => item.title)).toContain('墨镜/屏幕亮度')
+    expect(sunglasses.description).toBe('如果向阳起飞或离场可能转向阳光较强一侧，调亮屏幕亮度并配戴墨镜')
+    expect(turnaroundBeforeStart.items.find((item) => item.id.endsWith('.sunglasses-screen-brightness'))?.description).toBe('如果向阳起飞或离场可能转向阳光较强一侧，调亮屏幕亮度并配戴墨镜')
+    expect(firstLegDocuments.items.map((item) => item.id)).toContain('public-first-leg.documents.logbook-pages')
+    expect(firstLegDocuments.items.map((item) => item.id)).toContain('public-first-leg.documents.clb-location')
+    expect(turnaroundDocuments.items.map((item) => item.id)).not.toContain('public-turnaround.documents.logbook-pages')
+    expect(turnaroundDocuments.items.map((item) => item.id)).not.toContain('public-turnaround.documents.clb-location')
+    expect(firstLegBeforeStart.items.find((item) => item.id.endsWith('.transition-altitude'))?.title).toBe('CDU中的Transition Altitude')
+  })
 })
 
 describe('public checklist routes and behavior', () => {
