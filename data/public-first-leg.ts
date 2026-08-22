@@ -41,6 +41,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
       {
         id: "public-first-leg.cockpit",
         title: "驾驶舱",
+        description: "除特殊注明，每个飞行员都应完成、检查、提醒以下项目",
         items: [
           item("cockpit", "registration-certificate", "航空器国籍登记证", "检查飞机注册号"),
           item("cockpit", "airworthiness-certificate", "航空器适航证", "检查飞机注册号"),
@@ -72,6 +73,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
       {
         id: "public-first-leg.cdu",
         title: "CDU",
+        description: "除特殊注明，每个飞行员都应完成、检查、提醒以下项目",
         items: [
           cduItem("qfe", "QFE", "如果机场使用QFE，应检查QFE是否已在CDU中选择"),
           cduItem("eosid", "EOSID ...... 已输入"),
@@ -85,7 +87,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
       {
         id: "public-first-leg.documents",
         title: "Documents",
-        description: "Documents 检查可与下方的“起动前”检查单同时进行。",
+        description: "除特殊注明，每个飞行员都应完成、检查、提醒以下项目",
         items: [
           item("documents", "pins-covers", "销子和管套 ...... 已取下"),
           item("documents", "tlb-released", "TLB 机务已放行"),
@@ -113,10 +115,10 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
       {
         id: "public-first-leg.before-start",
         title: "起动前",
-        description: "本检查单和Documents检查可以穿插进行",
+        description: "除特殊注明，每个飞行员都应完成、检查、提醒以下项目",
         items: [
           item("before-start", "voice-recorder", "录音笔 ...... 开录"),
-          item("before-start", "audio-panel", "音频面板 ...... 1 2 INT SPKR"),
+          item("before-start", "audio-panel", "音频面板 ...... 调定", "1. 发射: VHF 1\n2. 接收: VHF 1 2 INT SPKR\n3. 发话电门: 中立位\n4. 选择 NORM"),
           item("before-start", "rte-departure-procedure", "RTE 页离场程序编号正确"),
           item("before-start", "rte-departure-endpoint", "RTE 离场程序结束点正确"),
           item("before-start", "initial-altitude", "起始高度"),
@@ -206,6 +208,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
       {
         id: "public-first-leg.cockpit",
         title: "Cockpit",
+        description: "Unless specifically noted, each pilot should complete, check, and call out the following items.",
         items: [
           item("cockpit", "registration-certificate", "Aircraft registration certificate", "Check aircraft registration number"),
           item("cockpit", "airworthiness-certificate", "Certificate of airworthiness", "Check aircraft registration number"),
@@ -237,6 +240,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
       {
         id: "public-first-leg.cdu",
         title: "CDU",
+        description: "Unless specifically noted, each pilot should complete, check, and call out the following items.",
         items: [
           cduItem("qfe", "QFE", "If the airport uses QFE, verify that QFE is selected in the CDU"),
           cduItem("eosid", "EOSID ...... Entered"),
@@ -250,7 +254,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
       {
         id: "public-first-leg.documents",
         title: "Documents",
-        description: "The Documents check may be performed at the same time as the “Before Start” checklist below.",
+        description: "Unless specifically noted, each pilot should complete, check, and call out the following items.",
         items: [
           item("documents", "pins-covers", "Pins and covers ...... Removed"),
           item("documents", "tlb-released", "TLB maintenance release"),
@@ -278,10 +282,10 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
       {
         id: "public-first-leg.before-start",
         title: "Before Start",
-        description: "This checklist and the Documents check may be performed in between each other.",
+        description: "Unless specifically noted, each pilot should complete, check, and call out the following items.",
         items: [
           item("before-start", "voice-recorder", "Voice recorder ...... Start recording"),
-          item("before-start", "audio-panel", "Audio panel ...... 1 2 INT SPKR"),
+          item("before-start", "audio-panel", "Audio panel ...... Set", "1. Transmit: VHF 1\n2. Receive: VHF 1 2 INT SPKR\n3. Transmit switch: Neutral\n4. Select NORM"),
           item("before-start", "rte-departure-procedure", "RTE page departure procedure number correct"),
           item("before-start", "rte-departure-endpoint", "RTE departure procedure end point correct"),
           item("before-start", "initial-altitude", "Initial altitude"),
@@ -371,6 +375,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
       {
         id: "public-first-leg.cockpit",
         title: "コックピット",
+        description: "特別な注記がない限り、各パイロットは以下の項目を実施・確認し、コールアウトする。",
         items: [
           item("cockpit", "registration-certificate", "航空機登録証明書", "航空機の登録番号を確認"),
           item("cockpit", "airworthiness-certificate", "耐空証明書", "航空機の登録番号を確認"),
@@ -402,6 +407,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
       {
         id: "public-first-leg.cdu",
         title: "CDU",
+        description: "特別な注記がない限り、各パイロットは以下の項目を実施・確認し、コールアウトする。",
         items: [
           cduItem("qfe", "QFE", "空港が QFE を使用する場合、CDU で QFE が選択されていることを確認"),
           cduItem("eosid", "EOSID ...... 入力済み"),
@@ -415,7 +421,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
       {
         id: "public-first-leg.documents",
         title: "書類",
-        description: "Documents の確認は、下にある「起動前」チェックリストと同時に実施できます。",
+        description: "特別な注記がない限り、各パイロットは以下の項目を実施・確認し、コールアウトする。",
         items: [
           item("documents", "pins-covers", "ピンとカバー ...... 取り外し済み"),
           item("documents", "tlb-released", "TLB 整備リリース済み"),
@@ -443,10 +449,10 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
       {
         id: "public-first-leg.before-start",
         title: "始動前",
-        description: "このチェックリストと書類確認は、途中で交互に実施してよい。",
+        description: "特別な注記がない限り、各パイロットは以下の項目を実施・確認し、コールアウトする。",
         items: [
           item("before-start", "voice-recorder", "ボイスレコーダー ...... 録音開始"),
-          item("before-start", "audio-panel", "オーディオパネル ...... 1 2 INT SPKR"),
+          item("before-start", "audio-panel", "オーディオパネル ...... 設定", "1. 送信: VHF 1\n2. 受信: VHF 1 2 INT SPKR\n3. 送信スイッチ: 中立\n4. NORM を選択"),
           item("before-start", "rte-departure-procedure", "RTE ページの出発方式番号確認"),
           item("before-start", "rte-departure-endpoint", "RTE 出発方式の終点確認"),
           item("before-start", "initial-altitude", "初期高度"),
@@ -536,6 +542,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
       {
         id: "public-first-leg.cockpit",
         title: "조종실",
+        description: "별도로 명시된 경우를 제외하고, 각 조종사는 다음 항목을 수행하고 확인하며 콜아웃해야 합니다.",
         items: [
           item("cockpit", "registration-certificate", "항공기 등록증", "항공기 등록번호 확인"),
           item("cockpit", "airworthiness-certificate", "감항증명서", "항공기 등록번호 확인"),
@@ -567,6 +574,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
       {
         id: "public-first-leg.cdu",
         title: "CDU",
+        description: "별도로 명시된 경우를 제외하고, 각 조종사는 다음 항목을 수행하고 확인하며 콜아웃해야 합니다.",
         items: [
           cduItem("qfe", "QFE", "공항이 QFE를 사용하는 경우 CDU에서 QFE가 선택되었는지 확인"),
           cduItem("eosid", "EOSID ...... 입력 완료"),
@@ -580,7 +588,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
       {
         id: "public-first-leg.documents",
         title: "서류",
-        description: "Documents 점검은 아래의 '시동 전' 체크리스트와 동시에 수행할 수 있습니다.",
+        description: "별도로 명시된 경우를 제외하고, 각 조종사는 다음 항목을 수행하고 확인하며 콜아웃해야 합니다.",
         items: [
           item("documents", "pins-covers", "핀과 커버 ...... 제거 확인"),
           item("documents", "tlb-released", "TLB 정비 출고"),
@@ -608,10 +616,10 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
       {
         id: "public-first-leg.before-start",
         title: "시동 전",
-        description: "이 체크리스트와 서류 확인은 중간에 번갈아 수행할 수 있습니다.",
+        description: "별도로 명시된 경우를 제외하고, 각 조종사는 다음 항목을 수행하고 확인하며 콜아웃해야 합니다.",
         items: [
           item("before-start", "voice-recorder", "음성 녹음기 ...... 녹음 시작"),
-          item("before-start", "audio-panel", "오디오 패널 ...... 1 2 INT SPKR"),
+          item("before-start", "audio-panel", "오디오 패널 ...... 설정", "1. 송신: VHF 1\n2. 수신: VHF 1 2 INT SPKR\n3. 송신 스위치: 중립\n4. NORM 선택"),
           item("before-start", "rte-departure-procedure", "RTE 페이지 출발 절차 번호 확인"),
           item("before-start", "rte-departure-endpoint", "RTE 출발 절차 종료 지점 확인"),
           item("before-start", "initial-altitude", "초기 고도"),
@@ -706,6 +714,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
       {
         id: "public-first-leg.cockpit",
         title: "Cockpit",
+        description: "Sauf indication particulière, chaque pilote doit effectuer, vérifier et annoncer les éléments suivants.",
         items: [
           item("cockpit", "registration-certificate", "Certificat d’immatriculation de l’aéronef", "Vérifier le numéro d’immatriculation"),
           item("cockpit", "airworthiness-certificate", "Certificat de navigabilité", "Vérifier le numéro d’immatriculation"),
@@ -737,6 +746,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
       {
         id: "public-first-leg.cdu",
         title: "CDU",
+        description: "Sauf indication particulière, chaque pilote doit effectuer, vérifier et annoncer les éléments suivants.",
         items: [
           cduItem("qfe", "QFE", "Si l’aéroport utilise le QFE, vérifier qu’il est sélectionné dans le CDU"),
           cduItem("eosid", "EOSID ...... Entré"),
@@ -750,7 +760,7 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
       {
         id: "public-first-leg.documents",
         title: "Documents",
-        description: "La vérification des Documents peut être effectuée en même temps que la checklist « Avant démarrage » ci-dessous.",
+        description: "Sauf indication particulière, chaque pilote doit effectuer, vérifier et annoncer les éléments suivants.",
         items: [
           item("documents", "pins-covers", "Goupilles et capots ...... Retirés"),
           item("documents", "tlb-released", "TLB libéré par la maintenance"),
@@ -783,10 +793,10 @@ const localizedContent: Record<string, LocalizedFirstLeg> = {
       {
         id: "public-first-leg.before-start",
         title: "Avant démarrage",
-        description: "Cette checklist et la vérification des documents peuvent être effectuées en alternance.",
+        description: "Sauf indication particulière, chaque pilote doit effectuer, vérifier et annoncer les éléments suivants.",
         items: [
           item("before-start", "voice-recorder", "Enregistreur vocal ...... Démarrer l’enregistrement"),
-          item("before-start", "audio-panel", "Panneau audio ...... 1 2 INT SPKR"),
+          item("before-start", "audio-panel", "Panneau audio ...... Régler", "1. Émission : VHF 1\n2. Réception : VHF 1 2 INT SPKR\n3. Sélecteur d’émission : Neutre\n4. Sélectionner NORM"),
           item("before-start", "rte-departure-procedure", "Numéro de procédure de départ de la page RTE correct"),
           item("before-start", "rte-departure-endpoint", "Point final de la procédure de départ RTE correct"),
           item("before-start", "initial-altitude", "Altitude initiale"),

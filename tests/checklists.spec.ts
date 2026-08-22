@@ -41,20 +41,39 @@ describe('public checklist catalog', () => {
     const turnaroundBeforeBrakeRelease = turnaround.sections.find((section) => section.id.endsWith('.before-brake-release'))!
     const turnaroundBeforeStartSwitchesGrd = turnaround.sections.find((section) => section.id.endsWith('.before-start-switches-grd'))!
     const turnaroundDeplaning = turnaround.sections.find((section) => section.id.endsWith('.deplaning'))!
+    const turnaroundThirdPosition = turnaround.sections.find((section) => section.id.endsWith('.third-position'))!
     const turnaroundBeforeStart = turnaround.sections.find((section) => section.id.endsWith('.before-start'))!
     const turnaroundCdu = turnaround.sections.find((section) => section.id.endsWith('.cdu'))!
     const turnaroundDocuments = turnaround.sections.find((section) => section.id.endsWith('.documents'))!
     const sunglasses = firstLegBeforeStart.items.find((item) => item.id.endsWith('.sunglasses-screen-brightness'))!
+    const audioPanel = firstLegBeforeStart.items.find((item) => item.id.endsWith('.audio-panel'))!
     const lateralMode = firstLegBeforeRunway.items.find((item) => item.id.endsWith('.lateral-mode'))!
     const windshieldWipers = firstLegCockpit.items.find((item) => item.id.endsWith('.windshield-wipers'))!
     const headset = firstLegCockpit.items.find((item) => item.id.endsWith('.headset-and-microphone'))!
 
-    expect(turnaroundDeplaning.items.map((item) => item.title)).toContain('单发滑行')
+    expect(turnaround.sections.indexOf(turnaroundThirdPosition)).toBe(turnaround.sections.indexOf(turnaroundDeplaning) + 1)
+    expect(turnaroundDeplaning.items.map((item) => item.title)).not.toEqual(expect.arrayContaining(['Logbooks', '任务书', '双碳', '单发滑行', '大队/中队要求的其他工作', '清洁袋 ...... 按需更换']))
+    expect(turnaroundThirdPosition.title).toBe('第三位')
+    expect(turnaroundThirdPosition.items.map((item) => item.title)).toEqual(['Logbooks', '任务书', '双碳', '单发滑行', '大队/中队要求的其他工作', '清洁袋 ...... 按需更换'])
     expect(firstLegThirdPosition.description).toBe('第二位可直接全部勾选')
+    expect(firstLegCockpit.description).toBe('除特殊注明，每个飞行员都应完成、检查、提醒以下项目')
+    expect(firstLegCdu.description).toBe('除特殊注明，每个飞行员都应完成、检查、提醒以下项目')
+    expect(firstLegDocuments.description).toBe('除特殊注明，每个飞行员都应完成、检查、提醒以下项目')
+    expect(firstLegBeforeStart.description).toBe('除特殊注明，每个飞行员都应完成、检查、提醒以下项目')
+    expect(turnaround.sections.find((section) => section.id.endsWith('.turnaround-cockpit'))?.description).toBe('除特殊注明，每个飞行员都应完成、检查、提醒以下项目')
+    expect(turnaroundCdu.description).toBe('除特殊注明，每个飞行员都应完成、检查、提醒以下项目')
+    expect(turnaroundDocuments.description).toBe('除特殊注明，每个飞行员都应完成、检查、提醒以下项目')
+    expect(turnaroundBeforeStart.description).toBe('除特殊注明，每个飞行员都应完成、检查、提醒以下项目')
     expect(firstLegBeforeStart.items.map((item) => item.title)).not.toContain('配平 ...... 起飞配平')
     expect(turnaroundBeforeStart.items.map((item) => item.title)).not.toContain('配平 ...... 起飞配平')
     expect(firstLegBeforeStart.items.map((item) => item.title)).toContain('配平 ...... 起飞配平，绿区')
     expect(firstLegBeforeStart.items.map((item) => item.title)).toContain('墨镜/屏幕亮度')
+    expect(audioPanel.title).toBe('音频面板 ...... 调定')
+    expect(audioPanel.description).toBe('1. 发射: VHF 1\n2. 接收: VHF 1 2 INT SPKR\n3. 发话电门: 中立位\n4. 选择 NORM')
+    expect(turnaroundBeforeStart.items.find((item) => item.id.endsWith('.audio-panel'))).toMatchObject({
+      title: '音频面板 ...... 调定',
+      description: '1. 发射: VHF 1\n2. 接收: VHF 1 2 INT SPKR\n3. 发话电门: 中立位\n4. 选择 NORM',
+    })
     expect(firstLegCockpit.items.map((item) => item.title)).toContain('屏幕和操纵 ...... 按需清洁')
     expect(firstLegCockpit.items.at(-1)?.title).toBe('屏幕和操纵 ...... 按需清洁')
     expect(firstLegCockpit.items.map((item) => item.title)).toContain('Defferd Defects')
@@ -104,8 +123,6 @@ describe('public checklist catalog', () => {
     expect(turnaroundBeforeBrakeRelease.items.map((item) => item.title)).toEqual(firstLegBeforeBrakeRelease.items.map((item) => item.title))
     expect(firstLegDocuments.items.map((item) => item.id)).toContain('public-first-leg.documents.logbook-pages')
     expect(firstLegDocuments.items.map((item) => item.id)).toContain('public-first-leg.documents.clb-location')
-    expect(firstLegDocuments.description).toBe('Documents 检查可与下方的“起动前”检查单同时进行。')
-    expect(turnaroundDocuments.description).toBe('Documents 检查可与下方的“起动前”检查单同时进行。')
     expect(firstLeg.description).toMatch(/^无需执行的项目也要勾选（例如修正海压机场的QFE）。/)
     expect(turnaround.description).toMatch(/^无需执行的项目也要勾选（例如修正海压机场的QFE）。/)
     expect(turnaroundDocuments.items.map((item) => item.id)).not.toContain('public-turnaround.documents.logbook-pages')
